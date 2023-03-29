@@ -1,10 +1,13 @@
-import React from 'react';
-
+import { useRoutes } from 'react-router-dom';
+import router from './router';
+import Admin from './Admin'
 function App() {
+  const oulet=useRoutes(router)
   return (
-    <div className="App">
-      app
-    </div>
+    <>
+    <Admin/>
+    {/* {oulet} */}
+    </>
   );
 }
 
