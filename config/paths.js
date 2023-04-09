@@ -21,7 +21,7 @@ const publicUrlOrPath = getPublicUrlOrPath(
   process.env.PUBLIC_URL
 );
 
-const buildPath = process.env.BUILD_PATH || '/root/nginx/html/blog-admin';
+const buildPath = process.env.BUILD_PATH || 'blog-admin';
 
 const moduleFileExtensions = [
   'web.mjs',
