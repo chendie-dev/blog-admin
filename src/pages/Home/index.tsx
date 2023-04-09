@@ -22,6 +22,7 @@ export default function Home() {
     const location = useLocation()
     const [openKey, setOpenKey] = useState([''])
     const [firstBreadItem, setBreadItem] = useState<Array<BreadcrumbItem>>([])
+    const [navClass,setNavClass]=useState('header')
     const { MenuItems } = useAppSelector((state) => ({
         MenuItems: state.menuItems.items
     }))
@@ -32,6 +33,24 @@ export default function Home() {
             }
         }
     }, [])
+    useEffect(()=>{
+        const scroll=()=>{
+            let scrollTop=window.pageYOffset ||
+            document.documentElement.scrollTop ||
+            document.body.scrollTop;
+            if(scrollTop>100){
+                console.log(1);
+                
+                setNavClass('header navfixed')
+            }else{
+                setNavClass('header')
+            }
+        }
+        window.addEventListener('scroll',scroll)
+        return ()=>{
+            window.removeEventListener('scroll',scroll)
+        }
+    },[])
     //动态生成一级面包屑
     useEffect(() => {
         test()
@@ -116,7 +135,7 @@ export default function Home() {
                     </Header>
                     <div
                         style={{
-                            margin: '24px 16px',
+                            margin: ' 120px 16px 24px 16px',
                             padding: 24,
                             // minHeight:'100vh',
                             background: colorBgContainer,

@@ -8,7 +8,7 @@ declare namespace NodeJS {
     readonly PUBLIC_URL: string;
   }
 }
-
+declare module 'md-editor-rt';
 declare module '*.avif' {
   const src: string;
   export default src;
