@@ -7,8 +7,8 @@ import './index.scss'
 export default function Articals() {
   const [text, setText] = useState('');
   const [articalTitle, setArticalTitle] = useState('')
-  const publishOrSave=()=>{
-    console.log('title',articalTitle,'content',text);
+  const publishOrSave = () => {
+    console.log('title', articalTitle, 'content', text);
   }
   return (
     <div className='articals'>
@@ -21,13 +21,13 @@ export default function Articals() {
       <MdEditor
         modelValue={text}
         onChange={setText}
-        style={{ height: '500px',marginBottom:'20px' }}
+        style={{ height: '500px', marginBottom: '20px' }}
         placeholder='开始编辑.....'
         showCodeRowNumber={true}
         toolbarsExclude={['github', 'save']}
         // 识别vs code代码
         autoDetectCode={true}
-        
+
       />
       <p className="card-title">发布设置</p>
       <div className="setting-form"></div>

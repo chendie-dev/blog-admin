@@ -4,6 +4,9 @@
     padding: 0;
     box-sizing: border-box;
 }
+body{
+    min-width: 800px;
+}
 /* em 和 i 斜体的文字不倾斜 */
 
 i {
