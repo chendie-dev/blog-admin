@@ -103,7 +103,7 @@ export default function Home() {
     return (
         <>
             <Layout className='home' >
-                <Sider trigger={null} collapsible collapsed={collapsed} style={{ height: '100vh', overflowY: 'auto',paddingTop:'10px' }}>
+                <Sider trigger={null} collapsible collapsed={collapsed} style={{ height: '100vh', overflowY: 'auto',paddingTop:'10px',boxShadow: '0 0 5px' }}>
                     <Menu
                         theme="dark"
                         mode="inline"
