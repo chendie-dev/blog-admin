@@ -5,8 +5,8 @@ function App() {
   const oulet=useRoutes(router)
   return (
     <>
-    <Admin/>
-    {/* {oulet} */}
+    {/* <Admin/> */}
+    {oulet}
     </>
   );
 }

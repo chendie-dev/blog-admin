@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Layout, Menu, theme, Divider, Breadcrumb, Popover,Avatar } from 'antd';
+import { Layout, Menu, theme, Divider, Breadcrumb, Popover, Avatar } from 'antd';
 import { useAppSelector } from '../../hooks/storeHook';
 import MyIcon from '../../components/MyIcon';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import './index.scss'
 import touxiangImg from '../../images/touxiang.png'
+import { getArticalList } from '../../requests/api';
 const { Header, Sider } = Layout;
 const content = (
     <div>
@@ -33,6 +34,7 @@ export default function Home() {
     }, [])
     //动态生成一级面包屑
     useEffect(() => {
+        test()
         MenuItems.forEach((el) => {
             if (el.key === location.pathname) {
                 if (location.pathname === '/charts') {
@@ -75,10 +77,13 @@ export default function Home() {
             }
         })
     }, [location.pathname])
-
+    async function test() {
+        let res = await getArticalList();
+        console.log(res)
+    }
     return (
         <>
-            <Layout  className='home' >
+            <Layout className='home' >
                 <Sider trigger={null} collapsible collapsed={collapsed} style={{ height: '100vh', overflowY: 'auto' }}>
                     <Menu
                         theme="dark"
@@ -94,28 +99,20 @@ export default function Home() {
                         openKeys={openKey}
                     />
                 </Sider>
-                <Layout className="site-layout" style={{ height: '100vh', overflowY: 'auto' }}>
-                    <Header style={{ paddingInline: 0, background: colorBgContainer, lineHeight: 0, height: '83px' }}>
-                        <div className="l-head">
-                            <div className="h-top">
-                                {
-                                    collapsed ? <MyIcon className='fold-switch' type='icon-s-unfold' onClick={() => setCollapsed(!collapsed)} /> : <MyIcon type='icon-s-fold' className='fold-switch' onClick={() => setCollapsed(!collapsed)} />
-                                }
-                                <span className="h-title">博客管理系统</span>
-
-                            </div>
-                            <Divider style={{ padding: 0, margin: 0 }} />
-                            <div className="h-bottom">
-
-                                <Breadcrumb
-                                    items={firstBreadItem}
-                                    style={{ float: 'left', marginLeft: '10px', fontWeight: 'bolder' }} />
-                            </div>
-                        </div>
+                <Layout style={{ height: '100vh', overflowY: 'auto' }}>
+                    <Header className='header' style={{ paddingInline: 0, background: colorBgContainer, height: '100px' }}>
+                        {
+                            collapsed ? <MyIcon className='fold-switch' type='icon-s-unfold' onClick={() => setCollapsed(!collapsed)} /> : <MyIcon type='icon-s-fold' className='fold-switch' onClick={() => setCollapsed(!collapsed)} />
+                        }
+                        <span className="h-title">博客管理系统</span>
                         <Popover placement="bottom" content={content}>
-                            {/* <Button style={{ float: 'right',margin:'20px 37px 0 0' }}>Bottom</Button> */}
-                            <Avatar size={70} src={touxiangImg} style={{ float: 'right',margin:'6px 29px 0 0' }}  />
+                            <Avatar size={70} src={touxiangImg} style={{ float: 'right', margin: '6px 29px 0 0' }} />
                         </Popover>
+                        <Divider style={{ padding: 0, margin: 0, width: '!important 100%' }} />
+                        <Breadcrumb
+                            items={firstBreadItem}
+                            style={{ float: 'left', marginLeft: '10px', fontWeight: 'bolder' }} />
+                        
                     </Header>
                     <div
                         style={{

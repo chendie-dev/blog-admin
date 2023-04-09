@@ -3,7 +3,7 @@ export default function Charts() {
   
   return (
     <div>
-      
+      112345
     </div>
   )
 }
