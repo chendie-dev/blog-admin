@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, useEffect } from 'react'
 import { Input, Button } from 'antd'
 import MdEditor from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
@@ -10,6 +10,9 @@ export default function Articals() {
   const publishOrSave = () => {
     console.log('title', articalTitle, 'content', text);
   }
+  useEffect(()=>{
+    document.title='文章'
+  },[])
   return (
     <div className='articals'>
       <p className="card-title">发布文章</p>
