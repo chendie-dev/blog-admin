@@ -5,7 +5,6 @@ import MyIcon from '../../components/MyIcon';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import './index.scss'
 import touxiangImg from '../../images/touxiang.png'
-import { getArticalList } from '../../requests/api';
 const { Header, Sider } = Layout;
 const content = (
     <div>
@@ -22,7 +21,6 @@ export default function Home() {
     const location = useLocation()
     const [openKey, setOpenKey] = useState([''])
     const [firstBreadItem, setBreadItem] = useState<Array<BreadcrumbItem>>([])
-    const [navClass,setNavClass]=useState('header')
     const { MenuItems } = useAppSelector((state) => ({
         MenuItems: state.menuItems.items
     }))
@@ -33,27 +31,9 @@ export default function Home() {
             }
         }
     }, [])
-    useEffect(()=>{
-        const scroll=()=>{
-            let scrollTop=window.pageYOffset ||
-            document.documentElement.scrollTop ||
-            document.body.scrollTop;
-            if(scrollTop>100){
-                console.log(1);
-                
-                setNavClass('header navfixed')
-            }else{
-                setNavClass('header')
-            }
-        }
-        window.addEventListener('scroll',scroll)
-        return ()=>{
-            window.removeEventListener('scroll',scroll)
-        }
-    },[])
+    
     //动态生成一级面包屑
     useEffect(() => {
-        test()
         MenuItems.forEach((el) => {
             if (el.key === location.pathname) {
                 if (location.pathname === '/charts') {
@@ -96,10 +76,7 @@ export default function Home() {
             }
         })
     }, [location.pathname])
-    async function test() {
-        let res = await getArticalList();
-        console.log(res)
-    }
+    
     return (
         <>
             <Layout className='home' >
@@ -119,13 +96,13 @@ export default function Home() {
                     />
                 </Sider>
                 <Layout style={{ height: '100vh', overflowY: 'auto' }}>
-                    <Header className='header' style={{ paddingInline: 0, background: colorBgContainer, height: '100px' }}>
+                    <Header className='header' style={{ paddingInline: 0, background: colorBgContainer, height: '100px', width:collapsed?'calc(100% - 72px)':'calc(100% - 192px)'}}>
                         {
                             collapsed ? <MyIcon className='fold-switch' type='icon-s-unfold' onClick={() => setCollapsed(!collapsed)} /> : <MyIcon type='icon-s-fold' className='fold-switch' onClick={() => setCollapsed(!collapsed)} />
                         }
                         <span className="h-title">博客管理系统</span>
                         <Popover placement="bottom" content={content}>
-                            <Avatar size={70} src={touxiangImg} style={{ float: 'right', margin: '6px 29px 0 0' }} />
+                            <Avatar size={70} src={touxiangImg} style={{ float: 'right', margin:'2px 40px 2px 0'}} />
                         </Popover>
                         <Divider style={{ padding: 0, margin: 0, width: '!important 100%' }} />
                         <Breadcrumb

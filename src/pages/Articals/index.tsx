@@ -2,7 +2,6 @@ import { useState, ChangeEvent, useEffect } from 'react'
 import { Input, Button } from 'antd'
 import MdEditor from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
-// import './index.css'
 import './index.scss'
 export default function Articals() {
   const [text, setText] = useState('');

@@ -1,3 +1,4 @@
 import request from './index'
-export const getAdminListReq=(params:{page:number})=>request.get(`/admin/list?page=${params.page}`)
-export const getArticalList=()=>request.post('/article/list')
+export const CategoryReq=(parentId:string)=>request.get(`/manage/category/list?parentId=${parentId}`)
+
+export const addCategory=(params:{categoryName:string})=>request.post('/article/admin/add/category',params)

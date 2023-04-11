@@ -1,10 +1,9 @@
 .home{
     .header{
         position: fixed;
-        width: calc(100% - 192px);
+        width: calc(100%);
         z-index: 1;
         box-shadow: 0 0 5px ;
-        min-width: 800px;
         .h-title{
             position: absolute;
             left: 40%;

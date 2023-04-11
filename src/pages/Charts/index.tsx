@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 export default function Charts() {
   useEffect(()=>{
-    document.title='首页图表'
+    document.title='博客-后台管理系统'
   })
   return (
     <div>
