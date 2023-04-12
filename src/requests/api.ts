@@ -1,4 +1,5 @@
 import request from './index'
-export const CategoryReq=(parentId:string)=>request.get(`/manage/category/list?parentId=${parentId}`)
 
-export const addCategory=(params:{categoryName:string})=>request.post('/article/admin/add/category',params)
+export const addCategoryReq=(params:{categoryName:string}):Promise<addRes>=>request.post('/article/admin/add/category',params)
+export const addTagReq=(params:{tagName:string}):Promise<addRes>=>request.post('/article/admin/add/tag',params)
+export const addArticalReq=(params:articalParams):Promise<addRes>=>request.post('/article/admin/add/articleBody',params)
