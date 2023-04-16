@@ -12,3 +12,19 @@ interface articalParams {
     rank: number,
     tagIds: Array<number>,
 }
+interface tagListParams {
+    orderByFields?: { createTime:boolean },
+    pageNum: number,
+    pageSize: number,
+    queryParam: {
+        isDelete: boolean,
+        tagId?: number,
+        tagName?: string
+    }
+}
+interface tagListRes {
+    code: number,
+    data: { data: [{ createTime: string, tagId: string, tagName: string }] },
+    totalNumber:number
+    msg: string
+}

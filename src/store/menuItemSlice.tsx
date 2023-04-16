@@ -44,12 +44,8 @@ const menuItemSlice = createSlice({
                 getItem('友链管理', '/links'),
                 getItem('关于我', '/about'),
             ]),
-            getItem('相册管理', '7',<MyIcon type="icon-xiangce" />, [
-                getItem('相册列表', '/albums')
-            ]),
-            getItem('说说管理', '8', <MyIcon type="icon-xiaoxi-xiaoxi" />, [
-                getItem('发布说说', '/talks'),
-                getItem('说说列表', '/talk-list')
+            getItem('图片管理', '7',<MyIcon type="icon-xiangce" />, [
+                getItem('图片列表', '/albums')
             ]),
             getItem('日志管理', '9', <MyIcon type="icon-rizhi" />, [
                 getItem('操作日志', '/operation/log')
