@@ -10,10 +10,10 @@ interface articalParams {
     articleTitle: string,
     categoryId: number,
     rank: number,
-    tagIds: Array<number>,
+    tagIds: number[],
 }
 interface tagListParams {
-    orderByFields?: { createTime:boolean },
+    orderByFields?: { createTime: boolean },
     pageNum: number,
     pageSize: number,
     queryParam: {
@@ -24,7 +24,23 @@ interface tagListParams {
 }
 interface tagListRes {
     code: number,
-    data: { data: [{ createTime: string, tagId: string, tagName: string }] },
-    totalNumber:number
+    data: { data: { createTime: string, tagId: string, tagName: string }[], totalNumber: number },
     msg: string
+}
+interface tagListType {
+    tagId: string;
+    tagName: string;
+    createTime: string;
+}
+interface editTagRes {
+    code: number,
+    data: {
+        ids: string[]
+    },
+    msg: string
+}
+interface updataTagNameparams {
+    tagId: string,
+    tagName: string,
+    userId: string
 }

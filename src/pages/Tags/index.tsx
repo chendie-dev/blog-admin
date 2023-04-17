@@ -1,79 +1,64 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Input, Modal, message, Table, Space } from 'antd'
-import { PlusOutlined, DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons'
-import './index.scss'
-import { addTagReq, getTagList } from '../../requests/api'
+import { useEffect, useState } from 'react'
+import { Button, Input, Modal, message, Table } from 'antd'
+import { PlusOutlined, DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { addTagReq, deleteTagListReq, updataTagNameReq, recoverTagReq } from '../../requests/api'
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
-interface DataType {
-  tagId: string;
-  tagName: string;
-  createTime: string;
-}
+import { getTagList } from '../../store/reqDataSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/storeHook';
+import './index.scss'
 
-function formatMsToDate(ms: string) {
-  let date = new Date(Number(ms)),
-    year = date.getFullYear(),
-    month = date.getMonth() + 1,
-    day = date.getDate(),
-    hour = date.getHours(),
-    min = date.getMinutes(),
-    sec = date.getSeconds();
-  return year + '-' + addZero(month) + '-' + addZero(day) + " " + addZero(hour) + ":" + addZero(min) + ":" + addZero(sec)
-
-}
-function addZero(nu: number) {
-  return nu < 10 ? "0" + nu : nu
-}
 export default function Tags() {
   useEffect(() => {
-    getTabList()
     document.title = '标签-管理系统'
   }, [])
-
-  const [isShow, setIsShow] = useState(false);
-  const [tagName, setTagName] = useState('')
-  const [tadList, setTagList] = useState<DataType[]>()
-  const [tagListRes, settagListRes] = useState<tagListRes>()
-  const [currentPage, setCurrentPage] = useState(1)
-  const [isDescend, setIsDescend] = useState(true);
-  const [isSelected, setIsSelected] = useState(false)
-  const [selTagName, setSelTagName] = useState('')
+  const [isShow, setIsShow] = useState(0);//1添加，2编辑
+  const [tagName, setTagName] = useState('')//标签名（添加）
+  const [isAll, setIsAll] = useState(1)//1全部，2回收站
+  const [currentPage, setCurrentPage] = useState(1)//当前页
+  const [isDescend, setIsDescend] = useState(true);//创建时间升降序
+  const [searchTagName, setSearchTagName] = useState('')//搜索框值
+  const [selectedRows, setSelectedRows] = useState<tagListType[]>([])//选取行
+  const [editRowName, setEditRowname] = useState('')//标签名（编辑）
+  const [editRowId, setEditRowId] = useState('')
+  const dispatch = useAppDispatch()
+  const { tagList, totalNumber } = useAppSelector((state) => ({
+    tagList: state.reqData.tagListData.data,
+    totalNumber: state.reqData.tagListData.totalNumber
+  }))
   useEffect(() => {
-    getTabList()
-  }, [isDescend, currentPage])
-  const tagSub = async () => {
-    if (tagName.replace(/\s*/g, '') === '') {
+    dispatchTagList()
+  }, [isDescend, currentPage, isAll])
+  //添加标签
+  const addtag = async () => {
+    if (tagName.replace(/\s*/g, '') == '') {
       message.error("请输入标签名称！");
       return;
     }
     let res = await addTagReq({ tagName: tagName });
     if (res.code !== 200) return
     console.log(res);
-    
+
     message.success("添加成功！")
     setTagName('')
-    setIsShow(false)
-    getTabList()
+    setIsShow(0)
+    dispatchTagList()
   }
-  const getTabList = async () => {
-    let res = await getTagList({
-      orderByFields: { createTime: !isDescend },
-      pageNum: currentPage,
-      pageSize: 5,
-      queryParam: {
-        isDelete: false,
-        tagName: selTagName
+  //获取标签
+  const dispatchTagList = () => {
+    dispatch(getTagList(
+      {
+        orderByFields: { createTime: !isDescend },
+        pageNum: currentPage,
+        pageSize: 5,
+        queryParam: {
+          isDelete: isAll == 1 ? false : true,
+          tagName: searchTagName
+        }
       }
-    })
-    settagListRes(res)
-    let newTabList = res.data.data;
-    newTabList.forEach(el => {
-      el.createTime = formatMsToDate(el.createTime)
-    })
-    setTagList(newTabList)
+    ))
   }
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<tagListType> = [
     {
       title: '标签ID',
       dataIndex: 'tagId',
@@ -102,51 +87,143 @@ export default function Tags() {
       title: '操作',
       key: 'action',
       render: (_, record) => (
-        <Space size="middle">
-          <a style={{color:'#1677ff'}}>编辑</a>
-          <a style={{color:'red'}}>删除</a>
-        </Space>
+        <>
+          <div style={{ display: isAll == 1 ? 'block' : 'none' }}>
+            <a style={{ color: '#1677ff' }} onClick={() => { setIsShow(2); setEditRowname(record.tagName); setEditRowId(record.tagId) }}>编辑</a>
+            <a style={{ color: 'red', marginLeft: 10 }} onClick={() => {deleteTagRows(record) }}>删除</a>
+          </div>
+          <div style={{ display: isAll == 2 ? 'block' : 'none' }}>
+            <a style={{ color: 'red' }} onClick={()=>recoverTag(record)}>恢复</a>
+          </div>
+        </>
       ),
       width: '20%',
     },
   ];
-  const rowSelection: TableRowSelection<DataType> = {
-    // onChange: (selectedRowKeys, selectedRows) => {
-    //   console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    // },
+  //选取标签行
+  const rowSelection: TableRowSelection<tagListType> = {
     onSelect: (record, selected, selectedRows) => {
-      setIsSelected(selectedRows.length > 0)
-      console.log(record, selected, selectedRows);
+      setSelectedRows(selectedRows);
     },
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      setIsSelected(selectedRows.length > 0)
-
-      console.log(selected, selectedRows, changeRows);
+    onSelectAll: (_, selectedRows) => {
+      setSelectedRows(selectedRows);
     },
   };
+  //修改标签名
+  const editTagName = async () => {
+    if (editRowName.replace(/\s*/g, '') == '') {
+      message.error("请输入标签名称！");
+      return;
+    }
+    let res = await updataTagNameReq({
+      tagId: editRowId,
+      tagName: editRowName,
+      userId: '1'//todo
+    })
+    if (res.code !== 200) return
+    message.success('修改成功！')
+    setIsShow(0)
+    dispatchTagList()
+  }
+  //回收站恢复
+  const recoverTag = async (row?:tagListType) => {
+    let arr: number[] = []
+    if(row){
+      arr.push(Number(row.tagId))
+    }else{
+      selectedRows.forEach(el => {
+        arr.push(Number(el.tagId))
+      })
+    }
+    let res = await recoverTagReq(arr)
+    console.log('recover',res);
+    if (res.code !== 200) return
+    dispatchTagList()
+  }
+  //删除标签
+  const deleteTagRows = async (row?:tagListType) => {
+    let arr: number[] = []
+    if(row){
+      arr.push(Number(row.tagId))
+    }else{
+      selectedRows?.forEach(el => {
+        arr.push(Number(el.tagId))
+      })
+    }
+    let res = await deleteTagListReq(arr);
+    console.log('delete',res);
+    if (res.code !== 200) return
+    message.success('删除成功！')
+    dispatchTagList()
+  }
   return (
     <div className='tags'>
       <p className="card-title">标签管理</p>
+      <div className='tag-status'><button>状态</button>
+        <button
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll == 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
+          onClick={() => setIsAll(1)}
+          disabled={selectedRows.length > 0}>全部</button>
+        <button
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll == 1 ? 'rgba(0, 0, 0, 0.45)' : '#1677ff' }}
+          onClick={() => setIsAll(2)}
+          disabled={selectedRows.length > 0}>回收站</button>
+      </div>
       <div className="opt-form">
-        <Button type='primary' onClick={() => setIsShow(true)}><PlusOutlined />添加</Button>
-        <Button type='primary' danger style={{ marginLeft: '10px' }} disabled={!isSelected}><DeleteOutlined />批量删除</Button>
-        <Button type='primary' style={{ float: 'right', marginLeft: '10px' }} onClick={getTabList}><SearchOutlined />搜索</Button>
-        <Input value={selTagName} onChange={(el) => setSelTagName(el.target.value)}
+        <Button type='primary'
+          onClick={() => setIsShow(1)}
+          disabled={isAll !== 1}><PlusOutlined />添加</Button>
+        <Button type='primary' danger
+          style={{ marginLeft: '10px', display: isAll == 1 ? 'inline-block' : 'none' }}
+          disabled={selectedRows.length == 0} onClick={()=>deleteTagRows}><DeleteOutlined />批量删除</Button>
+        <Button type='primary' danger
+          style={{ marginLeft: '10px', display: isAll == 2 ? 'inline-block' : 'none' }}
+          disabled={selectedRows.length == 0}><PlusCircleOutlined />批量恢复</Button>
+        <Button type='primary'
+          style={{ float: 'right', marginLeft: '10px' }}
+          onClick={dispatchTagList}><SearchOutlined />搜索</Button>
+        <Input value={searchTagName} onChange={(el) => setSearchTagName(el.target.value)}
+          onKeyUp={(e) => e.keyCode == 13 ? dispatchTagList() : ''}
           type="text" style={{ float: 'right' }}
           placeholder='请输入标签名称'
           prefix={<SearchOutlined style={{ color: '#aaa' }} />} />
       </div>
-      <Table columns={columns} dataSource={tadList} rowKey='tagId'
+      <Table columns={columns} dataSource={tagList} rowKey='tagId'
         pagination={{
           defaultCurrent: currentPage,
           defaultPageSize: 5,
-          total: tagListRes?.totalNumber,
-          onChange: getTabList,
+          total: totalNumber * 5,
+          onChange: (page) => setCurrentPage(page),
         }}
         rowSelection={{ ...rowSelection }}
       />
-      <Modal title="添加标签" okText='确定' cancelText='取消' open={isShow} onOk={tagSub} onCancel={() => setIsShow(false)}>
-        <Input placeholder="请输入标签名称" style={{ margin: '20px 0' }} value={tagName} onKeyUp={(e) => e.keyCode === 13 ? tagSub() : ''} onChange={(e) => setTagName(e.target.value)} />
+      <Modal
+        title="添加标签"
+        okText='确定'
+        cancelText='取消'
+        open={isShow == 1}
+        onOk={addtag}
+        onCancel={() => setIsShow(0)}>
+        <Input
+          placeholder="请输入标签名称"
+          style={{ margin: '20px 0' }}
+          value={tagName}
+          onKeyUp={(e) => e.keyCode == 13 ? addtag() : ''}
+          onChange={(e) => setTagName(e.target.value)} />
+      </Modal>
+      <Modal
+        title="编辑标签"
+        okText='确定'
+        cancelText='取消'
+        open={isShow == 2}
+        onOk={editTagName}
+        onCancel={() => setIsShow(0)}>
+        <Input
+          placeholder="请输入标签名称"
+          style={{ margin: '20px 0' }}
+          value={editRowName}
+          onKeyUp={(e) => e.keyCode == 13 ? editTagName() : ''}
+          onChange={(e) => setEditRowname(e.target.value)} />
       </Modal>
     </div>
   )
