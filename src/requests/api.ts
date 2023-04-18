@@ -9,8 +9,8 @@ export const getArticleListReq = () => request.post("/article/blog/list")
 //获取标签分页
 export const getTagListReq = (params: tagListParams): Promise<tagListRes> => request.post('/article/admin/tag/queryByPage', params)
 //批量删除标签
-export const deleteTagListReq = (params: number[]): Promise<editTagRes> => request.delete('/article/admin/tag/delete', {data:params})
+export const deleteTagListReq = (params: React.Key[]): Promise<editTagRes> => request.delete('/article/admin/tag/delete', {data:params})
 //更新标签名
 export const updataTagNameReq=(params:updataTagNameparams):Promise<addRes>=>request.post('/article/admin/tag/update',params)
 //恢复标签
-export const recoverTagReq=(params:number[]): Promise<editTagRes>=>request.post('/article/admin/tag/recover',params)
+export const recoverTagReq=(params:React.Key[]): Promise<editTagRes>=>request.post('/article/admin/tag/recover',params)

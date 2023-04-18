@@ -22,6 +22,7 @@ export default function Tags() {
   const [editRowName, setEditRowname] = useState('')//标签名（编辑）
   const [editRowId, setEditRowId] = useState('')
   const dispatch = useAppDispatch()
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id
   const { tagList, totalNumber } = useAppSelector((state) => ({
     tagList: state.reqData.tagListData.data,
     totalNumber: state.reqData.tagListData.totalNumber
@@ -102,10 +103,17 @@ export default function Tags() {
   ];
   //选取标签行
   const rowSelection: TableRowSelection<tagListType> = {
+    selectedRowKeys,
     onSelect: (record, selected, selectedRows) => {
+      let arr:React.Key[]=[]
+      selectedRows.forEach(el=>{arr.push(el.tagId)})
+      setSelectedRowKeys(arr)
       setSelectedRows(selectedRows);
     },
     onSelectAll: (_, selectedRows) => {
+      let arr:React.Key[]=[]
+      selectedRows.forEach(el=>{arr.push(el.tagId)})
+      setSelectedRowKeys(arr)
       setSelectedRows(selectedRows);
     },
   };
@@ -127,34 +135,24 @@ export default function Tags() {
   }
   //回收站恢复
   const recoverTag = async (row?:tagListType) => {
-    let arr: number[] = []
-    if(row){
-      arr.push(Number(row.tagId))
-    }else{
-      selectedRows.forEach(el => {
-        arr.push(Number(el.tagId))
-      })
-    }
-    let res = await recoverTagReq(arr)
+    let res;
+    row?res=await recoverTagReq([row.tagId]):res = await recoverTagReq(selectedRowKeys)
     console.log('recover',res);
     if (res.code !== 200) return
     dispatchTagList()
+    setSelectedRows([])
+    setSelectedRowKeys([]);
   }
   //删除标签
   const deleteTagRows = async (row?:tagListType) => {
-    let arr: number[] = []
-    if(row){
-      arr.push(Number(row.tagId))
-    }else{
-      selectedRows?.forEach(el => {
-        arr.push(Number(el.tagId))
-      })
-    }
-    let res = await deleteTagListReq(arr);
+    console.log(row);
+    let res;
+    row?res=await deleteTagListReq([row.tagId]):res = await deleteTagListReq(selectedRowKeys)
     console.log('delete',res);
     if (res.code !== 200) return
-    message.success('删除成功！')
     dispatchTagList()
+    setSelectedRows([])
+    setSelectedRowKeys([]);
   }
   return (
     <div className='tags'>
@@ -175,10 +173,12 @@ export default function Tags() {
           disabled={isAll !== 1}><PlusOutlined />添加</Button>
         <Button type='primary' danger
           style={{ marginLeft: '10px', display: isAll == 1 ? 'inline-block' : 'none' }}
-          disabled={selectedRows.length == 0} onClick={()=>deleteTagRows}><DeleteOutlined />批量删除</Button>
+          disabled={selectedRows.length == 0} onClick={()=>deleteTagRows()}><DeleteOutlined />批量删除</Button>
         <Button type='primary' danger
           style={{ marginLeft: '10px', display: isAll == 2 ? 'inline-block' : 'none' }}
-          disabled={selectedRows.length == 0}><PlusCircleOutlined />批量恢复</Button>
+          disabled={selectedRows.length == 0}
+          onClick={()=>recoverTag()}
+          ><PlusCircleOutlined />批量恢复</Button>
         <Button type='primary'
           style={{ float: 'right', marginLeft: '10px' }}
           onClick={dispatchTagList}><SearchOutlined />搜索</Button>
