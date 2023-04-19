@@ -42,5 +42,4 @@ interface editTagRes {
 interface updataTagNameparams {
     tagId: string,
     tagName: string,
-    userId: string
 }
