@@ -1,4 +1,4 @@
-interface addRes {
+interface idRes {
     code: number,
     data: { id: string },
     msg: string
@@ -22,17 +22,17 @@ interface tagListParams {
         tagName?: string
     }
 }
-interface tagListRes {
-    code: number,
-    data: { data: { createTime: string, tagId: string, tagName: string }[], totalNumber: number },
-    msg: string
-}
 interface tagListType {
     tagId: string;
     tagName: string;
     createTime: string;
 }
-interface editTagRes {
+interface tagListRes {
+    code: number,
+    data: { data: tagListType[], totalNumber: number },
+    msg: string
+}
+interface idsRes {
     code: number,
     data: {
         ids: string[]
@@ -42,4 +42,31 @@ interface editTagRes {
 interface updataTagNameparams {
     tagId: string,
     tagName: string,
+}
+interface categoryItemType {
+    categoryId: number,
+    categoryName: string,
+    createTime: string
+}
+interface categoryListReqParams {
+    orderByFields?: { createTime: boolean },
+    pageNum: number,
+    pageSize: number,
+    queryParam: {
+        categoryId?: number,
+        categoryName?: string,
+        isDelete: boolean
+    }
+}
+interface categoryListRes {
+    code: number,
+    data: {
+        data: categoryItemType[],
+        totalNumber: number
+    },
+    msg: string
+}
+interface updateCategoryParams {
+    categoryId: number,
+    categoryName: string
 }

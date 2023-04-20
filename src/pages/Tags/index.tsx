@@ -123,7 +123,7 @@ export default function Tags() {
     if (tag.value.replace(/\s*/g, '') === '') {
       message.error("请输入标签名称！");
       return;
-    }else if(tag.value.replace(/\s*/g, '').length>5)return
+    } else if (tag.value.replace(/\s*/g, '').length > 5) return
     let res = await updataTagNameReq({
       tagId: editRowId,
       tagName: tag.value,
@@ -208,6 +208,7 @@ export default function Tags() {
           prefix={<SearchOutlined style={{ color: '#aaa' }} />} />
       </div>
       <Table columns={columns} dataSource={tagList} rowKey='tagId'
+        loading={tagList.length===0}
         pagination={{
           defaultCurrent: currentPage,
           defaultPageSize: 5,
@@ -216,6 +217,7 @@ export default function Tags() {
         }}
         rowSelection={{ ...rowSelection }}
       />
+      {/* 添加模态框 */}
       <Modal
         title="添加标签"
         okText='确定'
@@ -237,13 +239,14 @@ export default function Tags() {
           </Form.Item>
         </Form>
       </Modal>
+      {/* 编辑模态框 */}
       <Modal
         title="编辑标签"
         okText='确定'
         cancelText='取消'
         open={isShow === 2}
         onOk={editTagName}
-        onCancel={() => {setIsShow(0);setTag({value:''})}}>
+        onCancel={() => { setIsShow(0); setTag({ value: '' }) }}>
         <Form>
           <Form.Item
             validateStatus={tag.validateStatus}

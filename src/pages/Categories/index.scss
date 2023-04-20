@@ -1,4 +1,12 @@
 .categories{
+    .category-status{
+        margin-top: 10px;
+        button{
+            margin-right: 20px;
+            background-color: white;
+            font-weight:lighter;
+        }
+    }
     .card-title {
         position: relative;
         font-size: 16px;
