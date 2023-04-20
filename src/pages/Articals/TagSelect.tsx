@@ -66,6 +66,7 @@ const TagSelect: React.FC<dataType> = ({ tagData }) => {
   const deleteSelectedItem = (itemId: string) => {
     const newItems = selectedItems.filter((item) => item.tagId !== itemId);
     setSelectedItems(newItems);
+    setIsShowErr(false)
   };
   //无限刷新标签
   const loadItemMore = async () => {
@@ -93,6 +94,10 @@ const TagSelect: React.FC<dataType> = ({ tagData }) => {
   useEffect(() => {
     tagData(selectedItems)
   }, [selectedItems])
+  const onOpenChange=(open:boolean)=>{
+    if(!open)setSearch({value:''})
+    setOpen(open)
+  }
   const content = (
     <>
       <div className="slt-mdl" >
@@ -150,8 +155,22 @@ const TagSelect: React.FC<dataType> = ({ tagData }) => {
   )
   return (
     <>
+     
+      <Popover
+        placement="topLeft"
+        content={content}
+        trigger="click"
+        arrow={false}
+        open={open}
+        onOpenChange={onOpenChange}
+        style={{ display: 'inline-block' }}
+
+      >
+
+        <Button type="dashed" className='sel-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block',marginRight:10 }}><PlusOutlined />添加文章标签</Button>
+      </Popover>
       <TweenOneGroup
-        style={{ display: 'inline-block', float: 'left' }}
+        style={{ display: 'inline-block' }}
         enter={{
           scale: 0.8,
           opacity: 0,
@@ -184,18 +203,6 @@ const TagSelect: React.FC<dataType> = ({ tagData }) => {
           })
         }
       </TweenOneGroup>
-      <Popover
-        placement="topLeft"
-        content={content}
-        trigger="click"
-        arrow={false}
-        open={open}
-        onOpenChange={(open) => setOpen(open)}
-        style={{ float: 'left' }}
-
-      >
-        <Button type="dashed" className='sel-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block' }}><PlusOutlined />添加文章标签</Button>
-      </Popover>
     </>
   )
 }

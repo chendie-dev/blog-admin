@@ -43,7 +43,7 @@ export default function Categories() {
     validateStatus: ValidateStatus;
     errorMsg: string | null;
   } => {
-    if (categoryVal.replace(/\s*/g, '').length <= 5) {
+    if (categoryVal.replace(/\s*/g, '').length <= 10) {
       return {
 
         validateStatus: 'success',
@@ -52,7 +52,7 @@ export default function Categories() {
     }
     return {
       validateStatus: 'error',
-      errorMsg: '分类名长度最长为5',
+      errorMsg: '分类名长度最长为10',
     };
   };
   //添加分类
@@ -60,7 +60,7 @@ export default function Categories() {
     if (category.value.replace(/\s*/g, "") === '') {
       message.error('请输入分类名称')
       return
-    } else if (category.value.replace(/\s*/g, "").length > 5) return
+    } else if (category.value.replace(/\s*/g, "").length > 10) return
     let res = await addCategoryReq({ categoryName: category.value.replace(/\s*/g, "") })
     console.log(res);
 
@@ -173,7 +173,7 @@ export default function Categories() {
     if (category.value.replace(/\s*/g, '') === '') {
       message.error("请输入分类名称！");
       return;
-    } else if (category.value.replace(/\s*/g, '').length > 5) return
+    } else if (category.value.replace(/\s*/g, '').length > 10) return
     let res = await updateCategoryReq({
       categoryId: editRowId,
       categoryName: category.value.replace(/\s*/g, ''),

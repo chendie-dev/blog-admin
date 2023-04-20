@@ -6,10 +6,10 @@ import { TweenOneGroup } from 'rc-tween-one';
 import { InfiniteScroll } from 'antd-mobile';
 import './index.scss'
 type ValidateStatus = Parameters<typeof Form.Item>[0]['validateStatus'];
-interface data1{
-  categoryData:(items: categoryItemType[]) => void
+interface data1 {
+  categoryData: (items: categoryItemType[]) => void
 }
-const CategorySelect: React.FC<data1> = ({categoryData}) => {
+const CategorySelect: React.FC<data1> = ({ categoryData }) => {
   const [open, setOpen] = useState(false);
   const [isShowSearch, setIsShowSearch] = useState(false)//是否显示搜索内容
   const [selectedItems, setSelectedItems] = useState<categoryItemType[]>([]);//已选择分类
@@ -28,7 +28,7 @@ const CategorySelect: React.FC<data1> = ({categoryData}) => {
     validateStatus: ValidateStatus;
     errorMsg: string | null;
   } => {
-    if (ItemVal.replace(/\s*/g, '').length <= 5) {
+    if (ItemVal.replace(/\s*/g, '').length <= 10) {
       return {
 
         validateStatus: 'success',
@@ -66,6 +66,7 @@ const CategorySelect: React.FC<data1> = ({categoryData}) => {
   const deleteSelectedItem = (itemId: number) => {
     const newItems = selectedItems.filter((item) => item.categoryId !== itemId);
     setSelectedItems(newItems);
+    setIsShowErr(false)
   };
   //无限刷新分类
   const loadItemMore = async () => {
@@ -90,15 +91,17 @@ const CategorySelect: React.FC<data1> = ({categoryData}) => {
     setSelectedItems(val => [...val, res1.data.data[0]])
     setSearch({ value: '' })
   }
-  useEffect(()=>{
-    console.log(1);
-    
+  useEffect(() => {
     categoryData(selectedItems)
-  },[selectedItems])
+  }, [selectedItems])
+  const onOpenChange=(open:boolean)=>{
+    if(!open)setSearch({value:''})
+    setOpen(open)
+  }
   const content = (
     <>
       <div className="slt-mdl" >
-        <h5>分类<CloseOutlined className='cancel' onClick={()=>setOpen(false)} /></h5>
+        <h5>分类<CloseOutlined className='cancel' onClick={() => setOpen(false)} /></h5>
         <Form>
           <Form.Item
             validateStatus={search.validateStatus}
@@ -152,8 +155,21 @@ const CategorySelect: React.FC<data1> = ({categoryData}) => {
   )
   return (
     <>
+
+      <Popover
+        placement="topLeft"
+        content={content}
+        trigger="click"
+        arrow={false}
+        open={open}
+        onOpenChange={onOpenChange}
+        style={{ display: 'inline-block' }}
+
+      >
+        <Button type="dashed" className='sel-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block',marginRight:10 }}><PlusOutlined />添加文章分类</Button>
+      </Popover>
       <TweenOneGroup
-        style={{ display: 'inline-block', float: 'left' }}
+        style={{ display: 'inline-block' }}
         enter={{
           scale: 0.8,
           opacity: 0,
@@ -186,18 +202,6 @@ const CategorySelect: React.FC<data1> = ({categoryData}) => {
           })
         }
       </TweenOneGroup>
-      <Popover
-        placement="topLeft"
-        content={content}
-        trigger="click"
-        arrow={false}
-        open={open}
-        onOpenChange={(open)=>setOpen(open)}
-        style={{ float: 'left' }}
-        
-      >
-        <Button type="dashed" className='sel-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block' }}><PlusOutlined />添加文章分类</Button>
-      </Popover>
     </>
   )
 }
