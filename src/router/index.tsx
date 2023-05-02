@@ -5,6 +5,7 @@ const Charts=lazy(()=>import('../pages/Charts'))
 const Articles=lazy(()=>import('../pages/Articals'))
 const Categories=lazy(()=>import('../pages/Categories'))
 const Tags=lazy(()=>import('../pages/Tags'))
+const Images=lazy(()=>import('../pages/Images'))
 const withLoading=(com:JSX.Element)=>(
     <React.Suspense>
         {com}
@@ -34,6 +35,10 @@ const routers=[
             {
                 path:'/tags',
                 element:withLoading(<Tags/>)
+            },
+            {
+                path:'/images',
+                element:withLoading(<Images/>)
             }
         ]
     },

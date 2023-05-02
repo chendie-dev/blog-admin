@@ -30,6 +30,7 @@ export default function Tags() {
     tagList: state.reqData.tagListData.data,
     totalNumber: state.reqData.tagListData.totalNumber
   }))
+  const [loading,setLoading]=useState(true)
   useEffect(() => {
     dispatchTagList()
   }, [isDescend, currentPage, isAll])
@@ -48,6 +49,7 @@ export default function Tags() {
   }
   //获取标签
   const dispatchTagList = () => {
+    setLoading(true)
     dispatch(getTagList(
       {
         orderByFields: { createTime: !isDescend },
@@ -59,6 +61,7 @@ export default function Tags() {
         }
       }
     ))
+    setLoading(false)
   }
   const columns: ColumnsType<tagListType> = [
     {
@@ -179,11 +182,11 @@ export default function Tags() {
       <div className='tag-status'><button>状态</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
-          onClick={() => setIsAll(1)}
+          onClick={() => {setIsAll(1);setCurrentPage(1)}}
           disabled={selectedRows.length > 0}>全部</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : '#1677ff' }}
-          onClick={() => setIsAll(2)}
+          onClick={() => {setIsAll(2);setCurrentPage(1)}}
           disabled={selectedRows.length > 0}>回收站</button>
       </div>
       <div className="opt-form">
@@ -208,9 +211,9 @@ export default function Tags() {
           prefix={<SearchOutlined style={{ color: '#aaa' }} />} />
       </div>
       <Table columns={columns} dataSource={tagList} rowKey='tagId'
-        loading={tagList.length===0}
+        loading={loading}
         pagination={{
-          defaultCurrent: currentPage,
+          current: currentPage,
           defaultPageSize: 5,
           total: totalNumber * 5,
           onChange: (page) => setCurrentPage(page),

@@ -1,3 +1,4 @@
+
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popover, Tag } from 'antd'
 import React, { useEffect, useState } from 'react'
@@ -6,9 +7,11 @@ import { TweenOneGroup } from 'rc-tween-one';
 import { InfiniteScroll } from 'antd-mobile';
 import './index.scss'
 type ValidateStatus = Parameters<typeof Form.Item>[0]['validateStatus'];
+type a=tagListType|categoryItemType
 interface dataType {
   tagData: (items: tagListType[]) => void
 }
+
 const TagSelect: React.FC<dataType> = ({ tagData }) => {
   const [open, setOpen] = useState(false);
   const [isShowSearch, setIsShowSearch] = useState(false)//是否显示搜索内容

@@ -32,6 +32,54 @@
         // border: 1px solid #d9d9d9;
     }
 
+    .imgList {
+        position: relative;
+        display: inline-block;
+        width: 48%;
+        height: 104px;
+        background-color: #f5f6f7;
+        padding: 5px 10px;
+
+        .exchange {
+            position: absolute;
+            right: 5%;
+            font-size: 12px;
+            cursor: pointer;
+            color: #303131;
+        }
+
+        .exchange:hover {
+            color: #0081ff;
+        }
+
+        ul {
+            margin-top: 5px;
+        }
+
+        ul>li {
+            float: left;
+            margin-right: 5%;
+            width: 21%;
+        }
+
+        ul li:last-child {
+            margin-right: 0;
+        }
+
+        ul li img {
+            border-radius: 5px;
+        }
+    }
+
+    .ant-upload-wrapper {
+        float: left;
+        min-width: 47px;
+        width: 12%;
+        margin-right: 1%;
+        .ant-upload{
+            width: 100% !important;
+        }
+    }
 }
 
 .slt-mdl {
@@ -84,9 +132,9 @@
 
     .search-box {
         position: absolute;
-        left: 18px;
+        left: 35px;
         top: 95px;
-        width: 565px;
+        width: 548px;
         height: 150px;
         background-color: white;
         box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
@@ -124,10 +172,12 @@
         border-bottom: 5px solid white;
     }
 }
-.sel-btn{
+
+.sel-btn {
     height: 22px;
     padding-top: 0;
-    span{
+
+    span {
         font-size: 13px;
         margin-bottom: 2px;
     }

@@ -39,6 +39,7 @@ export default function Categories() {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id
   const [totalPage, setTotalPage] = useState(1)//总页数
   const [searchVal, setSearchVal] = useState('')
+  const [loading,setLoading]=useState(true)
   const validateCategoryVal = (categoryVal: string,): {
     validateStatus: ValidateStatus;
     errorMsg: string | null;
@@ -149,6 +150,7 @@ export default function Categories() {
   };
   //获取分类列表
   const getCategoryList = async () => {
+    setLoading(true)
     let res = await getCategoryListReq({
       orderByFields: { createTime: isDescend },
       pageNum: currentPage,
@@ -158,6 +160,7 @@ export default function Categories() {
         isDelete: isAll === 2
       }
     })
+    setLoading(false)
     if (res.code !== 200) return
     res.data.data.forEach(el => {
       el.createTime = formatMsToDate(el.createTime)
@@ -189,11 +192,11 @@ export default function Categories() {
       <div className='category-status'><button>状态</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
-          onClick={() => setIsAll(1)}
+          onClick={() =>{ setIsAll(1);setCurrentPage(1)}}
           disabled={selectedRows.length > 0}>全部</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : '#1677ff' }}
-          onClick={() => setIsAll(2)}
+          onClick={() => {setIsAll(2);setCurrentPage(1)}}
           disabled={selectedRows.length > 0}>回收站</button>
       </div>
       <div className="opt-form">
@@ -208,9 +211,9 @@ export default function Categories() {
         <Input type="text" style={{ float: 'right' }} placeholder='请输入分类名称' prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getCategoryList() : ''} />
       </div>
       <Table columns={columns} dataSource={categoryList} rowKey='categoryId'
-        loading={categoryList.length ===0}
+        loading={loading}
         pagination={{
-          defaultCurrent: currentPage,
+          current: currentPage,
           defaultPageSize: 5,
           total: totalPage * 5,//todo
           onChange: (page) => setCurrentPage(page),

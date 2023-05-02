@@ -1,3 +1,11 @@
+/*
+ * @Author: chendie chendie
+ * @Date: 2023-04-09 09:25:14
+ * @LastEditors: chendie chendie
+ * @LastEditTime: 2023-04-25 15:15:28
+ * @FilePath: /blog-admin/src/store/menuItemSlice.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import { createSlice } from "@reduxjs/toolkit";
 import MyIcon from "../components/MyIcon";
 function getItem(
@@ -44,9 +52,7 @@ const menuItemSlice = createSlice({
                 getItem('友链管理', '/links'),
                 getItem('关于我', '/about'),
             ]),
-            getItem('图片管理', '7',<MyIcon type="icon-xiangce" />, [
-                getItem('图片列表', '/albums')
-            ]),
+            getItem('图片管理', '/images',<MyIcon type="icon-xiangce" />),
             getItem('日志管理', '9', <MyIcon type="icon-rizhi" />, [
                 getItem('操作日志', '/operation/log')
             ]),
