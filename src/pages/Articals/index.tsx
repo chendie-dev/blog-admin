@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Input, Button, Form, Upload, Modal, Radio, Checkbox, Popover, message } from 'antd'
 import { PlusOutlined, RedoOutlined } from '@ant-design/icons';
+import KeepAlive from 'react-activation';
 import MdEditor from 'md-editor-rt';
 import ImgCrop from 'antd-img-crop';
 import 'md-editor-rt/lib/style.css';
-import './index.scss'
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { UploadProps, RcFile } from 'antd/es/upload';
+import './index.scss'
 import TagSelect from './TagSelect';
 import CategorySelect from './CategorySelect';
 import { getImageListReq, uploadImageReq } from '../../requests/api';
@@ -35,24 +36,23 @@ export default function Articals() {
   const [currentPage, setCurrentPage] = useState(0)//当前页
   const [totalPage, setTotalPage] = useState(1)//总页
   const [ImageList, setImageList] = useState<imageItemType[]>([])//图片列表
-
   //保存草稿｜发布
   const publishOrSave = () => {
     console.log('title', articleTitle, 'content', articleContent);
-    if(articleTitle.replace(/\s*/g, '').length===0){
+    if (articleTitle.replace(/\s*/g, '').length === 0) {
       setArticleTitle('【无标题】')
-    }else if(articleTitle.replace(/\s*/g, '').length<5){
+    } else if (articleTitle.replace(/\s*/g, '').length < 5) {
       message.error("标题长度不能小于5个字")
       return
-    }else if(articleContent.length===0){
+    } else if (articleContent.length === 0) {
       message.error("请输入文章内容")
       return
     }
-    if(tagItems.length===0){
+    if (tagItems.length === 0) {
       message.error("请设置文章标签")
       return
     }
-    
+
   }
   //图片预览设置
   const handlePreview = async (file: UploadFile) => {
@@ -67,7 +67,7 @@ export default function Articals() {
   const handleChange: UploadProps['onChange'] = ({ file }) => {
     if (file.status === 'removed') {
       setFileList([]);
-    }else
+    } else
       setFileList([file]);
     console.log(7777, file);
   }
@@ -100,21 +100,21 @@ export default function Articals() {
     setFileList([file])
   }
   //上传文章内容图片
-  const onUploadImg = async (files:string[],callback:(urls:string[])=>void) => {
-    const res:imageUrlRes[] = await Promise.all(
+  const onUploadImg = async (files: string[], callback: (urls: string[]) => void) => {
+    const res: imageUrlRes[] = await Promise.all(
       files.map((file) => {
-          const form = new FormData();
-          form.append('image', file);
-          return uploadImageReq(form)
-        })
+        const form = new FormData();
+        form.append('image', file);
+        return uploadImageReq(form)
+      })
     );
     callback(res.map((item) => item.data));
   };
   return (
     <div className='articals'>
-      <p className="card-title">发布文章</p>
-      <div className="a-form" >
-        <Input placeholder="输入文章标题（5-50个字）" value={articleTitle}  onChange={(e) => setArticleTitle(e.target.value)}/>
+      <p className="title">发布文章</p>
+      <div className="artical-form" >
+        <Input placeholder="输入文章标题（5-50个字）" allowClear showCount maxLength={50} value={articleTitle} onChange={(e) => setArticleTitle(e.target.value)} />
         <Button type="primary" danger style={{ float: 'right' }} onClick={publishOrSave}>发布文章</Button>
         <Button danger style={{ float: 'right', marginRight: '10px' }} onClick={publishOrSave}>保存草稿</Button>
       </div>
@@ -124,16 +124,16 @@ export default function Articals() {
         onUploadImg={onUploadImg}
         style={{ height: '500px', marginBottom: '20px' }}
         placeholder='开始编辑.....'
-        
+
         showCodeRowNumber={true}
         toolbarsExclude={['github', 'save']}
         // 识别vs code代码
         autoDetectCode={true}
       />
-      <p className="card-title">发布设置</p>
-      <Form>
-        <Form.Item label="文章标签" className='fm-itm' >
-          <TagSelect tagData={(items: tagListType[]) => setTagItems(items)} />
+      <p className="title">发布设置</p>
+      <Form className='setting-form'>
+        <Form.Item label="文章标签"  >
+            <TagSelect tagData={(items: tagListType[]) => setTagItems(items)} />
         </Form.Item>
         <Form.Item label="添加封面" style={{ height: 110 }}>
           <ImgCrop
@@ -158,8 +158,8 @@ export default function Articals() {
           </ImgCrop>
           {
             fileList.length >= 1 ? null :
-              <div className="imgList">
-                <div className='clearfix' style={{width:100,height:20}}><span className='exchange clearfix' onClick={handlePage}><RedoOutlined/>换一批</span></div>
+              <div className="setting-form__img-list">
+                <div  style={{ width: 100, height: 20 }}><span className='setting-form__next' onClick={handlePage}><RedoOutlined />换一批</span></div>
                 <ul>
                   {ImageList.map(el => {
                     return (
@@ -182,7 +182,7 @@ export default function Articals() {
             <img alt="example" style={{ width: '100%' }} src={previewImage} />
           </Modal>
         </Form.Item>
-        <Form.Item label="文章分类" className='fm-itm'>
+        <Form.Item label="文章分类" >
           <CategorySelect categoryData={(items: categoryItemType[]) => setCategoryItems(items)} />
         </Form.Item>
         <Form.Item label="可见范围">

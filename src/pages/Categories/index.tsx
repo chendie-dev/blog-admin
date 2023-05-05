@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { Button, Form, Input, Modal, Table, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { TableRowSelection } from 'antd/es/table/interface';
 import './index.scss'
 import { addCategoryReq, getCategoryListReq, deleteCategoryReq, updateCategoryReq, recoverCategoryReq } from '../../requests/api'
-import { TableRowSelection } from 'antd/es/table/interface';
 type ValidateStatus = Parameters<typeof Form.Item>[0]['validateStatus'];
 function formatMsToDate(ms: string) {
   let date = new Date(Number(ms)),
@@ -56,6 +56,29 @@ export default function Categories() {
       errorMsg: '分类名长度最长为10',
     };
   };
+  //获取分类列表
+  const getCategoryList = async () => {
+    setLoading(true)
+    let res = await getCategoryListReq({
+      orderByFields: { createTime: isDescend },
+      pageNum: currentPage,
+      pageSize: 5,
+      queryParam: {
+        categoryName: searchVal,
+        isDelete: isAll === 2
+      }
+    })
+    setLoading(false)
+    if (res.code !== 200) return
+    res.data.data.forEach(el => {
+      el.createTime = formatMsToDate(el.createTime)
+    })
+    setCategoryList(res.data.data)
+    setTotalPage(res.data.totalNumber)
+  }
+  useEffect(() => {
+    getCategoryList()
+  }, [currentPage, isDescend, isAll])
   //添加分类
   const addCategory = async () => {
     if (category.value.replace(/\s*/g, "") === '') {
@@ -148,29 +171,7 @@ export default function Categories() {
       setSelectedRows(selectedRows);
     },
   };
-  //获取分类列表
-  const getCategoryList = async () => {
-    setLoading(true)
-    let res = await getCategoryListReq({
-      orderByFields: { createTime: isDescend },
-      pageNum: currentPage,
-      pageSize: 5,
-      queryParam: {
-        categoryName: searchVal,
-        isDelete: isAll === 2
-      }
-    })
-    setLoading(false)
-    if (res.code !== 200) return
-    res.data.data.forEach(el => {
-      el.createTime = formatMsToDate(el.createTime)
-    })
-    setCategoryList(res.data.data)
-    setTotalPage(res.data.totalNumber)
-  }
-  useEffect(() => {
-    getCategoryList()
-  }, [currentPage, isDescend, isAll])
+  
   //修改分类名
   const updateCategoryName = async () => {
     if (category.value.replace(/\s*/g, '') === '') {
@@ -187,9 +188,9 @@ export default function Categories() {
     getCategoryList()
   }
   return (
-    <div className='categories'>
-      <p className="card-title">分类管理</p>
-      <div className='category-status'><button>状态</button>
+    <div className='category'>
+      <p className="category__title">分类管理</p>
+      <div className='category__status'><button>状态</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() =>{ setIsAll(1);setCurrentPage(1)}}
@@ -199,7 +200,7 @@ export default function Categories() {
           onClick={() => {setIsAll(2);setCurrentPage(1)}}
           disabled={selectedRows.length > 0}>回收站</button>
       </div>
-      <div className="opt-form">
+      <div className="category__operation-form">
         <Button type='primary' onClick={() => setIsShow(1)} disabled={isAll === 2}><PlusOutlined />添加</Button>
         <Button type='primary' danger style={{ marginLeft: '10px', display: isAll === 1 ? 'inline-block' : 'none' }} disabled={selectedRows.length === 0} onClick={() => deleteCategoryRows()}><DeleteOutlined />批量删除</Button>
         <Button type='primary' danger
@@ -208,7 +209,7 @@ export default function Categories() {
           onClick={() => recoverCategory()}
         ><PlusCircleOutlined />批量恢复</Button>
         <Button type='primary' style={{ float: 'right', marginLeft: '10px' }} onClick={getCategoryList} ><SearchOutlined />搜索</Button>
-        <Input type="text" style={{ float: 'right' }} placeholder='请输入分类名称' prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getCategoryList() : ''} />
+        <Input type="text" style={{ float: 'right' }} placeholder='请输入分类名称' allowClear prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getCategoryList() : ''} />
       </div>
       <Table columns={columns} dataSource={categoryList} rowKey='categoryId'
         loading={loading}
@@ -229,7 +230,7 @@ export default function Categories() {
             validateStatus={category.validateStatus}
             help={category.errorMsg}
           >
-            <Input placeholder="请输入分类名称" style={{ margin: '20px 0' }}
+            <Input placeholder="请输入分类名称"allowClear style={{ margin: '20px 0' }}
               value={category.value}
               onKeyUp={(e) => e.keyCode === 13 ? addCategory() : ''}
               onChange={(e) => setCategory({ value: e.target.value, ...validateCategoryVal(e.target.value) })} />
@@ -251,6 +252,7 @@ export default function Categories() {
             help={category.errorMsg}
           >
             <Input
+            allowClear
               placeholder="请输入分类名称"
               style={{ margin: '20px 0' }}
               value={category.value}

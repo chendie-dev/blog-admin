@@ -1,26 +1,26 @@
 .home{
     .header{
-        position: fixed;
-        width: calc(100%);
+        position: sticky;
+        top: 0;
+        width: 100%;
         z-index: 1;
         box-shadow: 0 0 5px 0 rgba(0,0,0,0.3);
-        .h-title{
+        &__title{
             position: absolute;
             left: 40%;
             font-size: 20px;
             font-weight: bolder;
         }
-        .fold-switch{
+        &__fold-switch{
             display: inline-block;
             font-size: 20px;
             margin-left: 10px;
         }
+        
     }
     
-    
-   
 }
-.h-exit:hover{
+.header__exit:hover{
     cursor: pointer;
     color: rgb(72, 154, 230);
-}
+} 

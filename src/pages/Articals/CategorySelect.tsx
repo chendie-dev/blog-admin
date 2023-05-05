@@ -100,8 +100,8 @@ const CategorySelect: React.FC<data1> = ({ categoryData }) => {
   }
   const content = (
     <>
-      <div className="slt-mdl" >
-        <h5>分类<CloseOutlined className='cancel' onClick={() => setOpen(false)} /></h5>
+      <div className="article-select-content" >
+        <h5>分类<CloseOutlined className='article-select-content__cancel-icon' onClick={() => setOpen(false)} /></h5>
         <Form>
           <Form.Item
             validateStatus={search.validateStatus}
@@ -116,7 +116,7 @@ const CategorySelect: React.FC<data1> = ({ categoryData }) => {
           </Form.Item>
         </Form>
         <div className="search-box" style={{ display: isShowSearch ? 'block' : 'none' }}>
-          <div className="arrow"></div>
+          <div className="search-box__arrow"></div>
           <ul>
             {
               searchList.map(el => {
@@ -136,7 +136,7 @@ const CategorySelect: React.FC<data1> = ({ categoryData }) => {
           </ul>
         </div>
         {/* 分类列表 */}
-        <div className="items">
+        <div className="article-select-content__items">
           {ItemData.map((item) => (
             <Tag.CheckableTag
               key={item.categoryId}
@@ -148,9 +148,8 @@ const CategorySelect: React.FC<data1> = ({ categoryData }) => {
           ))}
           <InfiniteScroll loadMore={loadItemMore} hasMore={hasMore} />
         </div>
-        <span className='tip' style={{ display: isShowErr ? 'inline-block' : 'none' }}>最多可添加5个分类</span>
+        <span className='article-select-content__tip' style={{ display: isShowErr ? 'inline-block' : 'none' }}>最多可添加5个分类</span>
       </div>
-
     </>
   )
   return (
@@ -166,7 +165,7 @@ const CategorySelect: React.FC<data1> = ({ categoryData }) => {
         style={{ display: 'inline-block' }}
 
       >
-        <Button type="dashed" className='sel-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block',marginRight:10 }}><PlusOutlined />添加文章分类</Button>
+        <Button type="dashed" className='select-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block',marginRight:10 }}><PlusOutlined />添加文章分类</Button>
       </Popover>
       <TweenOneGroup
         style={{ display: 'inline-block' }}

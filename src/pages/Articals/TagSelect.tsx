@@ -103,8 +103,8 @@ const TagSelect: React.FC<dataType> = ({ tagData }) => {
   }
   const content = (
     <>
-      <div className="slt-mdl" >
-        <h5>标签<CloseOutlined className='cancel' onClick={() => setOpen(false)} /></h5>
+      <div className="tag-select-content" >
+        <h5>标签<CloseOutlined className='tag-select-content__cancel-icon' onClick={() => setOpen(false)} /></h5>
         <Form>
           <Form.Item
             validateStatus={search.validateStatus}
@@ -119,7 +119,7 @@ const TagSelect: React.FC<dataType> = ({ tagData }) => {
           </Form.Item>
         </Form>
         <div className="search-box" style={{ display: isShowSearch ? 'block' : 'none' }}>
-          <div className="arrow"></div>
+          <div className="search-box__arrow"></div>
           <ul>
             {
               searchList.map(el => {
@@ -139,7 +139,7 @@ const TagSelect: React.FC<dataType> = ({ tagData }) => {
           </ul>
         </div>
         {/* 标签列表 */}
-        <div className="items">
+        <div className="tag-select-content__items">
           {ItemData.map((item) => (
             <Tag.CheckableTag
               key={item.tagId}
@@ -151,7 +151,7 @@ const TagSelect: React.FC<dataType> = ({ tagData }) => {
           ))}
           <InfiniteScroll loadMore={loadItemMore} hasMore={hasMore} />
         </div>
-        <span className='tip' style={{ display: isShowErr ? 'inline-block' : 'none' }}>最多可添加5个标签</span>
+        <span className='tag-select-content__tip' style={{ display: isShowErr ? 'inline-block' : 'none' }}>最多可添加5个标签</span>
       </div>
 
     </>
@@ -170,7 +170,7 @@ const TagSelect: React.FC<dataType> = ({ tagData }) => {
 
       >
 
-        <Button type="dashed" className='sel-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block',marginRight:10 }}><PlusOutlined />添加文章标签</Button>
+        <Button type="dashed" className='select-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block',marginRight:10 }}><PlusOutlined />添加文章标签</Button>
       </Popover>
       <TweenOneGroup
         style={{ display: 'inline-block' }}

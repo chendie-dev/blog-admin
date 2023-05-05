@@ -30,7 +30,7 @@ export default function Tags() {
     tagList: state.reqData.tagListData.data,
     totalNumber: state.reqData.tagListData.totalNumber
   }))
-  const [loading,setLoading]=useState(true)
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     dispatchTagList()
   }, [isDescend, currentPage, isAll])
@@ -177,19 +177,19 @@ export default function Tags() {
 
 
   return (
-    <div className='tags'>
-      <p className="card-title">标签管理</p>
-      <div className='tag-status'><button>状态</button>
+    <div className='tag'>
+      <p className="tag__title">标签管理</p>
+      <div className='tag__status'><button>状态</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
-          onClick={() => {setIsAll(1);setCurrentPage(1)}}
+          onClick={() => { setIsAll(1); setCurrentPage(1) }}
           disabled={selectedRows.length > 0}>全部</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : '#1677ff' }}
-          onClick={() => {setIsAll(2);setCurrentPage(1)}}
+          onClick={() => { setIsAll(2); setCurrentPage(1) }}
           disabled={selectedRows.length > 0}>回收站</button>
       </div>
-      <div className="opt-form">
+      <div className="tag__operation-form">
         <Button type='primary'
           onClick={() => setIsShow(1)}
           disabled={isAll !== 1}><PlusOutlined />添加</Button>
@@ -204,7 +204,7 @@ export default function Tags() {
         <Button type='primary'
           style={{ float: 'right', marginLeft: '10px' }}
           onClick={dispatchTagList}><SearchOutlined />搜索</Button>
-        <Input value={searchTagName} onChange={(el) => setSearchTagName(el.target.value)}
+        <Input value={searchTagName} allowClear onChange={(el) => setSearchTagName(el.target.value)}
           onKeyUp={(e) => e.keyCode === 13 ? dispatchTagList() : ''}
           type="text" style={{ float: 'right' }}
           placeholder='请输入标签名称'
@@ -234,6 +234,7 @@ export default function Tags() {
             help={tag.errorMsg}
           >
             <Input
+              allowClear
               placeholder="请输入标签名称"
               style={{ margin: '9px 0' }}
               value={tag.value}
@@ -256,6 +257,7 @@ export default function Tags() {
             help={tag.errorMsg}
           >
             <Input
+              allowClear
               placeholder="请输入标签名称"
               style={{ margin: '20px 0' }}
               value={tag.value}

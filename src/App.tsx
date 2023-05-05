@@ -1,12 +1,13 @@
 import { useRoutes } from 'react-router-dom';
+import { AliveScope } from 'react-activation';
 import router from './router';
 function App() {
-  const oulet=useRoutes(router)
+  const oulet = useRoutes(router)
   return (
-    <>
-    {/* <Admin/> */}
-    {oulet}
-    </>
+    <AliveScope>
+      {/* <Admin/> */}
+      {oulet}
+    </AliveScope>
   );
 }
 
