@@ -2,7 +2,7 @@
  * @Author: chendie chendie
  * @Date: 2023-04-11 17:27:22
  * @LastEditors: chendie chendie
- * @LastEditTime: 2023-05-07 17:16:57
+ * @LastEditTime: 2023-05-07 21:04:05
  * @FilePath: /blog-admin/src/types/request.d.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -103,7 +103,6 @@ interface imageListParams {
     pageNum: number,
     pageSize: number,
     queryParam: {
-        isDelete: boolean,
         imageId?: number,
         imageName?: string
     }

@@ -32,7 +32,7 @@ export default function Articals() {
   const [previewOpen, setPreviewOpen] = useState(false);//图片预览模态框开关
   const [previewImage, setPreviewImage] = useState('');//图片路径
   const [previewTitle, setPreviewTitle] = useState('');//图片名称
-  const [currentPage, setCurrentPage] = useState(0)//当前页
+  const [currentPage, setCurrentPage] = useState(1)//当前页
   const [totalPage, setTotalPage] = useState(1)//总页
   const [ImageList, setImageList] = useState<imageItemType[]>([])//图片列表
   //保存草稿｜发布
@@ -76,7 +76,6 @@ export default function Articals() {
       pageNum: currentPage,
       pageSize: 4,
       queryParam: {
-        isDelete: false
       }
     })
     setTotalPage(res.data.totalPage)

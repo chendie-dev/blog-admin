@@ -24,15 +24,15 @@ export const updateCategoryReq=(params:updateCategoryParams):Promise<idRes>=>req
 //恢复分类
 export const recoverCategoryReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/article/admin/category/recover',params)
 //添加图片
-export const addImageReq=(params:{imageName:string,imageUrl:string}):Promise<idRes>=>request.instance1.post('/file/admin/image/add',params)
+export const addImageReq=(params:{imageName:string,imageUrl:string}):Promise<idRes>=>request.instance.post('/file/admin/image/add',params)
 //删除图片
 export const deleteImagesReq=(params:React.Key[]):Promise<idsRes>=>request.instance1.delete('/file/admin/image/delete',{data:params})
 //查询图片
-export const getImageListReq=(params:imageListParams):Promise<imageListRes>=>request.instance1.post('/file/admin/image/queryByPage',params)
+export const getImageListReq=(params:imageListParams):Promise<imageListRes>=>request.instance.post('/file/admin/image/queryByPage',params)
 //恢复图片
 export const recoverImageReq=(params:React.Key[]):Promise<idsRes>=>request.instance1.post('/file/admin/image/recover',params)
 //更新图片
-export const updateImageReq=(params:{imageId:number,imageName:string}):Promise<idRes>=>request.instance1.post('/file/admin/image/update',params)
+export const updateImageReq=(params:{imageId:number,imageName:string}):Promise<idRes>=>request.instance.post('/file/admin/image/update',params)
 //上传图片
 export const uploadImageReq=(form: any):Promise<imageUrlRes>=>request.instance.post('/file/admin/image/upload', form, {
     headers: {
