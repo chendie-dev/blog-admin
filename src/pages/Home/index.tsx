@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import KeepAlive from 'react-activation';
 import { Layout, Menu, theme, Divider, Breadcrumb, Popover, Avatar } from 'antd';
-import { useAppSelector } from '../../hooks/storeHook';
 import MyIcon from '../../components/MyIcon';
 import './index.scss'
+import { useMenuItems, useMenuItemsDispatch } from '../../components/MenuItemsProvider';
 const { Header, Sider } = Layout;
 
 export default function Home() {
@@ -15,9 +14,7 @@ export default function Home() {
     const [openKey, setOpenKey] = useState([''])
     const [firstBreadItem, setBreadItem] = useState<Array<BreadcrumbItem>>([])
     const [selectedKeys, setSelectedKeys] = useState([location.pathname])
-    const { MenuItems } = useAppSelector((state) => ({
-        MenuItems: state.menuItems.items
-    }))
+    const MenuItems = useMenuItems()
     //展开关闭控制
     useEffect(() => {
         for (let i = 0; i < MenuItems.length; i++) {
@@ -80,9 +77,7 @@ export default function Home() {
                     mode="inline"
                     selectedKeys={selectedKeys}
                     items={MenuItems}
-                    onClick={(e: { key: string }) => {
-                        navigateTo(e.key)
-                    }}
+                    onClick={(e) => navigateTo(e.key)}
                     onOpenChange={(openKeys: string[]) => {
                         setOpenKey([openKeys[openKeys.length - 1]])
                     }}
@@ -122,9 +117,7 @@ export default function Home() {
                         background: colorBgContainer,
                     }}
                 >
-                    <KeepAlive>
                         <Outlet />
-                    </KeepAlive>
                 </div>
             </Layout>
         </Layout>

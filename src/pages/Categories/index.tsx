@@ -4,22 +4,10 @@ import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { TableRowSelection } from 'antd/es/table/interface';
 import './index.scss'
-import { addCategoryReq, getCategoryListReq, deleteCategoryReq, updateCategoryReq, recoverCategoryReq } from '../../requests/api'
-type ValidateStatus = Parameters<typeof Form.Item>[0]['validateStatus'];
-function formatMsToDate(ms: string) {
-  let date = new Date(Number(ms)),
-    year = date.getFullYear(),
-    month = date.getMonth() + 1,
-    day = date.getDate(),
-    hour = date.getHours(),
-    min = date.getMinutes(),
-    sec = date.getSeconds();
-  return year + '-' + addZero(month) + '-' + addZero(day) + " " + addZero(hour) + ":" + addZero(min) + ":" + addZero(sec)
+import { addCategoryReq, deleteCategoryReq, updateCategoryReq, recoverCategoryReq } from '../../requests/api'
+import { useCategoryData, useCategoryDataDispatch } from '../../components/CategoryDataProvider';
+import { validatevalue } from '../../hooks/validate';
 
-}
-function addZero(nu: number) {
-  return nu < 10 ? "0" + nu : nu
-}
 export default function Categories() {
   useEffect(() => {
     document.title = '分类-管理系统'
@@ -27,54 +15,31 @@ export default function Categories() {
   const [isShow, setIsShow] = useState(0);//1添加
   const [isDescend, setIsDescend] = useState(true);//创建时间升降序
   const [isAll, setIsAll] = useState(1)//1全部，2回收站
-  const [category, setCategory] = useState<{
-    value: string;
-    validateStatus?: ValidateStatus;
-    errorMsg?: string | null;
-  }>({ value: '' });//添加/编辑分类名（校验）
+  const [category, setCategory] = useState<validateValType>({ value: '' });//添加/编辑分类名（校验）
   const [editRowId, setEditRowId] = useState(0)
-  const [categoryList, setCategoryList] = useState<categoryItemType[]>([])
   const [currentPage, setCurrentPage] = useState(1)//当前页
   const [selectedRows, setSelectedRows] = useState<categoryItemType[]>([])//选取行
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id
-  const [totalPage, setTotalPage] = useState(1)//总页数
   const [searchVal, setSearchVal] = useState('')
-  const [loading,setLoading]=useState(true)
-  const validateCategoryVal = (categoryVal: string,): {
-    validateStatus: ValidateStatus;
-    errorMsg: string | null;
-  } => {
-    if (categoryVal.replace(/\s*/g, '').length <= 10) {
-      return {
-
-        validateStatus: 'success',
-        errorMsg: null,
-      };
-    }
-    return {
-      validateStatus: 'error',
-      errorMsg: '分类名长度最长为10',
-    };
-  };
+  const [loading, setLoading] = useState(true)
+  const categoryDispatch = useCategoryDataDispatch()
+  const categoryData = useCategoryData()
   //获取分类列表
   const getCategoryList = async () => {
     setLoading(true)
-    let res = await getCategoryListReq({
-      orderByFields: { createTime: isDescend },
-      pageNum: currentPage,
-      pageSize: 5,
-      queryParam: {
-        categoryName: searchVal,
-        isDelete: isAll === 2
+    categoryDispatch({
+      type: 'getCategorydata',
+      payload: {
+        orderByFields: { createTime: isDescend },
+        pageNum: currentPage,
+        pageSize: 5,
+        queryParam: {
+          categoryName: searchVal,
+          isDelete: isAll === 2
+        }
       }
     })
     setLoading(false)
-    if (res.code !== 200) return
-    res.data.data.forEach(el => {
-      el.createTime = formatMsToDate(el.createTime)
-    })
-    setCategoryList(res.data.data)
-    setTotalPage(res.data.totalNumber)
   }
   useEffect(() => {
     getCategoryList()
@@ -171,7 +136,7 @@ export default function Categories() {
       setSelectedRows(selectedRows);
     },
   };
-  
+
   //修改分类名
   const updateCategoryName = async () => {
     if (category.value.replace(/\s*/g, '') === '') {
@@ -193,11 +158,11 @@ export default function Categories() {
       <div className='category__status'><button>状态</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
-          onClick={() =>{ setIsAll(1);setCurrentPage(1)}}
+          onClick={() => { setIsAll(1); setCurrentPage(1) }}
           disabled={selectedRows.length > 0}>全部</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : '#1677ff' }}
-          onClick={() => {setIsAll(2);setCurrentPage(1)}}
+          onClick={() => { setIsAll(2); setCurrentPage(1) }}
           disabled={selectedRows.length > 0}>回收站</button>
       </div>
       <div className="category__operation-form">
@@ -211,12 +176,12 @@ export default function Categories() {
         <Button type='primary' style={{ float: 'right', marginLeft: '10px' }} onClick={getCategoryList} ><SearchOutlined />搜索</Button>
         <Input type="text" style={{ float: 'right' }} placeholder='请输入分类名称' allowClear prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getCategoryList() : ''} />
       </div>
-      <Table columns={columns} dataSource={categoryList} rowKey='categoryId'
+      <Table columns={columns} dataSource={categoryData.data.data} rowKey='categoryId'
         loading={loading}
         pagination={{
           current: currentPage,
           defaultPageSize: 5,
-          total: totalPage * 5,//todo
+          total: categoryData.data.totalPage * 5,//todo
           onChange: (page) => setCurrentPage(page),
         }}
         rowSelection={{ ...rowSelection }}
@@ -230,10 +195,10 @@ export default function Categories() {
             validateStatus={category.validateStatus}
             help={category.errorMsg}
           >
-            <Input placeholder="请输入分类名称"allowClear style={{ margin: '20px 0' }}
+            <Input placeholder="请输入分类名称" allowClear style={{ margin: '20px 0' }}
               value={category.value}
               onKeyUp={(e) => e.keyCode === 13 ? addCategory() : ''}
-              onChange={(e) => setCategory({ value: e.target.value, ...validateCategoryVal(e.target.value) })} />
+              onChange={(e) => setCategory({ value: e.target.value, ...validatevalue(e.target.value,10) })} />
           </Form.Item>
         </Form>
 
@@ -252,12 +217,12 @@ export default function Categories() {
             help={category.errorMsg}
           >
             <Input
-            allowClear
+              allowClear
               placeholder="请输入分类名称"
               style={{ margin: '20px 0' }}
               value={category.value}
               onKeyUp={(e) => e.keyCode === 13 ? updateCategoryName() : ''}
-              onChange={(e) => setCategory({ value: e.target.value, ...validateCategoryVal(e.target.value) })} />
+              onChange={(e) => setCategory({ value: e.target.value, ...validatevalue(e.target.value,10) })} />
           </Form.Item>
         </Form>
       </Modal>

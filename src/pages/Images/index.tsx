@@ -192,7 +192,7 @@ export default function Images() {
       el.createTime = formatMsToDate(el.createTime)
     })
     setImageList(res.data.data)
-    setTotalPage(res.data.totalNumber)
+    setTotalPage(res.data.totalPage)
     console.log(new Date());
 
   }

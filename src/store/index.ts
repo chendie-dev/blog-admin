@@ -1,11 +1,7 @@
-import {
-  configureStore
-} from '@reduxjs/toolkit'
-import menuItemReducer from './menuItemSlice'
+import {configureStore} from '@reduxjs/toolkit'
 import reqDataReducer from './reqDataSlice'
 const store = configureStore({
   reducer: {
-    menuItems: menuItemReducer,
     reqData:reqDataReducer
   },
   middleware: (getDefaultMiddleware) =>

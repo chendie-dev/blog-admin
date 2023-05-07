@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Input, Button, Form, Upload, Modal, Radio, Checkbox, Popover, message } from 'antd'
 import { PlusOutlined, RedoOutlined } from '@ant-design/icons';
-import KeepAlive from 'react-activation';
 import MdEditor from 'md-editor-rt';
 import ImgCrop from 'antd-img-crop';
 import 'md-editor-rt/lib/style.css';
@@ -80,7 +79,7 @@ export default function Articals() {
         isDelete: false
       }
     })
-    setTotalPage(res.data.totalNumber)
+    setTotalPage(res.data.totalPage)
     setImageList(res.data.data)
   }
   //换一批
@@ -133,7 +132,7 @@ export default function Articals() {
       <p className="title">发布设置</p>
       <Form className='setting-form'>
         <Form.Item label="文章标签"  >
-            <TagSelect tagData={(items: tagListType[]) => setTagItems(items)} />
+            <TagSelect tagData={useCallback((items: tagListType[]) => setTagItems(items),[])} />
         </Form.Item>
         <Form.Item label="添加封面" style={{ height: 110 }}>
           <ImgCrop
@@ -183,7 +182,7 @@ export default function Articals() {
           </Modal>
         </Form.Item>
         <Form.Item label="文章分类" >
-          <CategorySelect categoryData={(items: categoryItemType[]) => setCategoryItems(items)} />
+          <CategorySelect categoryData={useCallback((items: categoryItemType[]) => setCategoryItems(items),[])} />
         </Form.Item>
         <Form.Item label="可见范围">
           <Radio.Group onChange={(e) => setArticleStatus(e.target.value)} value={articleStatus}>

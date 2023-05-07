@@ -1,45 +1,26 @@
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popover, Tag } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { addCategoryReq, getCategoryListReq } from '../../requests/api';
 import { TweenOneGroup } from 'rc-tween-one';
 import { InfiniteScroll } from 'antd-mobile';
 import './index.scss'
-type ValidateStatus = Parameters<typeof Form.Item>[0]['validateStatus'];
-interface data1 {
+import { validatevalue } from '../../hooks/validate';
+interface propsType {
   categoryData: (items: categoryItemType[]) => void
 }
-const CategorySelect: React.FC<data1> = ({ categoryData }) => {
+const CategorySelect: React.FC<propsType> = memo(({ categoryData }) => {
   const [open, setOpen] = useState(false);
   const [isShowSearch, setIsShowSearch] = useState(false)//是否显示搜索内容
   const [selectedItems, setSelectedItems] = useState<categoryItemType[]>([]);//已选择分类
   const [currentItemPage, setCurrentItemPage] = useState(0)//无限刷新第几页
   const [ItemData, setItemData] = useState<categoryItemType[]>([])//无限刷新查询分类数据
   const [hasMore, setHasMore] = useState(true)//无限刷新是否还有更多
-  const [search, setSearch] = useState<{
-    value: string;
-    validateStatus?: ValidateStatus;
-    errorMsg?: string | null;
-  }>({ value: '' })//搜索分类值
+  const [search, setSearch] = useState<validateValType>({ value: '' })//搜索分类值
   const [searchList, setSearchList] = useState<categoryItemType[]>([]);//搜索内容
   const [isShowErr, setIsShowErr] = useState(false)//1长度，2个数
-  //分类验证规则
-  const validateItemVal = (ItemVal: string,): {
-    validateStatus: ValidateStatus;
-    errorMsg: string | null;
-  } => {
-    if (ItemVal.replace(/\s*/g, '').length <= 10) {
-      return {
-
-        validateStatus: 'success',
-        errorMsg: null,
-      };
-    }
-    return {
-      validateStatus: 'error',
-      errorMsg: '分类名长度最长为10',
-    };
-  };
+  // console.log('ca改变');
+  
   //获取分类列表
   const getItemList = async (pageNum: number, pageSize: number) => {
     return await getCategoryListReq({
@@ -108,7 +89,7 @@ const CategorySelect: React.FC<data1> = ({ categoryData }) => {
             help={search.errorMsg}
           >
             <Input type='text' value={search.value}
-              onChange={(e) => setSearch({ value: e.target.value, ...validateItemVal(e.target.value) })}
+              onChange={(e) => setSearch({ value: e.target.value, ...validatevalue(e.target.value,10) })}
               onFocus={() => setIsShowSearch(true)}
               onBlur={() => { setTimeout(() => { setIsShowSearch(false) }, 250); }}
               placeholder='请输入文字搜索，按Enter键添加分类'
@@ -203,5 +184,6 @@ const CategorySelect: React.FC<data1> = ({ categoryData }) => {
       </TweenOneGroup>
     </>
   )
-}
-export default CategorySelect
+})
+export default CategorySelect;
+

@@ -7,17 +7,13 @@ import type { TableRowSelection } from 'antd/es/table/interface';
 import { getTagList } from '../../store/reqDataSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/storeHook';
 import './index.scss'
-type ValidateStatus = Parameters<typeof Form.Item>[0]['validateStatus'];
+import { validatevalue } from '../../hooks/validate';
 export default function Tags() {
   useEffect(() => {
     document.title = '标签-管理系统'
   }, [])
   const [isShow, setIsShow] = useState(0);//1添加，2编辑
-  const [tag, setTag] = useState<{
-    value: string;
-    validateStatus?: ValidateStatus;
-    errorMsg?: string | null;
-  }>({ value: '' });//添加/编辑标签名（校验）
+  const [tag, setTag] = useState<validateValType>({ value: '' });//添加/编辑标签名（校验）
   const [isAll, setIsAll] = useState(1)//1全部，2回收站
   const [currentPage, setCurrentPage] = useState(1)//当前页
   const [isDescend, setIsDescend] = useState(true);//创建时间升降序
@@ -26,9 +22,9 @@ export default function Tags() {
   const [editRowId, setEditRowId] = useState('')
   const dispatch = useAppDispatch()
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id
-  const { tagList, totalNumber } = useAppSelector((state) => ({
+  const { tagList, totalPage } = useAppSelector((state) => ({
     tagList: state.reqData.tagListData.data,
-    totalNumber: state.reqData.tagListData.totalNumber
+    totalPage: state.reqData.tagListData.totalPage
   }))
   const [loading, setLoading] = useState(true)
   useEffect(() => {
@@ -158,24 +154,6 @@ export default function Tags() {
     setSelectedRowKeys([]);
   }
 
-  const validateTagVal = (tagVal: string,): {
-    validateStatus: ValidateStatus;
-    errorMsg: string | null;
-  } => {
-    if (tagVal.replace(/\s*/g, '').length <= 5) {
-      return {
-
-        validateStatus: 'success',
-        errorMsg: null,
-      };
-    }
-    return {
-      validateStatus: 'error',
-      errorMsg: '标签名长度最长为5',
-    };
-  };
-
-
   return (
     <div className='tag'>
       <p className="tag__title">标签管理</p>
@@ -215,7 +193,7 @@ export default function Tags() {
         pagination={{
           current: currentPage,
           defaultPageSize: 5,
-          total: totalNumber * 5,
+          total: totalPage * 5,
           onChange: (page) => setCurrentPage(page),
         }}
         rowSelection={{ ...rowSelection }}
@@ -239,7 +217,7 @@ export default function Tags() {
               style={{ margin: '9px 0' }}
               value={tag.value}
               onKeyUp={(e) => e.keyCode === 13 ? addtag() : ''}
-              onChange={(e) => setTag({ ...validateTagVal(e.target.value), value: e.target.value })} />
+              onChange={(e) => setTag({ ...validatevalue(e.target.value,5), value: e.target.value })} />
           </Form.Item>
         </Form>
       </Modal>
@@ -262,7 +240,7 @@ export default function Tags() {
               style={{ margin: '20px 0' }}
               value={tag.value}
               onKeyUp={(e) => e.keyCode === 13 ? editTagName() : ''}
-              onChange={(e) => setTag({ value: e.target.value, ...validateTagVal(e.target.value) })} />
+              onChange={(e) => setTag({ value: e.target.value, ...validatevalue(e.target.value,5) })} />
           </Form.Item>
         </Form>
       </Modal>

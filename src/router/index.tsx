@@ -7,12 +7,13 @@ const Articles = lazy(() => import('../pages/Articals'))
 const Categories = lazy(() => import('../pages/Categories'))
 const Tags = lazy(() => import('../pages/Tags'))
 const Images = lazy(() => import('../pages/Images'))
-const withLoading = (com: JSX.Element,name:string) => (
-    <KeepAlive id={name}>
-        <React.Suspense>
-            {com}
-        </React.Suspense>
-    </KeepAlive>
+const withLoading = (com: JSX.Element, name: string) => (
+        <KeepAlive id={name}>
+            <React.Suspense>
+                {com}
+            </React.Suspense>
+        </KeepAlive>
+
 )
 const routers = [
     {
@@ -21,27 +22,27 @@ const routers = [
     },
     {
         path: '/',
-        element: <Home/>,
+        element: <Home />,
         children: [
             {
                 path: '/charts',
-                element: withLoading(<Charts />,'charts')
+                element: withLoading(<Charts />, 'charts')
             },
             {
                 path: '/articles',
-                element:withLoading(<Articles />,'articles')
+                element: withLoading(<Articles />, 'articles')
             },
             {
                 path: '/categories',
-                element: withLoading(<Categories />,'categories')
+                element: withLoading(<Categories />, 'categories')
             },
             {
                 path: '/tags',
-                element: withLoading(<Tags />,'tags')
+                element: withLoading(<Tags />, 'tags')
             },
             {
                 path: '/images',
-                element: withLoading(<Images />,'images')
+                element: withLoading(<Images />, 'images')
             }
         ]
     },

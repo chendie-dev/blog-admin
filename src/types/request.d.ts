@@ -2,7 +2,7 @@
  * @Author: chendie chendie
  * @Date: 2023-04-11 17:27:22
  * @LastEditors: chendie chendie
- * @LastEditTime: 2023-05-02 19:29:34
+ * @LastEditTime: 2023-05-07 17:16:57
  * @FilePath: /blog-admin/src/types/request.d.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,6 +10,8 @@ interface idRes {
     code: number,
     data: { id: string },
     msg: string
+    traceId: string
+
 }
 interface articalParams {
     articleContent: string,
@@ -37,8 +39,9 @@ interface tagListType {
 }
 interface tagListRes {
     code: number,
-    data: { data: tagListType[], totalNumber: number },
+    data: { data: tagListType[], totalPage: number },
     msg: string
+    traceId: string
 }
 interface idsRes {
     code: number,
@@ -46,6 +49,7 @@ interface idsRes {
         ids: string[]
     },
     msg: string
+    traceId: string
 }
 interface updataTagNameparams {
     tagId: string,
@@ -70,9 +74,10 @@ interface categoryListRes {
     code: number,
     data: {
         data: categoryItemType[],
-        totalNumber: number
+        totalPage: number
     },
     msg: string
+    traceId: string
 }
 interface updateCategoryParams {
     categoryId: number,
@@ -88,9 +93,10 @@ interface imageListRes {
     code: number,
     data: {
         data: imageItemType[],
-        totalNumber: number
+        totalPage: number
     },
     msg: string
+    traceId: string
 }
 interface imageListParams {
     orderByFields?: { createTime: boolean },
@@ -102,8 +108,9 @@ interface imageListParams {
         imageName?: string
     }
 }
-interface imageUrlRes{
-    code:number,
-    data:string,
-    msg:string
+interface imageUrlRes {
+    code: number,
+    data: string,
+    msg: string
+    traceId: string
 }
