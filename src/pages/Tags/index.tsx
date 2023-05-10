@@ -18,7 +18,7 @@ export default function Tags() {
   const [currentPage, setCurrentPage] = useState(1)//当前页
   const [isDescend, setIsDescend] = useState(true);//创建时间升降序
   const [searchTagName, setSearchTagName] = useState('')//搜索框值
-  const [selectedRows, setSelectedRows] = useState<tagListType[]>([])//选取行
+  const [selectedRows, setSelectedRows] = useState<tagItemType[]>([])//选取行
   const [editRowId, setEditRowId] = useState('')
   const dispatch = useAppDispatch()
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id
@@ -59,7 +59,7 @@ export default function Tags() {
     ))
     setLoading(false)
   }
-  const columns: ColumnsType<tagListType> = [
+  const columns: ColumnsType<tagItemType> = [
     {
       title: '标签ID',
       dataIndex: 'tagId',
@@ -102,7 +102,7 @@ export default function Tags() {
     },
   ];
   //选取标签行
-  const rowSelection: TableRowSelection<tagListType> = {
+  const rowSelection: TableRowSelection<tagItemType> = {
     selectedRowKeys,
     onSelect: (record, selected, selectedRows) => {
       let arr: React.Key[] = []
@@ -133,7 +133,7 @@ export default function Tags() {
     dispatchTagList()
   }
   //回收站恢复
-  const recoverTag = async (row?: tagListType) => {
+  const recoverTag = async (row?: tagItemType) => {
     let res;
     row ? res = await recoverTagReq([row.tagId]) : res = await recoverTagReq(selectedRowKeys)
     console.log('recover', res);
@@ -143,7 +143,7 @@ export default function Tags() {
     setSelectedRowKeys([]);
   }
   //删除标签
-  const deleteTagRows = async (row?: tagListType) => {
+  const deleteTagRows = async (row?: tagItemType) => {
     console.log(row);
     let res;
     row ? res = await deleteTagListReq([row.tagId]) : res = await deleteTagListReq(selectedRowKeys)

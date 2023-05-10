@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getTagListReq } from "../requests/api";
 import { FormatData } from "../hooks/formatData";
 export const { getTagList } = {
-    getTagList: createAsyncThunk('tagList/getTagList', async (params: tagListParams) => {
+    getTagList: createAsyncThunk('tagList/getTagList', async (params: getTagListParams) => {
         let res = await getTagListReq(params);
         return res.data
     })

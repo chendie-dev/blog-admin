@@ -35,7 +35,7 @@ const CategorySelect: React.FC<propsType> = memo(({ categoryData }) => {
 
   //选择/取消选择分类
   const checkItemChange = (Item: categoryItemType, checked: boolean) => {
-    if (checked && selectedItems.length === 5) {
+    if (checked && selectedItems.length === 1) {
       setIsShowErr(true)
       return
     }
@@ -129,7 +129,7 @@ const CategorySelect: React.FC<propsType> = memo(({ categoryData }) => {
           ))}
           <InfiniteScroll loadMore={loadItemMore} hasMore={hasMore} />
         </div>
-        <span className='article-select-content__tip' style={{ display: isShowErr ? 'inline-block' : 'none' }}>最多可添加5个分类</span>
+        <span className='article-select-content__tip' style={{ display: isShowErr ? 'inline-block' : 'none' }}>最多可添加1个分类</span>
       </div>
     </>
   )
@@ -146,7 +146,7 @@ const CategorySelect: React.FC<propsType> = memo(({ categoryData }) => {
         style={{ display: 'inline-block' }}
 
       >
-        <Button type="dashed" className='select-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block',marginRight:10 }}><PlusOutlined />添加文章分类</Button>
+        <Button type="dashed" className='select-btn' style={{ display: selectedItems.length === 1 ? 'none' : 'inline-block',marginRight:10 }}><PlusOutlined />添加文章分类</Button>
       </Popover>
       <TweenOneGroup
         style={{ display: 'inline-block' }}

@@ -1,0 +1,31 @@
+.sensitive{
+    &__status{
+        margin-top: 10px;
+        button{
+            margin-right: 20px;
+            background-color: white;
+            font-weight:lighter;
+        }
+    }
+    &__title {
+        position: relative;
+        font-size: 16px;
+        font-weight: bolder;
+    }
+    &__title::before {
+        content: '';
+        position: absolute;
+        width: 3px;
+        height: 24px;
+        left: -24px;
+        top: 1px;
+        background-color: #0081ff;
+    }
+    &__operation-form{
+        width: 100%;
+        margin: 20px 0;
+        .ant-input-affix-wrapper{
+            width: 30%;
+        }
+    }
+}

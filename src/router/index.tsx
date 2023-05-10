@@ -7,6 +7,9 @@ const Articles = lazy(() => import('../pages/Articals'))
 const Categories = lazy(() => import('../pages/Categories'))
 const Tags = lazy(() => import('../pages/Tags'))
 const Images = lazy(() => import('../pages/Images'))
+const Messages = lazy(() => import('../pages/Messages'))
+const Sensitive = lazy(() => import('../pages/Sensitive'))
+
 const withLoading = (com: JSX.Element, name: string) => (
         <KeepAlive id={name}>
             <React.Suspense>
@@ -43,6 +46,14 @@ const routers = [
             {
                 path: '/images',
                 element: withLoading(<Images />, 'images')
+            },
+            {
+                path:'/messages',
+                element:withLoading(<Messages/>,'messages')
+            },
+            {
+                path:'/sensitive',
+                element:withLoading(<Sensitive/>,'sensitive')
             }
         ]
     },

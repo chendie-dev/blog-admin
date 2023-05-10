@@ -7,18 +7,18 @@ import { InfiniteScroll } from 'antd-mobile';
 import './index.scss'
 import { validatevalue } from '../../hooks/validate';
 interface propsType {
-  tagData: (items: tagListType[]) => void
+  tagData: (items: tagItemType[]) => void
 }
 
 const TagSelect: React.FC<propsType> = memo(({ tagData }) => {
   const [open, setOpen] = useState(false);
   const [isShowSearch, setIsShowSearch] = useState(false)//是否显示搜索内容
-  const [selectedItems, setSelectedItems] = useState<tagListType[]>([]);//已选择标签
+  const [selectedItems, setSelectedItems] = useState<tagItemType[]>([]);//已选择标签
   const [currentItemPage, setCurrentItemPage] = useState(0)//无限刷新第几页
-  const [ItemData, setItemData] = useState<tagListType[]>([])//无限刷新查询标签数据
+  const [ItemData, setItemData] = useState<tagItemType[]>([])//无限刷新查询标签数据
   const [hasMore, setHasMore] = useState(true)//无限刷新是否还有更多
   const [search, setSearch] = useState<validateValType>({ value: '' })//搜索标签值
-  const [searchList, setSearchList] = useState<tagListType[]>([]);//搜索内容
+  const [searchList, setSearchList] = useState<tagItemType[]>([]);//搜索内容
   const [isShowErr, setIsShowErr] = useState(false)//1长度，2个数
   // console.log('ta改变');
   
@@ -35,7 +35,7 @@ const TagSelect: React.FC<propsType> = memo(({ tagData }) => {
   }
 
   //选择/取消选择标签
-  const checkItemChange = (Item: tagListType, checked: boolean) => {
+  const checkItemChange = (Item: tagItemType, checked: boolean) => {
     if (checked && selectedItems.length === 5) {
       setIsShowErr(true)
       return

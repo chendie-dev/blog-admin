@@ -217,7 +217,7 @@ export default function Images() {
   const handleChange: UploadProps['onChange'] = ({ file }) => {
     if (file.status === 'removed') {
       setFileList([]);
-    }else
+    } else
       setFileList([file]);
     console.log(7777, file);
   }
@@ -252,7 +252,7 @@ export default function Images() {
           onClick={() => recoverImage()}
         ><PlusCircleOutlined />批量恢复</Button>
         <Button type='primary' style={{ float: 'right', marginLeft: '10px' }} onClick={getImageList} ><SearchOutlined />搜索</Button>
-        <Input type="text" style={{ float: 'right' }} placeholder='请输入图片名称' prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getImageList() : ''} />
+        <Input type="text" allowClear style={{ float: 'right' }} placeholder='请输入图片名称' prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getImageList() : ''} />
       </div>
       <Table columns={columns} dataSource={ImageList} rowKey='imageId'
         loading={loading}
@@ -274,10 +274,11 @@ export default function Images() {
             help={ImageItem.errorMsg}
           >
             <Input placeholder="请输入图片名称" style={{ margin: '20px 0' }}
+              allowClear
               value={ImageItem.value}
               onChange={(e) => setImageItem({ value: e.target.value, ...validateImageVal(e.target.value) })} />
             <ImgCrop
-              aspect={480/270}
+              aspect={480 / 270}
             >
               <Upload
                 name='image'
@@ -318,6 +319,7 @@ export default function Images() {
             help={ImageItem.errorMsg}
           >
             <Input
+              allowClear
               placeholder="请输入图片名称"
               style={{ margin: '20px 0' }}
               value={ImageItem.value}

@@ -3,7 +3,7 @@ import { getCategoryListReq } from '../requests/api';
 import { FormatData } from '../hooks/formatData';
 interface actionType {
     type: string,
-    payload: categoryListReqParams
+    payload: getCategoryListParams
 }
 interface dataActionType {
     type: string,

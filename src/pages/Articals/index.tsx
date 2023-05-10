@@ -24,7 +24,7 @@ export default function Articals() {
   }, [])
   const [articleContent, setArticleContent] = useState('');//文章内容
   const [articleTitle, setArticleTitle] = useState('');//文章标题
-  const [tagItems, setTagItems] = useState<tagListType[]>([]);//标签items
+  const [tagItems, setTagItems] = useState<tagItemType[]>([]);//标签items
   const [categoryItems, setCategoryItems] = useState<categoryItemType[]>([]);//分类items
   const [articleStatus, setArticleStatus] = useState(1);//文章状态值 1公开 2私密 3登录可见
   const [rank, setRank] = useState(0);//置顶排序
@@ -131,7 +131,7 @@ export default function Articals() {
       <p className="title">发布设置</p>
       <Form className='setting-form'>
         <Form.Item label="文章标签"  >
-            <TagSelect tagData={useCallback((items: tagListType[]) => setTagItems(items),[])} />
+            <TagSelect tagData={useCallback((items: tagItemType[]) => setTagItems(items),[])} />
         </Form.Item>
         <Form.Item label="添加封面" style={{ height: 110 }}>
           <ImgCrop
