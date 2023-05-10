@@ -1,3 +1,4 @@
+
 interface defaultResType<T> {
     code: number,
     data: T,
@@ -26,6 +27,12 @@ interface tagItemType {
     tagName: string;
     createTime: string;
 }
+interface messageItemType {
+    auditType: number,
+    createTime: string,
+    messageContent: string,
+    messageId: number
+}
 type idRes = defaultResType<{ id: string }>
 type idsRes = defaultResType<{ ids: string[] }>
 type tagListRes = defaultResType<{ data: tagItemType[], totalPage: number }>
@@ -33,4 +40,4 @@ type categoryListRes = defaultResType<{ data: categoryItemType[], totalPage: num
 type imageListRes = defaultResType<{ data: imageItemType[], totalPage: number }>
 type imageUrlRes = defaultResType<string>
 type sensitiveListRes = defaultResType<{ data: sensitiveItemType[], totalPage: number }>
-
+type messageListRes = defaultResType<{ data: messageItemType[], totalPage: number }>

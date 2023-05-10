@@ -48,4 +48,8 @@ export const recoverSensitiveReq = (params: React.Key[]): Promise<idsRes> => req
 //更新敏感词
 export const updateSensitveReq = (params: { sensitiveId: number, sensitiveType?: number, word?: string }): Promise<idRes> => request.instance.post('/sms/admin/sensitive/update', params)
 //查询敏感词
-export const getSensitiveListReq = (params: getSensitiveList): Promise<sensitiveListRes> => request.instance.post('/sms/admin/sensitive/queryByPage', params)
+export const getSensitiveListReq = (params: getSensitiveListParams): Promise<sensitiveListRes> => request.instance.post('/sms/admin/sensitive/queryByPage', params)
+//更新留言
+export const updateMessageReq=(params:{auditType:number,messageId:number}): Promise<idsRes> => request.instance.post('/sms/admin/message/update',params)
+//获取留言
+export const getMessageReq=(params:getMessageListParams):Promise<messageListRes>=>request.instance.post('/sms/message/queryByPage',params)

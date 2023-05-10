@@ -1,3 +1,4 @@
+
 interface addArticalParams {
     articleContent: string,
     articleCoverUrl: string,
@@ -41,12 +42,20 @@ type getImageListParams = defaultListType<
         imageName?: string
     }
 >
-type getSensitiveList = defaultListType<
+type getSensitiveListParams = defaultListType<
     { createTime?: boolean },
     {
         isDelete: boolean,
-        sensitiveId?: number|null,
-        sensitiveType?: number|null,
-        word?: string|null
+        sensitiveId?: number | null,
+        sensitiveType?: number | null,
+        word?: string | null
+    }
+>
+type getMessageListParams = defaultListType<
+    { createTime?: boolean },
+    {
+        auditType: number|null,
+        messageContent: string|null,
+        messageId?: number
     }
 >
