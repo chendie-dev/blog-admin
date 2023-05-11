@@ -34,7 +34,6 @@ const MenuItemsProvider: React.FC<propsType> = ({ children }) => {
       getItem('网站管理', '/website'),
       getItem('页面管理', '/pages'),
       getItem('敏感词管理', '/sensitive'),
-      getItem('友链管理', '/links'),
       getItem('关于我', '/about'),
     ]),
     getItem('图片管理', '/images', <MyIcon type="icon-xiangce" />),

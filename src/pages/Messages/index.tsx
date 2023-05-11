@@ -17,7 +17,7 @@ export default function Messages() {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id
   const [searchVal, setSearchVal] = useState('')
   const [loading, setLoading] = useState(true)
-  const [auditType, setAuditType] = useState(1)
+  const [auditType, setAuditType] = useState(2)
   const [isAll, setIsAll] = useState(1)//1全部，2回收站
   const [messageList, setMessageList] = useState<messageItemType[]>([])
   const [totalPage, setTotalPage] = useState(0)
@@ -86,7 +86,7 @@ export default function Messages() {
       key: 'action',
       render: (_, record) => (
         <>
-          <a style={{ color: 'red' }} onClick={() => updateMessage(record)}>{isAll === 1 ? '取消通过' : '通过'}</a>
+          <a style={{ color: 'red' }} onClick={() => updateMessage(record)}>{isAll === 2 ? '取消通过' : '通过'}</a>
         </>
       ),
       width: '20%',
@@ -114,12 +114,12 @@ export default function Messages() {
       <div className='message__status'><button>状态</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
-          onClick={() => { setIsAll(1); setCurrentPage(1); setAuditType(1) }}
-          disabled={selectedRows.length > 0}>已审核</button>
+          onClick={() => { setIsAll(1); setCurrentPage(1); setAuditType(2) }}
+          disabled={selectedRows.length > 0}>未审核</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : '#1677ff' }}
-          onClick={() => { setIsAll(2); setCurrentPage(1); setAuditType(2) }}
-          disabled={selectedRows.length > 0}>未审核</button>
+          onClick={() => { setIsAll(2); setCurrentPage(1); setAuditType(1) }}
+          disabled={selectedRows.length > 0}>已审核</button>
       </div>
       <div className="message__operation-form">
         {/* <Button type='primary' danger style={{display: isAll === 1 ? 'inline-block' : 'none' }} disabled={selectedRows.length === 0} onClick={() => updateMessage()}><DeleteOutlined />批量通过</Button>
