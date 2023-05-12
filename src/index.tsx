@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import store from './store';
 import CategoryDataProvider from './components/CategoryDataProvider';
 import MenuItemsProvider from './components/MenuItemsProvider';
+import ArticleListDataProvider from './components/ArticleListDateProvider';
 if (process.env.NODE_ENV === 'development') {
   require('./mock')
 }
@@ -19,7 +20,9 @@ root.render(
     <BrowserRouter>
       <CategoryDataProvider>
         <MenuItemsProvider>
-          <App />
+          <ArticleListDataProvider>
+            <App />
+          </ArticleListDataProvider>
         </MenuItemsProvider>
       </CategoryDataProvider>
     </BrowserRouter>

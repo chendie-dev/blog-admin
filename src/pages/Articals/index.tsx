@@ -1,15 +1,17 @@
-import { useState, useEffect, useCallback } from 'react'
-import { Input, Button, Form, Upload, Modal, Radio, Checkbox, Popover, message } from 'antd'
 import { PlusOutlined, RedoOutlined } from '@ant-design/icons';
-import MdEditor from 'md-editor-rt';
+import { Button, Checkbox, Form, Input, Modal, Popover, Radio, Upload, message } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import 'md-editor-rt/lib/style.css';
+import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
-import type { UploadProps, RcFile } from 'antd/es/upload';
-import './index.scss'
-import TagSelect from './TagSelect';
+import MdEditor from 'md-editor-rt';
+import 'md-editor-rt/lib/style.css';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { addArticleReq, getImageListReq, updateArticleReq, uploadImageReq } from '../../requests/api';
 import CategorySelect from './CategorySelect';
-import { getImageListReq, uploadImageReq } from '../../requests/api';
+import TagSelect from './TagSelect';
+import './index.scss';
+import { useLocation } from 'react-router-dom';
+import { useArticleListData } from '../../components/ArticleListDateProvider';
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -17,6 +19,7 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
   });
+
 export default function Articals() {
   useEffect(() => {
     document.title = '文章'
@@ -35,9 +38,49 @@ export default function Articals() {
   const [currentPage, setCurrentPage] = useState(1)//当前页
   const [totalPage, setTotalPage] = useState(1)//总页
   const [ImageList, setImageList] = useState<imageItemType[]>([])//图片列表
-  //保存草稿｜发布
-  const publishOrSave = () => {
-    console.log('title', articleTitle, 'content', articleContent);
+  const articleId = useLocation().pathname.split('/')[2]
+  const articleListDate = useArticleListData()
+  const [tagIds, setTagIds] = useState<string[]>([])
+  const [categoryId, setCategoryId] = useState<string>('')
+  const [pageTitle,setPageTitle]=useState('发布文章')
+  const [isPublish,setIsPublish]=useState(false)
+  useLayoutEffect(() => {
+    let res = articleListDate.data.data.find(el => el.articleId == articleId)
+    if(!res)return
+    setPageTitle('修改文章')
+    setArticleContent(res!.articleContent)
+    setArticleTitle(res!.articleTitle)
+    setArticleStatus(res!.articleStatus)
+    setRank(res!.rank)
+    if(res?.articleCoverUrl){
+      setFileList([{
+        uid: res!.articleId,
+        name: 'a',
+        status: "done",
+        url: res!.articleCoverUrl
+      }])
+    }
+    let newTagIds:string[]=res!.tagIds.map(el=>el.split(',')[0])
+    setTagIds(newTagIds)
+    setCategoryId(res!.categoryId.split(',')[0])
+  }, [])
+  useEffect(()=>{
+    window.onbeforeunload = e => {
+      if (isPublish) {
+      return;
+      }
+      // 通知浏览器不要执行与事件关联的默认动作
+      e.preventDefault();
+      // Chrome 需要 returnValue 被设置成空字符串
+      return'111';
+    };
+    return()=>{
+      window.onbeforeunload = null;
+    }
+  })
+  //发布
+  const publish = async () => {
+    console.log('title', articleTitle, 'content', articleContent, 'tag', tagItems, 'category', categoryItems, 'rank', rank, 'img', fileList[0].url, 'status', articleStatus);
     if (articleTitle.replace(/\s*/g, '').length === 0) {
       setArticleTitle('【无标题】')
     } else if (articleTitle.replace(/\s*/g, '').length < 5) {
@@ -51,7 +94,36 @@ export default function Articals() {
       message.error("请设置文章标签")
       return
     }
-
+    const tagIds = tagItems.map(el => el.tagId)
+    if (articleId) {
+      let res = await updateArticleReq({
+        articleId: articleId,
+        articleContent: articleContent,
+        articleCoverUrl: fileList[0].url,
+        articleStatus: articleStatus,
+        articleTitle: articleTitle,
+        categoryId: categoryItems[0].categoryId,
+        rank: rank,
+        tagIds: tagIds,
+      })
+      console.log(res)
+      if (res.code !== 200) return
+      message.success('修改成功！')
+      return
+    }
+    let res = await addArticleReq({
+      articleContent: articleContent,
+      articleCoverUrl: fileList[0].url,
+      articleStatus: articleStatus,
+      articleTitle: articleTitle,
+      categoryId: categoryItems[0].categoryId,
+      rank: rank,
+      tagIds: tagIds,
+    })
+    console.log(res)
+    if (res.code !== 200) return
+    message.success('发布成功！')
+    setIsPublish(true)
   }
   //图片预览设置
   const handlePreview = async (file: UploadFile) => {
@@ -69,6 +141,8 @@ export default function Articals() {
     } else
       setFileList([file]);
     console.log(7777, file);
+    setIsPublish(false)
+
   }
   //获取图片
   const getImageList = async () => {
@@ -80,6 +154,8 @@ export default function Articals() {
     })
     setTotalPage(res.data.totalPage)
     setImageList(res.data.data)
+    setIsPublish(false)
+
   }
   //换一批
   const handlePage = () => {
@@ -96,6 +172,8 @@ export default function Articals() {
       url: el.imageUrl,
     }
     setFileList([file])
+    setIsPublish(false)
+
   }
   //上传文章内容图片
   const onUploadImg = async (files: string[], callback: (urls: string[]) => void) => {
@@ -107,14 +185,16 @@ export default function Articals() {
       })
     );
     callback(res.map((item) => item.data));
+    setIsPublish(false)
+
   };
   return (
     <div className='articals'>
-      <p className="title">发布文章</p>
+      <p className="title">{pageTitle}</p>
       <div className="artical-form" >
         <Input placeholder="输入文章标题（5-50个字）" allowClear showCount maxLength={50} value={articleTitle} onChange={(e) => setArticleTitle(e.target.value)} />
-        <Button type="primary" danger style={{ float: 'right' }} onClick={publishOrSave}>发布文章</Button>
-        <Button danger style={{ float: 'right', marginRight: '10px' }} onClick={publishOrSave}>保存草稿</Button>
+        <Button type="primary" danger style={{ float: 'right' }} onClick={publish}>发布文章</Button>
+        {/* <Button danger style={{ float: 'right', marginRight: '10px' }} onClick={publish}>保存草稿</Button> */}
       </div>
       <MdEditor
         modelValue={articleContent}
@@ -124,14 +204,14 @@ export default function Articals() {
         placeholder='开始编辑.....'
 
         showCodeRowNumber={true}
-        toolbarsExclude={['github', 'save']}
+        toolbarsExclude={['save']}
         // 识别vs code代码
         autoDetectCode={true}
       />
       <p className="title">发布设置</p>
       <Form className='setting-form'>
         <Form.Item label="文章标签"  >
-            <TagSelect tagData={useCallback((items: tagItemType[]) => setTagItems(items),[])} />
+          <TagSelect tagData={useCallback((items: tagItemType[]) => setTagItems(items), [])} tagIds={tagIds} />
         </Form.Item>
         <Form.Item label="添加封面" style={{ height: 110 }}>
           <ImgCrop
@@ -157,7 +237,7 @@ export default function Articals() {
           {
             fileList.length >= 1 ? null :
               <div className="setting-form__img-list">
-                <div  style={{ width: 100, height: 20 }}><span className='setting-form__next' onClick={handlePage}><RedoOutlined />换一批</span></div>
+                <div style={{ width: 100, height: 20 }}><span className='setting-form__next' onClick={handlePage}><RedoOutlined />换一批</span></div>
                 <ul>
                   {ImageList.map(el => {
                     return (
@@ -181,17 +261,16 @@ export default function Articals() {
           </Modal>
         </Form.Item>
         <Form.Item label="文章分类" >
-          <CategorySelect categoryData={useCallback((items: categoryItemType[]) => setCategoryItems(items),[])} />
+          <CategorySelect categoryData={useCallback((items: categoryItemType[]) => setCategoryItems(items), [])} categoryId={categoryId} />
         </Form.Item>
         <Form.Item label="可见范围">
           <Radio.Group onChange={(e) => setArticleStatus(e.target.value)} value={articleStatus}>
             <Radio value={1}>全部可见</Radio>
             <Radio value={2}>仅我可见</Radio>
-            <Radio value={3}>登陆可见</Radio>
           </Radio.Group>
         </Form.Item>
         <Form.Item label="是否置顶">
-          <Checkbox onChange={(e) => e.target.checked ? setRank(1) : setRank(0)}>置顶</Checkbox>
+          <Checkbox onChange={(e) => e.target.checked ? setRank(1) : setRank(0)} checked={rank === 1}>置顶</Checkbox>
         </Form.Item>
       </Form>
     </div>

@@ -1,12 +1,22 @@
 
-interface addArticalParams {
-    articleContent: string,
-    articleCoverUrl: string,
-    articleStatus: number,
-    articleTitle: string,
-    categoryId: number,
-    rank: number,
-    tagIds: number[],
+interface addArticleParams {
+    articleContent?: string,
+    articleCoverUrl?: string,
+    articleStatus?: number,
+    articleTitle?: string,
+    categoryId?: string,
+    rank?: number,
+    tagIds?: string[],
+}
+interface updateArticleParams {
+    articleContent?: string,
+    articleCoverUrl?:string ,
+    articleId: string,
+    articleStatus?: number,
+    articleTitle?:string ,
+    categoryId?: string,
+    rank?:number ,
+    tagIds?: string[]
 }
 interface defaultListType<T, T1> {
     orderByFields?: T,
@@ -16,21 +26,21 @@ interface defaultListType<T, T1> {
 }
 type getTagListParams = defaultListType<
     {
-        createTime: boolean
+        createTime?: boolean
     },
     {
         isDelete: boolean,
-        tagId?: number,
+        tagId?: string|null,
         tagName?: string
     }
 >
 type getCategoryListParams = defaultListType<
     {
-        createTime: boolean
+        createTime?: boolean
     },
     {
         isDelete: boolean
-        categoryId?: number,
+        categoryId?: string|null,
         categoryName?: string,
     }
 >
@@ -54,8 +64,20 @@ type getSensitiveListParams = defaultListType<
 type getMessageListParams = defaultListType<
     { createTime?: boolean },
     {
-        auditType: number|null,
-        messageContent: string|null,
+        auditType: number | null,
+        messageContent: string | null,
         messageId?: number
+    }
+>
+type getArticleListParams = defaultListType<
+    { createTime?: boolean },
+    {
+        articleContent?: string | null,
+        articleId?: string | null,
+        articleTitle?: string | null,
+        categoryId?: string | null,
+        isDelete: boolean,
+        tagIds?: string[] | null
+        articleStatus?:number|null
     }
 >

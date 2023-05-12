@@ -6,7 +6,7 @@ interface defaultResType<T> {
     traceId: string
 }
 interface categoryItemType {
-    categoryId: number,
+    categoryId: string,
     categoryName: string,
     createTime: string
 }
@@ -33,6 +33,17 @@ interface messageItemType {
     messageContent: string,
     messageId: number
 }
+interface articleItemType {
+    articleContent: string,
+    articleCoverUrl: string,
+    articleId:string ,
+    articleStatus:number ,
+    articleTitle: string,
+    categoryId: string,
+    createTime: string,
+    rank: number,
+    tagIds: string[]
+}
 type idRes = defaultResType<{ id: string }>
 type idsRes = defaultResType<{ ids: string[] }>
 type tagListRes = defaultResType<{ data: tagItemType[], totalPage: number }>
@@ -41,3 +52,5 @@ type imageListRes = defaultResType<{ data: imageItemType[], totalPage: number }>
 type imageUrlRes = defaultResType<string>
 type sensitiveListRes = defaultResType<{ data: sensitiveItemType[], totalPage: number }>
 type messageListRes = defaultResType<{ data: messageItemType[], totalPage: number }>
+type articleListRes = defaultResType<{data:articleItemType[], totalPage: number }>
+

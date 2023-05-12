@@ -7,9 +7,10 @@ import { InfiniteScroll } from 'antd-mobile';
 import './index.scss'
 import { validatevalue } from '../../hooks/validate';
 interface propsType {
-  categoryData: (items: categoryItemType[]) => void
+  categoryData: (items: categoryItemType[]) => void,
+  categoryId:string
 }
-const CategorySelect: React.FC<propsType> = memo(({ categoryData }) => {
+const CategorySelect: React.FC<propsType> = memo(({ categoryData,categoryId }) => {
   const [open, setOpen] = useState(false);
   const [isShowSearch, setIsShowSearch] = useState(false)//是否显示搜索内容
   const [selectedItems, setSelectedItems] = useState<categoryItemType[]>([]);//已选择分类
@@ -20,15 +21,24 @@ const CategorySelect: React.FC<propsType> = memo(({ categoryData }) => {
   const [searchList, setSearchList] = useState<categoryItemType[]>([]);//搜索内容
   const [isShowErr, setIsShowErr] = useState(false)//1长度，2个数
   // console.log('ca改变');
-  
+  useEffect(() => {
+    initSelectedItems()
+  }, [categoryId])
+  const initSelectedItems = async () => {
+    if(!categoryId)return
+    let res=await getItemList(1,1,categoryId)
+    console.log(categoryId,res)
+    setSelectedItems(res.data.data)
+  }
   //获取分类列表
-  const getItemList = async (pageNum: number, pageSize: number) => {
+  const getItemList = async (pageNum: number, pageSize: number,categoryId?:string) => {
     return await getCategoryListReq({
       pageNum: pageNum,
       pageSize: pageSize,
       queryParam: {
         isDelete: false,
-        categoryName: search.value
+        categoryName: search.value,
+        categoryId:categoryId?categoryId:null
       }
     })
   }
@@ -44,7 +54,7 @@ const CategorySelect: React.FC<propsType> = memo(({ categoryData }) => {
     setSelectedItems(nextSelectedItems);
   };
   // 删除已选择分类
-  const deleteSelectedItem = (itemId: number) => {
+  const deleteSelectedItem = (itemId: string) => {
     const newItems = selectedItems.filter((item) => item.categoryId !== itemId);
     setSelectedItems(newItems);
     setIsShowErr(false)

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, useLayoutEffect, useState } from 'react'
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popover, Tag } from 'antd'
 import { addTagReq, getTagListReq } from '../../requests/api';
@@ -7,10 +7,11 @@ import { InfiniteScroll } from 'antd-mobile';
 import './index.scss'
 import { validatevalue } from '../../hooks/validate';
 interface propsType {
-  tagData: (items: tagItemType[]) => void
+  tagData: (items: tagItemType[]) => void,
+  tagIds: string[]
 }
 
-const TagSelect: React.FC<propsType> = memo(({ tagData }) => {
+const TagSelect: React.FC<propsType> = memo(({ tagData, tagIds }) => {
   const [open, setOpen] = useState(false);
   const [isShowSearch, setIsShowSearch] = useState(false)//是否显示搜索内容
   const [selectedItems, setSelectedItems] = useState<tagItemType[]>([]);//已选择标签
@@ -21,15 +22,31 @@ const TagSelect: React.FC<propsType> = memo(({ tagData }) => {
   const [searchList, setSearchList] = useState<tagItemType[]>([]);//搜索内容
   const [isShowErr, setIsShowErr] = useState(false)//1长度，2个数
   // console.log('ta改变');
-  
+  useEffect(() => {
+    initSelectedItems()
+  }, [tagIds])
+  const initSelectedItems = async () => {
+    if(!tagIds)return;
+    const res = await Promise.all(
+      tagIds.map((tagId) => {
+        return getItemList(1, 1, tagId)
+      })
+    );
+    let items: tagItemType[] = []
+    res.forEach(el => {
+      items.push(...el.data.data)
+    })
+    setSelectedItems(items)
+  }
   //获取标签列表
-  const getItemList = async (pageNum: number, pageSize: number) => {
+  const getItemList = async (pageNum: number, pageSize: number, tagId?: string) => {
     return await getTagListReq({
       pageNum: pageNum,
       pageSize: pageSize,
       queryParam: {
         isDelete: false,
-        tagName: search.value
+        tagName: search.value,
+        tagId: tagId ? tagId : null
       }
     })
   }
@@ -76,8 +93,8 @@ const TagSelect: React.FC<propsType> = memo(({ tagData }) => {
   useEffect(() => {
     tagData(selectedItems)
   }, [selectedItems])
-  const onOpenChange=(open:boolean)=>{
-    if(!open)setSearch({value:''})
+  const onOpenChange = (open: boolean) => {
+    if (!open) setSearch({ value: '' })
     setOpen(open)
   }
   const content = (
@@ -90,7 +107,7 @@ const TagSelect: React.FC<propsType> = memo(({ tagData }) => {
             help={search.errorMsg}
           >
             <Input type='text' value={search.value}
-              onChange={(e) => setSearch({ value: e.target.value, ...validatevalue(e.target.value,5) })}
+              onChange={(e) => setSearch({ value: e.target.value, ...validatevalue(e.target.value, 5) })}
               onFocus={() => setIsShowSearch(true)}
               onBlur={() => { setTimeout(() => { setIsShowSearch(false) }, 250); }}
               placeholder='请输入文字搜索，按Enter键添加标签'
@@ -147,7 +164,7 @@ const TagSelect: React.FC<propsType> = memo(({ tagData }) => {
         style={{ display: 'inline-block' }}
 
       >
-        <Button type="dashed" className='select-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block',marginRight:10 }}><PlusOutlined />添加文章标签</Button>
+        <Button type="dashed" className='select-btn' style={{ display: selectedItems.length === 5 ? 'none' : 'inline-block', marginRight: 10 }}><PlusOutlined />添加文章标签</Button>
       </Popover>
       <TweenOneGroup
         style={{ display: 'inline-block' }}

@@ -16,7 +16,7 @@ export default function Categories() {
   const [isDescend, setIsDescend] = useState(true);//创建时间升降序
   const [isAll, setIsAll] = useState(1)//1全部，2回收站
   const [category, setCategory] = useState<validateValType>({ value: '' });//添加/编辑分类名（校验）
-  const [editRowId, setEditRowId] = useState(0)
+  const [editRowId, setEditRowId] = useState('')
   const [currentPage, setCurrentPage] = useState(1)//当前页
   const [selectedRows, setSelectedRows] = useState<categoryItemType[]>([])//选取行
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id

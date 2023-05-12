@@ -4,9 +4,6 @@ import request from './index'
 export const addCategoryReq = (params: { categoryName: string }): Promise<idRes> => request.instance.post('/article/admin/category/add', params)
 //添加标签
 export const addTagReq = (params: { tagName: string }): Promise<idRes> => request.instance.post('/article/admin/tag/add', params)
-//添加文章
-export const addArticalReq = (params: addArticalParams): Promise<idRes> => request.instance.post('/article/admin/articleBody/add', params)
-export const getArticleListReq = () => request.instance.post("/article/blog/list")
 //获取标签分页
 export const getTagListReq = (params: getTagListParams): Promise<tagListRes> => request.instance.post('/article/admin/tag/queryByPage', params)
 //批量删除标签
@@ -20,7 +17,7 @@ export const getCategoryListReq = (params: getCategoryListParams): Promise<categ
 //删除分类
 export const deleteCategoryReq = (params: React.Key[]): Promise<idsRes> => request.instance.delete('/article/admin/category/delete', { data: params })
 //更新分类名
-export const updateCategoryReq = (params: { categoryId: number, categoryName: string }): Promise<idRes> => request.instance.post('/article/admin/category/update', params)
+export const updateCategoryReq = (params: { categoryId: string, categoryName: string }): Promise<idRes> => request.instance.post('/article/admin/category/update', params)
 //恢复分类
 export const recoverCategoryReq = (params: React.Key[]): Promise<idsRes> => request.instance.post('/article/admin/category/recover', params)
 //添加图片
@@ -53,3 +50,14 @@ export const getSensitiveListReq = (params: getSensitiveListParams): Promise<sen
 export const updateMessageReq=(params:{auditType:number,messageId:number}): Promise<idsRes> => request.instance.post('/sms/admin/message/update',params)
 //获取留言
 export const getMessageReq=(params:getMessageListParams):Promise<messageListRes>=>request.instance.post('/sms/message/queryByPage',params)
+//添加文章
+export const addArticleReq=(params:addArticleParams):Promise<idRes>=>request.instance.post('/article/admin/body/add',params)
+//删除文章
+export const deleteArticleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.delete('/article/admin/body/delete',{data:params})
+//更新文章
+export const updateArticleReq=(params:updateArticleParams):Promise<idRes>=>request.instance.post('/article/admin/body/update',params)
+//获取文章
+export const getArticleListReq=(params:getArticleListParams):Promise<articleListRes>=>request.instance.post('/article/body/queryByPage',params)
+//恢复文章
+export const recoverArticleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/article/admin/body/recover',params)
+

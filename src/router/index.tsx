@@ -9,13 +9,13 @@ const Tags = lazy(() => import('../pages/Tags'))
 const Images = lazy(() => import('../pages/Images'))
 const Messages = lazy(() => import('../pages/Messages'))
 const Sensitive = lazy(() => import('../pages/Sensitive'))
-
+const ArticleList=lazy(()=>import('../pages/ArticleList'))
 const withLoading = (com: JSX.Element, name: string) => (
-        <KeepAlive id={name}>
+        // <KeepAlive id={name}>
             <React.Suspense>
                 {com}
             </React.Suspense>
-        </KeepAlive>
+        // </KeepAlive
 
 )
 const routers = [
@@ -30,6 +30,10 @@ const routers = [
             {
                 path: '/charts',
                 element: withLoading(<Charts />, 'charts')
+            },
+            {
+                path: '/articles/:id',
+                element: withLoading(<Articles />, 'articles')
             },
             {
                 path: '/articles',
@@ -54,6 +58,10 @@ const routers = [
             {
                 path:'/sensitive',
                 element:withLoading(<Sensitive/>,'sensitive')
+            },
+            {
+                path:'/article-list',
+                element:withLoading(<ArticleList/>,'article-list')
             }
         ]
     },
