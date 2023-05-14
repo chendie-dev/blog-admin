@@ -79,7 +79,7 @@ export default function ArticleList() {
       payload: {
         orderByFields: { createTime: !isDescend },
         pageNum: currentPage,
-        pageSize: 5,
+        pageSize: 2,
         queryParam: {
           isDelete: status === 3 ? true : false,
           articleTitle: searchVal,

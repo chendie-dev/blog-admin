@@ -3,7 +3,7 @@ import { Button, Checkbox, Form, Input, Modal, Popover, Radio, Upload, message }
 import ImgCrop from 'antd-img-crop';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
-import MdEditor from 'md-editor-rt';
+import {MdEditor} from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { addArticleReq, getImageListReq, updateArticleReq, uploadImageReq } from '../../requests/api';
@@ -44,6 +44,7 @@ export default function Articals() {
   const [categoryId, setCategoryId] = useState<string>('')
   const [pageTitle, setPageTitle] = useState('发布文章')
   const [isPublish, setIsPublish] = useState(true)
+  const [id] = useState('preview');
   useLayoutEffect(() => {
     let res = articleListDate.data.data.find(el => el.articleId == articleId)
     if (!res) return
@@ -202,12 +203,13 @@ export default function Articals() {
         {/* <Button danger style={{ float: 'right', marginRight: '10px' }} onClick={publish}>保存草稿</Button> */}
       </div>
       <MdEditor
+        editorId={id}
         modelValue={articleContent}
         onChange={setArticleContent}
         onUploadImg={onUploadImg}
         style={{ height: '500px', marginBottom: '20px' }}
         placeholder='开始编辑.....'
-
+        // previewTheme='mk-cute'
         showCodeRowNumber={true}
         toolbarsExclude={['save']}
         // 识别vs code代码
