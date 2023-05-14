@@ -42,45 +42,48 @@ export default function Articals() {
   const articleListDate = useArticleListData()
   const [tagIds, setTagIds] = useState<string[]>([])
   const [categoryId, setCategoryId] = useState<string>('')
-  const [pageTitle,setPageTitle]=useState('发布文章')
-  const [isPublish,setIsPublish]=useState(false)
+  const [pageTitle, setPageTitle] = useState('发布文章')
+  const [isPublish, setIsPublish] = useState(true)
   useLayoutEffect(() => {
     let res = articleListDate.data.data.find(el => el.articleId == articleId)
-    if(!res)return
+    if (!res) return
     setPageTitle('修改文章')
     setArticleContent(res!.articleContent)
     setArticleTitle(res!.articleTitle)
     setArticleStatus(res!.articleStatus)
     setRank(res!.rank)
-    if(res?.articleCoverUrl){
+    if (res?.articleCoverUrl) {
       setFileList([{
         uid: res!.articleId,
         name: 'a',
         status: "done",
-        url: res!.articleCoverUrl
+        response:{data:res!.articleCoverUrl} 
       }])
     }
-    let newTagIds:string[]=res!.tagIds.map(el=>el.split(',')[0])
+    let newTagIds: string[] = res!.tagIds.map(el => el.split(',')[0])
     setTagIds(newTagIds)
     setCategoryId(res!.categoryId.split(',')[0])
   }, [])
-  useEffect(()=>{
+  useEffect(() => {
     window.onbeforeunload = e => {
       if (isPublish) {
-      return;
+        return;
       }
       // 通知浏览器不要执行与事件关联的默认动作
       e.preventDefault();
       // Chrome 需要 returnValue 被设置成空字符串
-      return'111';
+      return '111';
     };
-    return()=>{
+    return () => {
       window.onbeforeunload = null;
     }
   })
+  useEffect(() => {
+
+  }, [])
   //发布
   const publish = async () => {
-    console.log('title', articleTitle, 'content', articleContent, 'tag', tagItems, 'category', categoryItems, 'rank', rank, 'img', fileList[0].url, 'status', articleStatus);
+    console.log('title', articleTitle, 'content', articleContent, 'tag', tagItems, 'category', categoryItems, 'rank', rank, 'img', fileList[0].response.data, 'status', articleStatus);
     if (articleTitle.replace(/\s*/g, '').length === 0) {
       setArticleTitle('【无标题】')
     } else if (articleTitle.replace(/\s*/g, '').length < 5) {
@@ -99,7 +102,7 @@ export default function Articals() {
       let res = await updateArticleReq({
         articleId: articleId,
         articleContent: articleContent,
-        articleCoverUrl: fileList[0].url,
+        articleCoverUrl: fileList[0].response.data,
         articleStatus: articleStatus,
         articleTitle: articleTitle,
         categoryId: categoryItems[0].categoryId,
@@ -109,6 +112,7 @@ export default function Articals() {
       console.log(res)
       if (res.code !== 200) return
       message.success('修改成功！')
+      setIsPublish(true)
       return
     }
     let res = await addArticleReq({
@@ -136,11 +140,12 @@ export default function Articals() {
   };
   // 提交图片
   const handleChange: UploadProps['onChange'] = ({ file }) => {
+    console.log(file)
     if (file.status === 'removed') {
       setFileList([]);
     } else
       setFileList([file]);
-    console.log(7777, file);
+    // console.log(7777, file);
     setIsPublish(false)
 
   }
@@ -169,7 +174,7 @@ export default function Articals() {
       uid: el.imageId.toString(),
       name: el.imageName,
       status: 'done',
-      url: el.imageUrl,
+      response:{data: el.imageUrl},
     }
     setFileList([file])
     setIsPublish(false)

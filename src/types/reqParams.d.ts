@@ -18,6 +18,7 @@ interface updateArticleParams {
     rank?:number ,
     tagIds?: string[]
 }
+
 interface defaultListType<T, T1> {
     orderByFields?: T,
     pageNum: number,
