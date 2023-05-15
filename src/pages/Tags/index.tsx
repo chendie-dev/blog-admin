@@ -8,6 +8,7 @@ import { getTagList } from '../../store/reqDataSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/storeHook';
 import './index.scss'
 import { validatevalue } from '../../hooks/validate';
+import globalConstant from '../../utils/globalConstant';
 export default function Tags() {
   useEffect(() => {
     document.title = '标签-管理系统'
@@ -75,8 +76,8 @@ export default function Tags() {
         return <>
           <span >创建时间</span>
           <span style={{ position: 'relative', marginLeft: 5 }} onClick={() => setIsDescend((lastVa) => !lastVa)}>
-            <CaretUpOutlined style={{ position: 'absolute', top: -2, color: isDescend ? "#1677ff" : "#aaa" }} />
-            <CaretDownOutlined style={{ position: 'absolute', top: 5, left: 0, color: isDescend ? "#aaa" : "#1677ff" }} />
+            <CaretUpOutlined style={{ position: 'absolute', top: -2, color: isDescend ? globalConstant().color  : "#aaa" }} />
+            <CaretDownOutlined style={{ position: 'absolute', top: 5, left: 0, color: isDescend ? "#aaa" : globalConstant().color  }} />
           </span>
         </>
       },
@@ -90,7 +91,7 @@ export default function Tags() {
       render: (_, record) => (
         <>
           <div style={{ display: isAll === 1 ? 'block' : 'none' }}>
-            <a style={{ color: '#1677ff' }} onClick={() => { setIsShow(2); setTag({ value: record.tagName }); setEditRowId(record.tagId) }}>编辑</a>
+            <a style={{ color: globalConstant().color }} onClick={() => { setIsShow(2); setTag({ value: record.tagName }); setEditRowId(record.tagId) }}>编辑</a>
             <a style={{ color: 'red', marginLeft: 10 }} onClick={() => { deleteTagRows(record) }}>删除</a>
           </div>
           <div style={{ display: isAll === 2 ? 'block' : 'none' }}>
@@ -159,11 +160,11 @@ export default function Tags() {
       <p className="tag__title">标签管理</p>
       <div className='tag__status'><button>状态</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setIsAll(1); setCurrentPage(1) }}
           disabled={selectedRows.length > 0}>全部</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : '#1677ff' }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : globalConstant().color }}
           onClick={() => { setIsAll(2); setCurrentPage(1) }}
           disabled={selectedRows.length > 0}>回收站</button>
       </div>

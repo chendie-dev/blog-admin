@@ -6,6 +6,7 @@ import { TableRowSelection } from 'antd/es/table/interface';
 import './index.scss'
 import { updateMessageReq, getMessageReq } from '../../requests/api'
 import { FormatData } from '../../hooks/formatData';
+import globalConstant from '../../utils/globalConstant';
 
 export default function Messages() {
   useEffect(() => {
@@ -72,8 +73,8 @@ export default function Messages() {
         return <>
           <span >创建时间</span>
           <span style={{ position: 'relative', marginLeft: 5 }} onClick={() => setIsDescend((lastVa) => !lastVa)}>
-            <CaretUpOutlined style={{ position: 'absolute', top: -2, color: isDescend ? "#1677ff" : "#aaa" }} />
-            <CaretDownOutlined style={{ position: 'absolute', top: 5, left: 0, color: isDescend ? "#aaa" : "#1677ff" }} />
+            <CaretUpOutlined style={{ position: 'absolute', top: -2, color: isDescend ? globalConstant().color  : "#aaa" }} />
+            <CaretDownOutlined style={{ position: 'absolute', top: 5, left: 0, color: isDescend ? "#aaa" : globalConstant().color  }} />
           </span>
         </>
       },
@@ -113,11 +114,11 @@ export default function Messages() {
       <p className="message__title">留言管理</p>
       <div className='message__status'><button>状态</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setIsAll(1); setCurrentPage(1); setAuditType(1) }}
           disabled={selectedRows.length > 0}>未审核</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : '#1677ff' }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : globalConstant().color }}
           onClick={() => { setIsAll(2); setCurrentPage(1); setAuditType(2) }}
           disabled={selectedRows.length > 0}>已审核</button>
       </div>

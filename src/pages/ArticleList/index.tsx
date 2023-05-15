@@ -9,6 +9,7 @@ import { useArticleListData, useArticleListDataDispatch } from '../../components
 import { useNavigate } from 'react-router-dom';
 import TageInput from './TagInput'
 import CategoryInput from './CategoryInput';
+import globalConstant from '../../utils/globalConstant';
 
 export default function ArticleList() {
   useEffect(() => {
@@ -157,8 +158,8 @@ export default function ArticleList() {
       render: (_, record) => {
         return (
           <>
-            {record.tagIds.map(el => {
-              return (<Tag color="geekblue" style={{ marginBottom: 5 }}>{el.split(',')[1]}</Tag>)
+            {record.tagIds.map((el,index) => {
+              return (<Tag key={index} color="geekblue" style={{ marginBottom: 5 }}>{el.split(',')[1]}</Tag>)
             })}
           </>
         )
@@ -169,8 +170,8 @@ export default function ArticleList() {
         return <>
           <span >发布时间</span>
           <span style={{ position: 'relative', marginLeft: 5 }} onClick={() => setIsDescend((lastVa) => !lastVa)}>
-            <CaretUpOutlined style={{ position: 'absolute', top: -2, color: isDescend ? "#1677ff" : "#aaa" }} />
-            <CaretDownOutlined style={{ position: 'absolute', top: 5, left: 0, color: isDescend ? "#aaa" : "#1677ff" }} />
+            <CaretUpOutlined style={{ position: 'absolute', top: -2, color: isDescend ? globalConstant().color  : "#aaa" }} />
+            <CaretDownOutlined style={{ position: 'absolute', top: 5, left: 0, color: isDescend ? "#aaa" : globalConstant().color  }} />
           </span>
         </>
       },
@@ -194,7 +195,7 @@ export default function ArticleList() {
       render: (_, record) => (
         <>
           <div style={{ display: status !== 3 ? 'block' : 'none' }}>
-            <a style={{ color: '#1677ff' }} onClick={() => navigateTo(`/articles/${record.articleId}`)}>编辑</a>
+            <a style={{ color: globalConstant().color }} onClick={() => navigateTo(`/articles/${record.articleId}`)}>编辑</a>
             <a style={{ color: 'red', marginLeft: 10 }} onClick={() => { deletearticleRows(record) }}>删除</a>
           </div>
           <div style={{ display: status === 3 ? 'block' : 'none' }}>
@@ -232,19 +233,19 @@ export default function ArticleList() {
       <p className="article__title">文章管理</p>
       <div className='article__status'><button>状态</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: status === 0 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: status === 0 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setStatus(0); setCurrentPage(1); setArticleStatus(null)}}
           disabled={selectedRows.length > 0}>全部</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: status === 1 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: status === 1 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setStatus(1); setCurrentPage(1);setArticleStatus(1) }}
           disabled={selectedRows.length > 0}>公开</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: status === 2 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: status === 2 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setStatus(2); setCurrentPage(1);setArticleStatus(2) }}
           disabled={selectedRows.length > 0}>私密</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: status === 3 ? '#1677ff' : 'rgba(0, 0, 0, 0.45)' }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: status === 3 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setStatus(3); setCurrentPage(1);setArticleStatus(null) }}
           disabled={selectedRows.length > 0}>回收站</button>
       </div>

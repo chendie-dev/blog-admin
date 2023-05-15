@@ -2,6 +2,7 @@ import React, { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import KeepAlive from "react-activation";
 import Home from "../pages/Home";
+import Login from "../pages/Login"
 const Charts = lazy(() => import('../pages/Charts'))
 const Articles = lazy(() => import('../pages/Articals'))
 const Categories = lazy(() => import('../pages/Categories'))
@@ -21,7 +22,7 @@ const withLoading = (com: JSX.Element, name: string) => (
 const routers = [
     {
         path: '/',
-        element: <Navigate to="/charts" />
+        element: <Navigate to="/login" />
     },
     {
         path: '/',
@@ -65,7 +66,10 @@ const routers = [
             }
         ]
     },
-
+    {
+        path:'/login',
+        element:<Login/>
+    }
 
 ]
 export default routers
