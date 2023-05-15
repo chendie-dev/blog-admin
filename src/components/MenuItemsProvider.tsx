@@ -40,7 +40,7 @@ const MenuItemsProvider: React.FC<propsType> = ({ children }) => {
     getItem('日志管理', '9', <MyIcon type="icon-rizhi" />, [
       getItem('操作日志', '/operation/log')
     ]),
-    getItem('个人中心', '/setting', <MyIcon type="icon-icon-person-renwu" />),
+    getItem('看板界面', '/setting', <MyIcon type="icon-icon-person-renwu" />),
   ]
   const [menuItems, dispatch] = useReducer(menuItemsReducer, initialMenuItems)
   function getItem(
