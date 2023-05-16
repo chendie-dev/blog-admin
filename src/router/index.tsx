@@ -10,13 +10,14 @@ const Tags = lazy(() => import('../pages/Tags'))
 const Images = lazy(() => import('../pages/Images'))
 const Messages = lazy(() => import('../pages/Messages'))
 const Sensitive = lazy(() => import('../pages/Sensitive'))
-const ArticleList=lazy(()=>import('../pages/ArticleList'))
+const ArticleList = lazy(() => import('../pages/ArticleList'))
+const About = lazy(() => import('../pages/About'))
 const withLoading = (com: JSX.Element, name: string) => (
-        // <KeepAlive id={name}>
-            <React.Suspense>
-                {com}
-            </React.Suspense>
-        // </KeepAlive
+    // <KeepAlive id={name}>
+    <React.Suspense>
+        {com}
+    </React.Suspense>
+    // </KeepAlive
 
 )
 const routers = [
@@ -53,22 +54,26 @@ const routers = [
                 element: withLoading(<Images />, 'images')
             },
             {
-                path:'/messages',
-                element:withLoading(<Messages/>,'messages')
+                path: '/messages',
+                element: withLoading(<Messages />, 'messages')
             },
             {
-                path:'/sensitive',
-                element:withLoading(<Sensitive/>,'sensitive')
+                path: '/sensitive',
+                element: withLoading(<Sensitive />, 'sensitive')
             },
             {
-                path:'/article-list',
-                element:withLoading(<ArticleList/>,'article-list')
+                path: '/article-list',
+                element: withLoading(<ArticleList />, 'article-list')
+            },
+            {
+                path: '/about',
+                element: withLoading(<About />, 'about')
             }
         ]
     },
     {
-        path:'/login',
-        element:<Login/>
+        path: '/login',
+        element: <Login />
     }
 
 ]

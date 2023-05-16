@@ -1,0 +1,18 @@
+.about{
+    .title {
+        position: relative;
+        font-size: 16px;
+        font-weight: bolder;
+    }
+
+    .title::before {
+        content: '';
+        position: absolute;
+        width: 3px;
+        height: 24px;
+        left: -24px;
+        top: 1px;
+        background-color:#27a7ca ;
+    }
+
+}

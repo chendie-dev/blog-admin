@@ -3,15 +3,18 @@ import { Button, Checkbox, Form, Input, Modal, Popover, Radio, Upload, message }
 import ImgCrop from 'antd-img-crop';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
-import {MdEditor} from 'md-editor-rt';
+import { MdEditor } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { addArticleReq, getImageListReq, updateArticleReq, uploadImageReq } from '../../requests/api';
 import CategorySelect from './CategorySelect';
 import TagSelect from './TagSelect';
 import './index.scss';
 import { useLocation } from 'react-router-dom';
 import { useArticleListData } from '../../components/ArticleListDateProvider';
+import EmojiExtension from '../../components/EmojiExtension';
+import ReadExtension from '../../components/ReadExtension';
+import { ExposeParam, InsertContentGenerator } from 'md-editor-rt/lib/types/MdEditor/type';
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -58,7 +61,7 @@ export default function Articals() {
         uid: res!.articleId,
         name: 'a',
         status: "done",
-        response:{data:res!.articleCoverUrl} 
+        response: { data: res!.articleCoverUrl }
       }])
     }
     let newTagIds: string[] = res!.tagIds.map(el => el.split(',')[0])
@@ -175,7 +178,7 @@ export default function Articals() {
       uid: el.imageId.toString(),
       name: el.imageName,
       status: 'done',
-      response:{data: el.imageUrl},
+      response: { data: el.imageUrl },
     }
     setFileList([file])
     setIsPublish(false)
@@ -194,6 +197,10 @@ export default function Articals() {
     setIsPublish(false)
 
   };
+  const editorRef = useRef<ExposeParam>();
+  const onInsert = useCallback((generator: InsertContentGenerator) => {
+    editorRef.current?.insert(generator);
+  }, []);
   return (
     <div className='articals'>
       <p className="title">{pageTitle}</p>
@@ -203,6 +210,7 @@ export default function Articals() {
         {/* <Button danger style={{ float: 'right', marginRight: '10px' }} onClick={publish}>保存草稿</Button> */}
       </div>
       <MdEditor
+        ref={editorRef}
         editorId={id}
         modelValue={articleContent}
         onChange={setArticleContent}
@@ -213,7 +221,47 @@ export default function Articals() {
         showCodeRowNumber={true}
         toolbarsExclude={['save']}
         // 识别vs code代码
+        defToolbars={[
+          <EmojiExtension onInsert={onInsert} key="emoji-extension" />,
+          <ReadExtension mdText={articleContent} key="read-extension" />
+        ]}
         autoDetectCode={true}
+        toolbars={[
+          'bold',
+          'underline',
+          'italic',
+          'strikeThrough',
+          '-',
+          'title',
+          'sub',
+          'sup',
+          'quote',
+          'unorderedList',
+          'orderedList',
+          'task',
+          '-',
+          'codeRow',
+          'code',
+          'link',
+          'image',
+          'table',
+          'mermaid',
+          'katex',
+          0,
+          1,
+          '-',
+          'revoke',
+          'next',
+          'save',
+          '=',
+          'prettier',
+          'pageFullscreen',
+          // 'fullscreen',
+          'preview',
+          'htmlPreview',
+          'catalog',
+          'github'
+        ]}
       />
       <p className="title">发布设置</p>
       <Form className='setting-form'>

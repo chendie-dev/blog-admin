@@ -1,0 +1,50 @@
+.extension{
+    .md-editor-dropdown-overlay {
+
+        li {
+            position: relative;
+            cursor: pointer;
+            float: left;
+            border: 1px solid #e8e8e8;
+            height: 24px;
+            width: 28px;
+            overflow: hidden;
+            margin: -1px 0 0 -1px;
+            padding: 4px 2px;
+            text-align: center;
+            list-style: none;
+            z-index: 11;
+        }
+        li:hover::after{
+            position: absolute;
+            left: 0;
+            top:0;
+            content: '';
+            height: 20px;
+            width: 24px;
+            background-color: transparent;
+            border: 1px solid #27a7ca;
+            z-index: 10;
+        }
+    }
+    
+    .emoji-container {
+        border-radius: 3px;
+        border: 1px solid #e6e6e6;
+    }
+    
+    .emojis {
+        position: relative;
+        width: 300px;
+        margin: 10px;
+        padding: 0;
+        background-color: #fff;
+    }
+    .md-editor-icon {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+        overflow: hidden;
+        padding-left: 5px;
+    }
+}
