@@ -61,7 +61,7 @@ export default function Articals() {
         uid: res!.articleId,
         name: 'a',
         status: "done",
-        response: { data: res!.articleCoverUrl }
+        response: { data: res!.articleCoverUrl },
       }])
     }
     let newTagIds: string[] = res!.tagIds.map(el => el.split(',')[0])
@@ -179,6 +179,7 @@ export default function Articals() {
       name: el.imageName,
       status: 'done',
       response: { data: el.imageUrl },
+      url:el.imageUrl
     }
     setFileList([file])
     setIsPublish(false)

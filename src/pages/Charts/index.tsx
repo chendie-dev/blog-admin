@@ -9,9 +9,7 @@ export default function Charts() {
 const editorRef = useRef<ExposeParam>();
   return (
     <div>
-      <EmojiExtension
-        onInsert={onInsert} key="emoji-extension"
-      />
+      <a href="">11233</a>
     </div>
   )
 }
