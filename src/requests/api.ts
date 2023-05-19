@@ -60,4 +60,9 @@ export const updateArticleReq=(params:updateArticleParams):Promise<idRes>=>reque
 export const getArticleListReq=(params:getArticleListParams):Promise<articleListRes>=>request.instance.post('/article/body/queryByPage',params)
 //恢复文章
 export const recoverArticleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/article/admin/body/recover',params)
-
+//登陆
+export const loginReq=(params:{username:string,password:string}):Promise<loginRes>=>request.instance.post('/auth/login',params)
+//登出
+export const logoutReq=()=>request.instance('/auth/logout')
+//获取用户信息
+export const getUserReq=():Promise<userRes>=>request.instance.post('/auth/getUserInfo')

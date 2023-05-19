@@ -1,13 +1,24 @@
 import React from 'react'
 import './index.scss'
-import { Button, Card, Form, Input } from 'antd'
+import { Button, Card, Form, Input, message } from 'antd'
+import { loginReq } from '../../requests/api'
+import { useNavigate } from 'react-router'
 export default function Login() {
-  const onFinish=(value:any)=>{
-
+  const navigateTo=useNavigate()
+  const onFinish=async (value:{ username: string; password: string; })=>{
+      console.log(value)
+      let res=await loginReq(value)
+      console.log(res)
+      if(res.code!==200){
+        message.error('密码或用户名错误错误！')
+        return
+      }
+      localStorage.setItem('token',res.data)
+      navigateTo('/charts')
   }
   return (
     <div className='login'>
-      <p  className='login_title'><h1>博客管理系统</h1></p>
+      <h1  className='login_title'>博客管理系统</h1>
       <Card className='login_card' bordered={false}>
         <Form
           name="basic"

@@ -6,14 +6,16 @@ const instance1=axios.create({
     baseURL:"",
     timeout:20000,
     headers:{
-        'USER-ID':'1'
+        // 'USER-ID':'1'
+        token:localStorage.getItem('token')
     }
 })
 const instance=axios.create({
     baseURL:"/api",
     timeout:20000,
     headers:{
-        'USER-ID':'1'
+        // 'USER-ID':'1'
+        'token':localStorage.getItem('token')
     }
 })
 //请求拦截器

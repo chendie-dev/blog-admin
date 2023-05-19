@@ -18,7 +18,6 @@ const CategoryDataProvider: React.FC<propsType> = ({ children }) => {
             data: [],
             totalPage: 0
         },
-        msg: '',
         traceId:''
     })
     function categoryDataReducer(categoryData: categoryListRes, action: dataActionType) {

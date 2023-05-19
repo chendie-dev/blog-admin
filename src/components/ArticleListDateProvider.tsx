@@ -18,7 +18,6 @@ const ArticleListDataProvider: React.FC<propsType> = ({ children }) => {
             data: [],
             totalPage: 0
         },
-        msg: '',
         traceId: ''
     })
     function articleListDataReducer(articleListData: articleListRes, action: dataActionType) {

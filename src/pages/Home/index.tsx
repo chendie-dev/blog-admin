@@ -4,6 +4,7 @@ import { Layout, Menu, theme, Divider, Breadcrumb, Popover, Avatar } from 'antd'
 import MyIcon from '../../components/MyIcon';
 import './index.scss'
 import { useMenuItems, useMenuItemsDispatch } from '../../components/MenuItemsProvider';
+import { logoutReq } from '../../requests/api';
 const { Header, Sider } = Layout;
 
 export default function Home() {
@@ -68,7 +69,11 @@ export default function Home() {
         })
         setSelectedKeys([location.pathname])
     }, [location.pathname])
-
+    const logout=async ()=>{
+        localStorage.removeItem('token')
+        await logoutReq()
+        navigateTo('/login')
+    }
     return (
         <Layout className='home' >
             <Sider trigger={null} collapsible collapsed={collapsed} style={{ height: '100vh', overflowY: 'auto', paddingTop: '10px', boxShadow: '0 0 5px' }}>
@@ -94,9 +99,9 @@ export default function Home() {
                         placement="bottom"
                         content={(
                             <div>
-                                <p className='header__exit'><MyIcon type='icon-yonghu' style={{ marginRight: '10px' }} />个人中心</p>
+                                <p className='header__exit' onClick={()=>navigateTo('/user')}><MyIcon type='icon-yonghu' style={{ marginRight: '10px' }}  />个人中心</p>
                                 <Divider style={{ padding: 0, margin: '5px 0' }} />
-                                <p className='header__exit'><MyIcon type='icon-tuichu' style={{ marginRight: '10px' }} />退出登陆</p>
+                                <p className='header__exit' onClick={()=>logout()}><MyIcon type='icon-tuichu' style={{ marginRight: '10px' }} />退出登陆</p>
                             </div>
                         )
                         }
