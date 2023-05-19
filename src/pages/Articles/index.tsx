@@ -23,7 +23,7 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-export default function Articals() {
+export default function Articles() {
   useEffect(() => {
     document.title = '文章'
     getImageList()
@@ -61,7 +61,7 @@ export default function Articals() {
         uid: res!.articleId,
         name: 'a',
         status: "done",
-        response: { data: res!.articleCoverUrl },
+        response: { data: res.articleCoverUrl },
       }])
     }
     let newTagIds: string[] = res!.tagIds.map(el => el.split(',')[0])
@@ -121,7 +121,7 @@ export default function Articals() {
     }
     let res = await addArticleReq({
       articleContent: articleContent,
-      articleCoverUrl: fileList[0].url,
+      articleCoverUrl: fileList[0].response.data,
       articleStatus: articleStatus,
       articleTitle: articleTitle,
       categoryId: categoryItems[0].categoryId,
@@ -147,8 +147,10 @@ export default function Articals() {
     console.log(file)
     if (file.status === 'removed') {
       setFileList([]);
-    } else
+    } else {
+
       setFileList([file]);
+    }
     // console.log(7777, file);
     setIsPublish(false)
 
@@ -179,7 +181,7 @@ export default function Articals() {
       name: el.imageName,
       status: 'done',
       response: { data: el.imageUrl },
-      url:el.imageUrl
+      url: el.imageUrl
     }
     setFileList([file])
     setIsPublish(false)

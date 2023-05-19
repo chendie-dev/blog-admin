@@ -4,7 +4,7 @@ import KeepAlive from "react-activation";
 import Home from "../pages/Home";
 import Login from "../pages/Login"
 const Charts = lazy(() => import('../pages/Charts'))
-const Articles = lazy(() => import('../pages/Articals'))
+const Articles = lazy(() => import('../pages/Articles'))
 const Categories = lazy(() => import('../pages/Categories'))
 const Tags = lazy(() => import('../pages/Tags'))
 const Images = lazy(() => import('../pages/Images'))

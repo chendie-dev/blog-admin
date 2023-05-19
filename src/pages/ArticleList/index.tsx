@@ -22,7 +22,7 @@ export default function ArticleList() {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id
   const [searchVal, setSearchVal] = useState('')
   const [loading, setLoading] = useState(true)
-  const [categoryId, setCategoryId] = useState<string|null>('')//条件查询
+  const [categoryId, setCategoryId] = useState<string|null>(null)//条件查询
   const [tagIds, setTagIds] = useState<string[]|null>(null)//条件查询
   const articleDispatch = useArticleListDataDispatch()
   const articleListContext = useArticleListData()
@@ -80,11 +80,11 @@ export default function ArticleList() {
       payload: {
         orderByFields: { createTime: !isDescend },
         pageNum: currentPage,
-        pageSize: 2,
+        pageSize: 5,
         queryParam: {
           isDelete: status === 3 ? true : false,
-          articleTitle: searchVal,
-          categoryId: categoryId,
+          articleTitle: searchVal===''?null:searchVal,
+          categoryId: categoryId==='?'?null:categoryId,
           tagIds: tagIds,
           articleStatus:articleStatus
         }
