@@ -9,6 +9,7 @@ import CategoryDataProvider from './components/CategoryDataProvider';
 import MenuItemsProvider from './components/MenuItemsProvider';
 import ArticleListDataProvider from './components/ArticleListDateProvider';
 import { ConfigProvider } from 'antd';
+import UserDataProvider from './components/UserDataProvider';
 if (process.env.NODE_ENV === 'development') {
   require('./mock')
 }
@@ -18,13 +19,15 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <ConfigProvider
-    theme={{ token: { colorPrimary: '#27a7ca',borderRadius: 43} }}>
+    theme={{ token: { colorPrimary: '#27a7ca', borderRadius: 15 } }}>
     <Provider store={store}>
       <BrowserRouter>
         <CategoryDataProvider>
           <MenuItemsProvider>
             <ArticleListDataProvider>
-              <App />
+              <UserDataProvider>
+                <App />
+              </UserDataProvider>
             </ArticleListDataProvider>
           </MenuItemsProvider>
         </CategoryDataProvider>

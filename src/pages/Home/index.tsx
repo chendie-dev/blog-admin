@@ -5,6 +5,7 @@ import MyIcon from '../../components/MyIcon';
 import './index.scss'
 import { useMenuItems, useMenuItemsDispatch } from '../../components/MenuItemsProvider';
 import { logoutReq } from '../../requests/api';
+import { useUserData, useUserDataDispatch } from '../../components/UserDataProvider';
 const { Header, Sider } = Layout;
 
 export default function Home() {
@@ -16,8 +17,11 @@ export default function Home() {
     const [firstBreadItem, setBreadItem] = useState<Array<BreadcrumbItem>>([])
     const [selectedKeys, setSelectedKeys] = useState([location.pathname])
     const MenuItems = useMenuItems()
+    const userData = useUserData()
+    const userDispatch=useUserDataDispatch()
     //展开关闭控制
     useEffect(() => {
+        userDispatch('getuser')
         for (let i = 0; i < MenuItems.length; i++) {
             if (MenuItems[i].children && MenuItems[i].children!.find((el: { key: React.Key }) => el.key === location.pathname)) {
                 setOpenKey([MenuItems[i].key as string])
@@ -69,7 +73,7 @@ export default function Home() {
         })
         setSelectedKeys([location.pathname])
     }, [location.pathname])
-    const logout=async ()=>{
+    const logout = async () => {
         localStorage.removeItem('token')
         await logoutReq()
         navigateTo('/login')
@@ -99,14 +103,14 @@ export default function Home() {
                         placement="bottom"
                         content={(
                             <div>
-                                <p className='header__exit' onClick={()=>navigateTo('/user')}><MyIcon type='icon-yonghu' style={{ marginRight: '10px' }}  />个人中心</p>
+                                <p className='header__exit' onClick={() => navigateTo('/setting')}><MyIcon type='icon-yonghu' style={{ marginRight: '10px' }} />个人中心</p>
                                 <Divider style={{ padding: 0, margin: '5px 0' }} />
-                                <p className='header__exit' onClick={()=>logout()}><MyIcon type='icon-tuichu' style={{ marginRight: '10px' }} />退出登陆</p>
+                                <p className='header__exit' onClick={() => logout()}><MyIcon type='icon-tuichu' style={{ marginRight: '10px' }} />退出登陆</p>
                             </div>
                         )
                         }
                     >
-                        <Avatar size={70} src={require('../../images/touxiang.png')} style={{ float: 'right', margin: '2px 40px 2px 0' }} />
+                        <Avatar size={70} src={userData.avatarUrl} style={{ float: 'right', margin: '2px 40px 2px 0' }} />
                     </Popover>
                     <Divider style={{ padding: 0, margin: 0, width: '!important 100%' }} />
                     <Breadcrumb
@@ -118,11 +122,11 @@ export default function Home() {
                     style={{
                         margin: ' 24px 16px',
                         padding: 24,
-                        // minHeight:'100vh',
+                        // minHeight:'40%',
                         background: colorBgContainer,
                     }}
                 >
-                        <Outlet />
+                    <Outlet />
                 </div>
             </Layout>
         </Layout>

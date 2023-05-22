@@ -33,7 +33,7 @@ export const updateImageReq = (params: { imageId: number, imageName: string }): 
 //上传图片
 export const uploadImageReq = (form: any): Promise<imageUrlRes> => request.instance.post('/file/admin/image/upload', form, {
   headers: {
-    'Content-Type': 'multipart/form-data'
+    'Content-Type': 'multipart/form-data',
   }
 })
 //添加敏感词
@@ -47,22 +47,37 @@ export const updateSensitveReq = (params: { sensitiveId: number, sensitiveType?:
 //查询敏感词
 export const getSensitiveListReq = (params: getSensitiveListParams): Promise<sensitiveListRes> => request.instance.post('/sms/admin/sensitive/queryByPage', params)
 //更新留言
-export const updateMessageReq=(params:{auditType:number,messageId:number}): Promise<idsRes> => request.instance.post('/sms/admin/message/update',params)
+export const updateMessageReq = (params: { auditType: number, messageId: number }): Promise<idsRes> => request.instance.post('/sms/admin/message/update', params)
 //获取留言
-export const getMessageReq=(params:getMessageListParams):Promise<messageListRes>=>request.instance.post('/sms/message/queryByPage',params)
+export const getMessageReq = (params: getMessageListParams): Promise<messageListRes> => request.instance.post('/sms/message/queryByPage', params)
 //添加文章
-export const addArticleReq=(params:addArticleParams):Promise<idRes>=>request.instance.post('/article/admin/body/add',params)
+export const addArticleReq = (params: addArticleParams): Promise<idRes> => request.instance.post('/article/admin/body/add', params)
 //删除文章
-export const deleteArticleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.delete('/article/admin/body/delete',{data:params})
+export const deleteArticleReq = (params: React.Key[]): Promise<idsRes> => request.instance.delete('/article/admin/body/delete', { data: params })
 //更新文章
-export const updateArticleReq=(params:updateArticleParams):Promise<idRes>=>request.instance.post('/article/admin/body/update',params)
+export const updateArticleReq = (params: updateArticleParams): Promise<idRes> => request.instance.post('/article/admin/body/update', params)
 //获取文章
-export const getArticleListReq=(params:getArticleListParams):Promise<articleListRes>=>request.instance.post('/article/body/queryByPage',params)
+export const getArticleListReq = (params: getArticleListParams): Promise<articleListRes> => request.instance.post('/article/body/queryByPage', params)
 //恢复文章
-export const recoverArticleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/article/admin/body/recover',params)
+export const recoverArticleReq = (params: React.Key[]): Promise<idsRes> => request.instance.post('/article/admin/body/recover', params)
 //登陆
-export const loginReq=(params:{username:string,password:string}):Promise<loginRes>=>request.instance.post('/auth/login',params)
+export const loginReq = (params: { username: string, password: string }): Promise<loginRes> => request.instance.post('/auth/login', params)
 //登出
-export const logoutReq=()=>request.instance('/auth/logout')
+export const logoutReq = () => request.instance('/auth/logout')
 //获取用户信息
-export const getUserReq=():Promise<userRes>=>request.instance.post('/auth/getUserInfo')
+export const getUserReq = (): Promise<userRes> => request.instance.post('/auth/getUserInfo')
+//获取验证码
+export const getCaptchaReq = (params: { mail: string }) => request.instance.post('/sms/captcha/send', params)
+//更新用户信息
+export const updateUserInfoReq = (params: userInfoParams): Promise<idRes> => request.instance.post('/auth/updateUserInfo', params)
+//更新邮箱
+export const updateEmailReq=(params:emailInfoParams): Promise<idRes> => request.instance.post('/auth/updateEmail',params)
+//更新密码
+export const updatePasswordReq=(params:passwordInfoParams): Promise<idRes> => request.instance.post('/auth/updatePassword',params)
+//判断邮箱是否合法
+export const checkEmailReq=(email:string):Promise<booleanRes>=>request.instance.get(`/auth/checkEmail?email=${email}`)
+//判断用户名是否合法
+export const checkUsernameReq=(username:string):Promise<booleanRes>=>request.instance.get(`/auth/checkUsername?username=${username}`)
+//获取用户列表信息
+export const getUserListReq=(params:getUserListParams):Promise<userListRes>=>request.instance.post('/auth/admin/getUserInfoList',params)
+

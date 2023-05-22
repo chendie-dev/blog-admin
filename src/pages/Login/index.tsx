@@ -3,8 +3,10 @@ import './index.scss'
 import { Button, Card, Form, Input, message } from 'antd'
 import { loginReq } from '../../requests/api'
 import { useNavigate } from 'react-router'
+import { useUserDataDispatch } from '../../components/UserDataProvider'
 export default function Login() {
   const navigateTo=useNavigate()
+  const userDispatch=useUserDataDispatch()
   const onFinish=async (value:{ username: string; password: string; })=>{
       console.log(value)
       let res=await loginReq(value)
@@ -15,6 +17,8 @@ export default function Login() {
       }
       localStorage.setItem('token',res.data)
       navigateTo('/charts')
+      console.log(localStorage.getItem('token'))
+      userDispatch('getuser')
   }
   return (
     <div className='login'>

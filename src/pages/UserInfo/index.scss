@@ -1,0 +1,49 @@
+.user {
+    // height: 100%vh;
+
+    .title {
+        position: relative;
+        font-size: 16px;
+        font-weight: bolder;
+    }
+
+    .title::before {
+        content: '';
+        position: absolute;
+        width: 3px;
+        height: 24px;
+        left: -24px;
+        top: 1px;
+        background-color: #27a7ca;
+    }
+    .content{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    .pass,.email,.avatar{
+        display: inline-block;
+        width: 40%;
+        height: 100%;
+        h3{
+            text-align: center;
+        }
+        
+    }
+    .pass{
+        margin-right: 5%;
+    }
+    .email{
+        margin-left: 5%;
+    }
+    .avatar{
+        text-align: center;
+    }
+    .detail-info{
+        text-align: center;
+        display: inline-block;
+        width: 40%;
+        height: 100%;
+    }
+
+}

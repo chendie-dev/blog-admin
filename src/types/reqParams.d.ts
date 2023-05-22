@@ -10,20 +10,39 @@ interface addArticleParams {
 }
 interface updateArticleParams {
     articleContent?: string,
-    articleCoverUrl?:string ,
+    articleCoverUrl?: string,
     articleId: string,
     articleStatus?: number,
-    articleTitle?:string ,
+    articleTitle?: string,
     categoryId?: string,
-    rank?:number ,
+    rank?: number,
     tagIds?: string[]
 }
-
+interface userInfoParams {
+    avatarUrl?: string,
+    nickname?: string,
+    phoneNumber?: string,
+    sex?: string,
+    userId: string,
+    username?: string
+}
+interface emailInfoParams {
+    captcha: string,
+    currentPassword: string,
+    email: string,
+    userId: string
+}
 interface defaultListType<T, T1> {
     orderByFields?: T,
     pageNum: number,
     pageSize: number,
     queryParam: T1
+}
+interface passwordInfoParams {
+    currentPassword: string,
+    password: string,
+    rePassword: string,
+    userId: string
 }
 type getTagListParams = defaultListType<
     {
@@ -31,7 +50,7 @@ type getTagListParams = defaultListType<
     },
     {
         isDelete: boolean,
-        tagId?: string|null,
+        tagId?: string | null,
         tagName?: string
     }
 >
@@ -41,7 +60,7 @@ type getCategoryListParams = defaultListType<
     },
     {
         isDelete: boolean
-        categoryId?: string|null,
+        categoryId?: string | null,
         categoryName?: string,
     }
 >
@@ -79,6 +98,17 @@ type getArticleListParams = defaultListType<
         categoryId?: string | null,
         isDelete: boolean,
         tagIds?: string[] | null
-        articleStatus?:number|null
+        articleStatus?: number | null
+    }
+>
+
+type getUserListParams = defaultListType<
+    { createTime?: boolean },
+    {
+        email?:string ,
+        isDelete: boolean,
+        sex?: string,
+        userId?:string ,
+        username?: string|null
     }
 >

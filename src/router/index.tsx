@@ -12,7 +12,8 @@ const Messages = lazy(() => import('../pages/Messages'))
 const Sensitive = lazy(() => import('../pages/Sensitive'))
 const ArticleList = lazy(() => import('../pages/ArticleList'))
 const About = lazy(() => import('../pages/About'))
-const User=lazy(()=>import('../pages/User'))
+const Setting=lazy(()=>import('../pages/UserInfo'))
+const Users=lazy(()=>import('../pages/Users'))
 const withLoading = (com: JSX.Element, name: string) => (
     // <KeepAlive id={name}>
     <React.Suspense>
@@ -71,8 +72,12 @@ const routers = [
                 element: withLoading(<About />, 'about')
             },
             {
-                path: '/user',
-                element: withLoading(<User />, 'user')
+                path: '/setting',
+                element: withLoading(<Setting />, 'setting')
+            },
+            {
+                path: '/users',
+                element: withLoading(<Users />, 'users')
             },
         ]
     },
