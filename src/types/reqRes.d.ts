@@ -66,6 +66,6 @@ type sensitiveListRes = defaultResType<{ data: sensitiveItemType[], totalPage: n
 type messageListRes = defaultResType<{ data: messageItemType[], totalPage: number }>
 type articleListRes = defaultResType<{ data: articleItemType[], totalPage: number }>
 type loginRes = defaultResType<string>
-type userRes=defaultResType<userInfo>
+type userRes=defaultResType<userItemType>
 type booleanRes=defaultResType<boolean>
 type userListRes=defaultResType<{ data: userItemType[], totalPage: number }>

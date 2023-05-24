@@ -80,4 +80,7 @@ export const checkEmailReq=(email:string):Promise<booleanRes>=>request.instance.
 export const checkUsernameReq=(username:string):Promise<booleanRes>=>request.instance.get(`/auth/checkUsername?username=${username}`)
 //获取用户列表信息
 export const getUserListReq=(params:getUserListParams):Promise<userListRes>=>request.instance.post('/auth/admin/getUserInfoList',params)
-
+//删除用户
+export const deleteUserReq=(params: React.Key[]):Promise<idsRes>=>request.instance.delete('/auth/deleteUser',{data:params})
+//恢复用户
+export const recoverUserReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/auth/recoverUser',params)

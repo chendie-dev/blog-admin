@@ -1,11 +1,11 @@
 import { useEffect, useLayoutEffect, useState } from 'react'
 import './index.scss'
-import { Avatar, Button, Collapse, Divider, Form, Input, Modal, Radio, Space, Upload, message } from 'antd'
+import { Button, Collapse, Divider, Form, Input, Radio, Space, Upload, message } from 'antd'
 import ImgCrop from 'antd-img-crop'
-import { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { PlusOutlined, UserOutlined } from '@ant-design/icons';
+import {  UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { PlusOutlined } from '@ant-design/icons';
 import { useUserData, useUserDataDispatch } from '../../components/UserDataProvider';
-import { checkEmailReq, checkUsernameReq, getCaptchaReq, updateEmailReq, updatePasswordReq, updateUserInfoReq } from '../../requests/api';
+import { checkUsernameReq, getCaptchaReq, updateEmailReq, updatePasswordReq, updateUserInfoReq } from '../../requests/api';
 
 export default function User() {
   const [fileList, setFileList] = useState<UploadFile[]>([]);//已上传图片
@@ -39,11 +39,12 @@ export default function User() {
 
   // 提交图片
   const handleChange: UploadProps['onChange'] = ({ file }) => {
-    console.log(file)
-    if (file.status === 'done') {
-      setUserInfo((a) => ({ ...a, avatarUrl: file.response.data }))
+    // console.log(file)
+    if (file.status === 'removed') setFileList([])
+    else {
       setFileList([file])
-    } else if (file.status === 'removed') setFileList([])
+    }
+    if (file.status === 'done') setUserInfo((a) => ({ ...a, avatarUrl: file.response.data }))
   }
   //修改信息
   const updateUserInfo = async () => {
@@ -52,7 +53,7 @@ export default function User() {
       return
     }
     if (useInfo.username && (useInfo.username.length < 6 || useInfo.username.length > 20) && useInfo.username !== '') {
-      message.error('昵称长度为6-20个字')
+      message.error('用户名长度为6-20个字')
       return
     }
     if (useInfo.phoneNumber && useInfo.phoneNumber.length !== 11 && useInfo.phoneNumber !== '') {
@@ -69,7 +70,7 @@ export default function User() {
     let res = await updateUserInfoReq(useInfo)
     if (res.code !== 200) return
     message.success('保存成功')
-    userDispatch('getdata')
+    userDispatch('getuser')
   }
   const getCaptcha = async () => {
     if(userData.email===email){
@@ -148,7 +149,7 @@ export default function User() {
                 >
                   <Input allowClear value={useInfo.nickname} onChange={(e) => setUserInfo((a) => ({ ...a, nickname: e.target.value.replaceAll(/\s*/g, "") }))} />
                 </Form.Item>
-                <Form.Item label='昵称'>
+                <Form.Item label='用户名'>
                   <Input allowClear value={useInfo.username} onChange={(e) => setUserInfo((a) => ({ ...a, username: e.target.value.replaceAll(/\s*/g, "") }))} />
                 </Form.Item>
                 <Form.Item label='手机号'>
