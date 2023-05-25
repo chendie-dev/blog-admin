@@ -84,3 +84,13 @@ export const getUserListReq=(params:getUserListParams):Promise<userListRes>=>req
 export const deleteUserReq=(params: React.Key[]):Promise<idsRes>=>request.instance.delete('/auth/deleteUser',{data:params})
 //恢复用户
 export const recoverUserReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/auth/recoverUser',params)
+//添加角色
+export const addRoleReq=(params:addRoleParams):Promise<idRes>=>request.instance.post('/auth/admin/role/add',params)
+//删除角色
+export const deleteRoleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.delete('/auth/admin/role/delete',{data:params})
+//修改角色
+export const updateRoleReq=(params:React.Key):Promise<idsRes>=>request.instance.post('/auth/admin/role/update',params)
+//恢复角色
+export const recoverRoleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/auth/admin/role/recover',params)
+//查询角色
+export const getRoleListReq=(params:getRoleListParams):Promise<roleListRes>=>request.instance.post('/auth/admin/role/queryByPage',params)

@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useState } from 'react'
 import './index.scss'
 import { Button, Collapse, Divider, Form, Input, Radio, Space, Upload, message } from 'antd'
 import ImgCrop from 'antd-img-crop'
-import {  UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { PlusOutlined } from '@ant-design/icons';
 import { useUserData, useUserDataDispatch } from '../../components/UserDataProvider';
 import { checkUsernameReq, getCaptchaReq, updateEmailReq, updatePasswordReq, updateUserInfoReq } from '../../requests/api';
@@ -10,24 +10,12 @@ import { checkUsernameReq, getCaptchaReq, updateEmailReq, updatePasswordReq, upd
 export default function User() {
   const [fileList, setFileList] = useState<UploadFile[]>([]);//已上传图片
   const [email, setEmail] = useState('')
-  const [useInfo, setUserInfo] = useState<userInfoParams>({ userId: '' })
   const userData = useUserData()
   const userDispatch = useUserDataDispatch()
   const [captchaBtnVal, setCaptchaBtnVal] = useState('发送验证码')
 
   useEffect(() => {
-    userDispatch('getuser')
-  }, [])
-  useLayoutEffect(() => {
     if (!userData.userId) return
-    setUserInfo({
-      userId: userData.userId,
-      username: userData.username,
-      avatarUrl: userData.avatarUrl,
-      nickname: userData.nickname,
-      phoneNumber: userData.phoneNumber,
-      sex: userData.sexEnum
-    })
     setFileList([{
       uid: userData.userId,
       name: 'avatar',
@@ -39,41 +27,23 @@ export default function User() {
 
   // 提交图片
   const handleChange: UploadProps['onChange'] = ({ file }) => {
-    // console.log(file)
     if (file.status === 'removed') setFileList([])
     else {
       setFileList([file])
     }
-    if (file.status === 'done') setUserInfo((a) => ({ ...a, avatarUrl: file.response.data }))
   }
   //修改信息
-  const updateUserInfo = async () => {
-    if (useInfo.nickname && (useInfo.nickname.length < 2 || useInfo.nickname.length > 20) && useInfo.nickname !== '') {
-      message.error('姓名长度为2-20个字')
-      return
-    }
-    if (useInfo.username && (useInfo.username.length < 6 || useInfo.username.length > 20) && useInfo.username !== '') {
-      message.error('用户名长度为6-20个字')
-      return
-    }
-    if (useInfo.phoneNumber && useInfo.phoneNumber.length !== 11 && useInfo.phoneNumber !== '') {
-      message.error('手机号为11位')
-      return
-    }
-    if (useInfo.username && useInfo.username !== userData.username) {
-      let res = await checkUsernameReq(useInfo.username)
-      if (!res.data) {
-        message.error('用户名已存在')
-        return
-      }
-    }
-    let res = await updateUserInfoReq(useInfo)
+  const updateUserInfo = async (value: userInfoParams) => {
+    value.avatarUrl = fileList[0].response.data
+    value.userId = userData.userId
+    console.log(value);
+    let res = await updateUserInfoReq(value)
     if (res.code !== 200) return
     message.success('保存成功')
     userDispatch('getuser')
   }
   const getCaptcha = async () => {
-    if(userData.email===email){
+    if (userData.email === email) {
       message.error('绑定邮箱已为该邮箱')
       return
     }
@@ -131,6 +101,7 @@ export default function User() {
                   listType='picture-circle'
                   onChange={handleChange}
                   fileList={fileList}
+                  className='avatar'
                 >
                   {
                     fileList.length > 0 ? '' :
@@ -144,33 +115,53 @@ export default function User() {
                 labelCol={{ span: 4 }}
                 labelAlign='left'
                 layout='vertical'
+                onFinish={updateUserInfo}
               >
-                <Form.Item label='真实姓名'
+                <Form.Item
+                  name='nickname'
+                  initialValue={userData.nickname}
+                  label='真实姓名'
+                  rules={[{min:2,max:20,message:'姓名长度2-20个字'}]}
                 >
-                  <Input allowClear value={useInfo.nickname} onChange={(e) => setUserInfo((a) => ({ ...a, nickname: e.target.value.replaceAll(/\s*/g, "") }))} />
+                  <Input allowClear />
                 </Form.Item>
-                <Form.Item label='用户名'>
-                  <Input allowClear value={useInfo.username} onChange={(e) => setUserInfo((a) => ({ ...a, username: e.target.value.replaceAll(/\s*/g, "") }))} />
+                <Form.Item
+                  name='username'
+                  initialValue={userData.username}
+                  label='用户名'
+                  rules={[{min:6,max:20,message:'姓名长度6-20个字'},()=>({
+                    async validator(_,value){
+                      let res=await checkUsernameReq(value)
+                      if(res.data) return Promise.resolve()
+                      return Promise.reject(new Error('用户名已存在'))
+                    }
+                  })]}
+                >
+                  <Input allowClear />
                 </Form.Item>
-                <Form.Item label='手机号'>
-                  <Input allowClear value={useInfo.phoneNumber} onChange={(e) => setUserInfo((a) => ({ ...a, phoneNumber: e.target.value.replaceAll(/\s*/g, "") }))} />
+                <Form.Item
+                  label='手机号'
+                  name={'phoneNumber'}
+                  initialValue={userData.phoneNumber}
+                  rules={[{len:11,message:'手机号长度11位'}]}
+                >
+                  <Input allowClear />
                 </Form.Item>
                 {/* <Form.Item label='角色名'>
                   <Input allowClear disabled value={userData.roleName} />
                 </Form.Item> */}
-              </Form>
-              <Form
-                colon={false}
-              >
-                <Form.Item label='性别'>
-                  <Radio.Group value={useInfo.sex} onChange={(e) => setUserInfo((a) => ({ ...a, sex: e.target.value }))} >
+                <Form.Item
+                  name='sex'
+                  initialValue={userData.sexEnum}
+                  label='性别'>
+                  <Radio.Group  >
                     <Radio value={1}>男</Radio>
                     <Radio value={2}>女</Radio>
                     <Radio value={0}>保密</Radio>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item >
-                  <Button type="primary" htmlType="submit" onClick={updateUserInfo}>
+                  <Button type="primary" htmlType="submit" >
                     保存
                   </Button>
                 </Form.Item>

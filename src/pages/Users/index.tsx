@@ -138,9 +138,9 @@ export default function User() {
         <>
           {
             isDelete ?
-              <a style={{ color: 'red' }} onClick={() => recoverUser([record.userId])} >恢复</a> :
+              <a style={{ display:'block',color: 'red' }} onClick={() => recoverUser([record.userId])} >恢复</a> :
               <>
-                <a style={{ color: 'red' }} onClick={() => deleteUser([record.userId])} >删除</a>
+                <a style={{ display:'block',color: 'red' }} onClick={() => deleteUser([record.userId])} >删除</a>
                 <a style={{ color: 'red' }} >更换角色</a>
               </>
           }

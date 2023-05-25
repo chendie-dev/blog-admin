@@ -18,7 +18,7 @@ export default function Home() {
     const [selectedKeys, setSelectedKeys] = useState([location.pathname])
     const MenuItems = useMenuItems()
     const userData = useUserData()
-    const userDispatch=useUserDataDispatch()
+    const userDispatch = useUserDataDispatch()
     //展开关闭控制
     useEffect(() => {
         userDispatch('getuser')
@@ -30,8 +30,10 @@ export default function Home() {
     }, [])
     //动态生成一级面包屑
     useEffect(() => {
+        let flag=0
         MenuItems.forEach((el) => {
             if (el.key === location.pathname) {
+                flag=1
                 if (location.pathname === '/charts') {
                     setBreadItem([
                         {
@@ -46,6 +48,7 @@ export default function Home() {
                     }])
                 }
             } else if (el.children && el.children.find(element => element.key === location.pathname)) {
+                flag=1
                 let menuItems: MenuItems[] = []
                 el.children.forEach(el2 => {
                     menuItems.push({
@@ -69,8 +72,9 @@ export default function Home() {
                         title: el.children.find(element => element.key === location.pathname)?.label + '',
                     }
                 ])
-            }
+            } 
         })
+        if(!flag)setBreadItem([])
         setSelectedKeys([location.pathname])
     }, [location.pathname])
     const logout = async () => {

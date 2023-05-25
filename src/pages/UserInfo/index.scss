@@ -16,34 +16,48 @@
         top: 1px;
         background-color: #27a7ca;
     }
-    .content{
+
+    .content {
         width: 100%;
         display: flex;
         justify-content: center;
     }
-    .pass,.email,.avatar{
+
+    .pass,
+    .email,
+    .avatar {
         display: inline-block;
         width: 40%;
         height: 100%;
-        h3{
+
+        h3 {
             text-align: center;
         }
-        
+
     }
-    .pass{
+
+    .pass {
         margin-right: 5%;
     }
-    .email{
+
+    .email {
         margin-left: 5%;
     }
-    .avatar{
+
+    .avatar {
         text-align: center;
     }
-    .detail-info{
-        text-align: center;
+
+    .detail-info,button {
         display: inline-block;
         width: 40%;
         height: 100%;
+
+        .avatar,button {
+            margin-left: 50%;
+            transform:translate(-50%);;
+        }
     }
+
 
 }

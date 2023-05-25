@@ -14,6 +14,7 @@ const ArticleList = lazy(() => import('../pages/ArticleList'))
 const About = lazy(() => import('../pages/About'))
 const Setting=lazy(()=>import('../pages/UserInfo'))
 const Users=lazy(()=>import('../pages/Users'))
+const Role=lazy(()=>import('../pages/Role'))
 const withLoading = (com: JSX.Element, name: string) => (
     // <KeepAlive id={name}>
     <React.Suspense>
@@ -78,6 +79,10 @@ const routers = [
             {
                 path: '/users',
                 element: withLoading(<Users />, 'users')
+            },
+            {
+                path: '/roles',
+                element: withLoading(<Role />, 'roles')
             },
         ]
     },

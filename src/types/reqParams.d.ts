@@ -44,6 +44,11 @@ interface passwordInfoParams {
     rePassword: string,
     userId: string
 }
+interface addRoleParams {
+    menuIds: React.Key[],
+    roleDesc?: string,
+    roleName: string,
+}
 type getTagListParams = defaultListType<
     {
         createTime?: boolean
@@ -105,10 +110,20 @@ type getArticleListParams = defaultListType<
 type getUserListParams = defaultListType<
     { createTime?: boolean },
     {
-        email?:string ,
+        email?: string,
         isDelete: boolean,
         sex?: string,
-        userId?:string ,
-        username?: string|null
+        userId?: string,
+        username?: string | null
+    }
+>
+
+type getRoleListParams = defaultListType<
+    { createTime?: boolean },
+    {
+        isDelete: boolean,
+        menuIds?: React.Key[]|null,
+        roleId?: string|null,
+        roleName?:string|null 
     }
 >

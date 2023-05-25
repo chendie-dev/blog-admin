@@ -2,7 +2,7 @@
 interface defaultResType<T> {
     code: number,
     data: T,
-    msg?:string,
+    msg?: string,
     traceId: string
 }
 
@@ -56,6 +56,13 @@ interface userItemType {
     userId: string,
     username: string
 }
+interface roleItemType {
+    createTime: string,
+    menuIds: React.Key[],
+    roleDesc: string,
+    roleId: string,
+    roleName: string
+}
 type idRes = defaultResType<{ id: string }>
 type idsRes = defaultResType<{ ids: string[] }>
 type tagListRes = defaultResType<{ data: tagItemType[], totalPage: number }>
@@ -66,6 +73,7 @@ type sensitiveListRes = defaultResType<{ data: sensitiveItemType[], totalPage: n
 type messageListRes = defaultResType<{ data: messageItemType[], totalPage: number }>
 type articleListRes = defaultResType<{ data: articleItemType[], totalPage: number }>
 type loginRes = defaultResType<string>
-type userRes=defaultResType<userItemType>
-type booleanRes=defaultResType<boolean>
-type userListRes=defaultResType<{ data: userItemType[], totalPage: number }>
+type userRes = defaultResType<userItemType>
+type booleanRes = defaultResType<boolean>
+type userListRes = defaultResType<{ data: userItemType[], totalPage: number }>
+type roleListRes = defaultResType<{ data: roleItemType[], totalPage: number }>
