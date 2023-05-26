@@ -52,9 +52,12 @@ export default function Categories() {
       return
     } else if (category.value.replace(/\s*/g, "").length > 10) return
     let res = await addCategoryReq({ categoryName: category.value.replace(/\s*/g, "") })
-    console.log(res);
+    // console.log(res);
 
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     message.success('添加成功！')
     setCategory({ value: '' })
     setIsShow(0)
@@ -64,7 +67,10 @@ export default function Categories() {
   const recoverCategory = async (row?: categoryItemType) => {
     let res;
     row ? res = await recoverCategoryReq([row.categoryId]) : res = await recoverCategoryReq(selectedRowKeys)
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     setSelectedRows([])
     setSelectedRowKeys([])
     getCategoryList()
@@ -73,7 +79,10 @@ export default function Categories() {
   const deleteCategoryRows = async (row?: categoryItemType) => {
     let res;
     row ? res = await deleteCategoryReq([row.categoryId]) : res = await deleteCategoryReq(selectedRowKeys)
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     getCategoryList()
     setSelectedRows([])
     setSelectedRowKeys([])
@@ -148,7 +157,10 @@ export default function Categories() {
       categoryId: editRowId,
       categoryName: category.value.replace(/\s*/g, ''),
     })
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     message.success('修改成功！')
     setIsShow(0)
     getCategoryList()

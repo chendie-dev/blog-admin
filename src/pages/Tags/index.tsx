@@ -38,7 +38,10 @@ export default function Tags() {
       return;
     } else if (tag.value.replace(/\s*/g, '').length > 5) return
     let res = await addTagReq({ tagName: tag.value });
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     message.success("添加成功！")
     setTag({ value: '' })
     setIsShow(0)
@@ -128,7 +131,10 @@ export default function Tags() {
       tagId: editRowId,
       tagName: tag.value,
     })
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     message.success('修改成功！')
     setIsShow(0)
     dispatchTagList()
@@ -138,7 +144,10 @@ export default function Tags() {
     let res;
     row ? res = await recoverTagReq([row.tagId]) : res = await recoverTagReq(selectedRowKeys)
     console.log('recover', res);
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     dispatchTagList()
     setSelectedRows([])
     setSelectedRowKeys([]);
@@ -149,7 +158,10 @@ export default function Tags() {
     let res;
     row ? res = await deleteTagListReq([row.tagId]) : res = await deleteTagListReq(selectedRowKeys)
     console.log('delete', res);
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     dispatchTagList()
     setSelectedRows([])
     setSelectedRowKeys([]);

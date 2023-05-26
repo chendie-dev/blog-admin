@@ -78,8 +78,11 @@ export default function Images() {
       return
     } else if (ImageItem.value.replace(/\s*/g, "").length > 10) return
     let res = await addImageReq({ imageName: ImageItem.value.replace(/\s*/g, ""), imageUrl: fileList[0].response.data })
-    console.log(888, res);
-    if (res.code !== 200) return
+    // console.log(888, res);
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     message.success('添加成功！')
     setImageItem({ value: '' })
     setIsShow(0)
@@ -89,7 +92,10 @@ export default function Images() {
   const recoverImage = async (row?: imageItemType) => {
     let res;
     row ? res = await recoverImageReq([row.imageId]) : res = await recoverImageReq(selectedRowKeys)
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     setSelectedRows([])
     setSelectedRowKeys([])
     getImageList()
@@ -98,7 +104,11 @@ export default function Images() {
   const deleteImageRows = async (row?: imageItemType) => {
     let res;
     row ? res = await deleteImagesReq([row.imageId]) : res = await deleteImagesReq(selectedRowKeys)
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
+    message.success('删除成功')
     getImageList()
     setSelectedRows([])
     setSelectedRowKeys([])
@@ -187,13 +197,16 @@ export default function Images() {
       }
     })
     setLoading(false)
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     res.data.data.forEach(el => {
       el.createTime = formatMsToDate(el.createTime)
     })
     setImageList(res.data.data)
     setTotalPage(res.data.totalPage)
-    console.log(new Date());
+    // console.log(new Date());
 
   }
   useEffect(() => {
@@ -209,9 +222,13 @@ export default function Images() {
       imageId: editRowId,
       imageName: ImageItem.value.replace(/\s*/g, ''),
     })
-    if (res.code !== 200) return
+    if (res.code !== 200) {
+      message.error(res.msg)
+      return
+    }
     message.success('修改成功！')
     setIsShow(0)
+    setImageItem({value:''})
     getImageList()
   }
   // 提交图片
@@ -220,7 +237,7 @@ export default function Images() {
       setFileList([]);
     } else
       setFileList([file]);
-    console.log(7777, file);
+    // console.log(7777, file);
   }
   //图片预览设置
   const handlePreview = async (file: UploadFile) => {

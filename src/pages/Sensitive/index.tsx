@@ -40,12 +40,15 @@ export default function Sensitive() {
           word:searchVal
         }
       })
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     res.data.data.map(el => {
       el.createTime = FormatData(el.createTime)
       return el
     })
-    console.log(res.data)
+    // console.log(res.data)
     setSensitiveList(res.data.data)
     setTotalPage(res.data.totalPage)
     setLoading(false)
@@ -60,9 +63,12 @@ export default function Sensitive() {
       return
     } else if (sensitive.value.replace(/\s*/g, "").length > 10) return
     let res = await addSensitiveReq({ sensitiveType: sensitiveType, word: sensitive.value.replace(/\s*/g, "") })
-    console.log(res);
+    // console.log(res);
 
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     message.success('添加成功！')
     setSensitive({ value: '' })
     setIsShow(0)
@@ -72,7 +78,10 @@ export default function Sensitive() {
   const recoverSensitive = async (row?: sensitiveItemType) => {
     let res;
     row ? res = await recoverSensitiveReq([row.sensitiveId]) : res = await recoverSensitiveReq(selectedRowKeys)
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     setSelectedRows([])
     setSelectedRowKeys([])
     getSensitiveList()
@@ -81,7 +90,10 @@ export default function Sensitive() {
   const deleteSensitiveRows = async (row?: sensitiveItemType) => {
     let res;
     row ? res = await deleteSensitiveReq([row.sensitiveId]) : res = await deleteSensitiveReq(selectedRowKeys)
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     getSensitiveList()
     setSelectedRows([])
     setSelectedRowKeys([])
@@ -184,7 +196,10 @@ export default function Sensitive() {
         sensitiveId: editId!,
         sensitiveType: sensitiveType == 1 ? 2 : 1
       })
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     setSensitive({value:''})
     setIsShow(0)
     getSensitiveList()

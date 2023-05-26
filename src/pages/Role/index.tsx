@@ -66,7 +66,10 @@ export default function Role() {
     const recoverRole = async (row?: roleItemType) => {
         let res;
         row ? res = await recoverRoleReq([row.roleId]) : res = await recoverRoleReq(selectedRowKeys)
-        if (res.code !== 200) return
+        if (res.code !== 200){
+            message.error(res.msg)
+            return
+          } 
         setSelectedRows([])
         setSelectedRowKeys([])
         getRoleList()
@@ -75,7 +78,10 @@ export default function Role() {
     const deleteRoleRows = async (row?: roleItemType) => {
         let res;
         row ? res = await deleteRoleReq([row.roleId]) : res = await deleteRoleReq(selectedRowKeys)
-        if (res.code !== 200) return
+        if (res.code !== 200){
+            message.error(res.msg)
+            return
+          } 
         getRoleList()
         setSelectedRows([])
         setSelectedRowKeys([])

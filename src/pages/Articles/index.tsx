@@ -114,7 +114,10 @@ export default function Articles() {
         tagIds: tagIds,
       })
       console.log(res)
-      if (res.code !== 200) return
+      if (res.code !== 200){
+        message.error(res.msg)
+        return
+      } 
       message.success('修改成功！')
       setIsPublish(true)
       return
@@ -128,8 +131,11 @@ export default function Articles() {
       rank: rank,
       tagIds: tagIds,
     })
-    console.log(res)
-    if (res.code !== 200) return
+    // console.log(res)
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     message.success('发布成功！')
     setIsPublish(true)
   }

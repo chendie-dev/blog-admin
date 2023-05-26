@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { Button, Input, Switch, Table, Image, Tag } from 'antd'
+import { Button, Input, Switch, Table, Image, Tag, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { TableRowSelection } from 'antd/es/table/interface';
@@ -34,9 +34,9 @@ export default function ArticleList() {
     matchId(articleListContext)
   }, [articleListContext])
   const matchId = async (articleListContext: articleListRes) => {
-    let articleListContext1 = {...articleListContext}
+    let newarticleListContext:articleListRes=JSON.parse(JSON.stringify(articleListContext))
     let articleList = await Promise.all(
-      articleListContext1.data.data.map(async (el) => {
+      newarticleListContext.data.data.map(async (el) => {
         let res = await Promise.all(
           el.tagIds.map(el1 => {
             return getTagListReq({
@@ -50,11 +50,8 @@ export default function ArticleList() {
             });
           })
         );
-        // el.tagIds = res.map(el2 => {
-        //   return el2.data.data[0].tagName;
-        // });
         for(let i=0;i<res.length;i++){
-          el.tagIds[i]+= ','+res[i].data.data[0].tagName;
+          el.tagIds[i]=res[i].data.data[0].tagName;
         }
         let res1 = await getCategoryListReq({
           orderByFields: {},
@@ -65,10 +62,11 @@ export default function ArticleList() {
             categoryId: el.categoryId,
           }
         });
-        el.categoryId += ','+res1.data.data[0].categoryName
+        el.categoryId=res1.data.data[0].categoryName
         return el
       })
     )
+    console.log(articleList)
     setArticleList(articleList)
     setTotalPage(articleListContext.data.totalPage)
   }
@@ -100,7 +98,10 @@ export default function ArticleList() {
   const recoverarticle = async (row?: articleItemType) => {
     let res;
     row ? res = await recoverArticleReq([row.articleId]) : res = await recoverArticleReq(selectedRowKeys)
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     setSelectedRows([])
     setSelectedRowKeys([])
     getarticleList()
@@ -109,7 +110,10 @@ export default function ArticleList() {
   const deletearticleRows = async (row?: articleItemType) => {
     let res;
     row ? res = await deleteArticleReq([row.articleId]) : res = await deleteArticleReq(selectedRowKeys)
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     getarticleList()
     setSelectedRows([])
     setSelectedRowKeys([])
@@ -147,7 +151,7 @@ export default function ArticleList() {
       width: '10%',
       render: (_, record) => (
         <>
-          <span>{record.categoryId.split(',')[1]}</span>
+          <span>{record.categoryId}</span>
         </>
       )
     },
@@ -159,7 +163,7 @@ export default function ArticleList() {
         return (
           <>
             {record.tagIds.map((el,index) => {
-              return (<Tag key={index} color="geekblue" style={{ marginBottom: 5 }}>{el.split(',')[1]}</Tag>)
+              return (<Tag key={index} color="geekblue" style={{ marginBottom: 5 }}>{el}</Tag>)
             })}
           </>
         )
@@ -225,7 +229,10 @@ export default function ArticleList() {
   //置顶
   const updateArticle = async (val: boolean, articleId: string) => {
     let res = await updateArticleReq({ rank: val ? 1 : 0, articleId: articleId })
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     getarticleList()
   }
   return (

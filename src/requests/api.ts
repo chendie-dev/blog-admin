@@ -23,7 +23,7 @@ export const recoverCategoryReq = (params: React.Key[]): Promise<idsRes> => requ
 //添加图片
 export const addImageReq = (params: { imageName: string, imageUrl: string }): Promise<idRes> => request.instance.post('/file/admin/image/add', params)
 //删除图片
-export const deleteImagesReq = (params: React.Key[]): Promise<idsRes> => request.instance1.delete('/file/admin/image/delete', { data: params })
+export const deleteImagesReq = (params: React.Key[]): Promise<idsRes> => request.instance.delete('/file/admin/image/delete', { data: params })
 //查询图片
 export const getImageListReq = (params: getImageListParams): Promise<imageListRes> => request.instance.post('/file/admin/image/queryByPage', params)
 //恢复图片
@@ -49,7 +49,7 @@ export const getSensitiveListReq = (params: getSensitiveListParams): Promise<sen
 //更新留言
 export const updateMessageReq = (params: { auditType: number, messageId: number }): Promise<idsRes> => request.instance.post('/sms/admin/message/update', params)
 //获取留言
-export const getMessageReq = (params: getMessageListParams): Promise<messageListRes> => request.instance.post('/sms/message/queryByPage', params)
+export const getMessageReq = (params: getMessageListParams): Promise<messageListRes> => request.instance.post('/sms/admin/message/queryByPage', params)
 //添加文章
 export const addArticleReq = (params: addArticleParams): Promise<idRes> => request.instance.post('/article/admin/body/add', params)
 //删除文章
@@ -57,7 +57,7 @@ export const deleteArticleReq = (params: React.Key[]): Promise<idsRes> => reques
 //更新文章
 export const updateArticleReq = (params: updateArticleParams): Promise<idRes> => request.instance.post('/article/admin/body/update', params)
 //获取文章
-export const getArticleListReq = (params: getArticleListParams): Promise<articleListRes> => request.instance.post('/article/body/queryByPage', params)
+export const getArticleListReq = (params: getArticleListParams): Promise<articleListRes> => request.instance.post('/article/admin/body/queryByPage', params)
 //恢复文章
 export const recoverArticleReq = (params: React.Key[]): Promise<idsRes> => request.instance.post('/article/admin/body/recover', params)
 //登陆

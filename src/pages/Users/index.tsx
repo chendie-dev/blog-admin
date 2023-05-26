@@ -33,7 +33,10 @@ export default function User() {
         username: searchVal ? searchVal : null
       }
     })
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     res.data.data.map(el => {
       el.createTime = FormatData(el.createTime)
       return el
@@ -51,7 +54,10 @@ export default function User() {
   //     auditType: row.auditType === 1 ? 2 : 1,
   //     userId: row.userId
   //   })
-  //   if (res.code !== 200) return
+  //    if (res.code !== 200){
+      // message.error(res.msg)
+      // return
+    // } 
   //   setSelectedRows([])
   //   setSelectedRowKeys([])
   //   getuserList()

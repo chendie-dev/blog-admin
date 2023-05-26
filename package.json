@@ -46,6 +46,7 @@
     "lodash": "^4.17.21",
     "md-editor-rt": "^4.0.0",
     "mini-css-extract-plugin": "^2.4.5",
+    "nprogress": "^0.2.0",
     "postcss": "^8.4.4",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-loader": "^6.2.1",

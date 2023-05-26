@@ -17,6 +17,7 @@ declare namespace NodeJS {
   }
 }
 declare module 'md-editor-rt';
+declare module 'nprogress'
 declare module '*.avif' {
   const src: string;
   export default src;

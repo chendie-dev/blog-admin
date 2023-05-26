@@ -38,7 +38,10 @@ export default function User() {
     value.userId = userData.userId
     console.log(value);
     let res = await updateUserInfoReq(value)
-    if (res.code !== 200) return
+     if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     message.success('保存成功')
     userDispatch('getuser')
   }

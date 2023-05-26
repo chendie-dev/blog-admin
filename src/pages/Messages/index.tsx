@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Input, Table } from 'antd'
+import { Button, Input, Table, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { TableRowSelection } from 'antd/es/table/interface';
@@ -34,7 +34,10 @@ export default function Messages() {
         messageContent: searchVal === '' ? null : searchVal,
       }
     })
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     res.data.data.map(el => {
       el.createTime = FormatData(el.createTime)
       return el
@@ -52,7 +55,10 @@ export default function Messages() {
       auditType: row.auditType === 1 ? 2 : 1,
       messageId: row.messageId
     })
-    if (res.code !== 200) return
+    if (res.code !== 200){
+      message.error(res.msg)
+      return
+    } 
     setSelectedRows([])
     setSelectedRowKeys([])
     getMessageList()
