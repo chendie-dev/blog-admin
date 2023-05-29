@@ -1,6 +1,6 @@
 import React, { Dispatch, createContext, useContext, useReducer } from 'react'
 import { getUserReq } from '../requests/api'
-import { FormatData } from '../hooks/formatData'
+import { utilFunc } from '../hooks/utilFunc'
 const UserContext = createContext<userItemType>({} as userItemType)
 const UserDispatchContext = createContext<Dispatch<string>>({} as Dispatch<string>)
 interface dataType {
@@ -47,7 +47,7 @@ function dispatchMiddleware(next: Dispatch<dataType>) {
         switch (action) {
             case 'getuser': {
                 let res = await getUserReq()
-                res.data.createTime = FormatData(res.data.createTime)
+                res.data.createTime = utilFunc.FormatData(res.data.createTime)
                 next({
                     type: 'getdata',
                     payload: res.data

@@ -21,19 +21,24 @@ export default function Home() {
     const userDispatch = useUserDataDispatch()
     //展开关闭控制
     useEffect(() => {
+        
         userDispatch('getuser')
         for (let i = 0; i < MenuItems.length; i++) {
             if (MenuItems[i].children && MenuItems[i].children!.find((el: { key: React.Key }) => el.key === location.pathname)) {
                 setOpenKey([MenuItems[i].key as string])
             }
         }
+        window.addEventListener('message', ({ data, origin }) => {
+            // console.log('blog',typeof(data),origin)
+            if(origin==='http://localhost:3001')localStorage.setItem('admin-token', data)
+          },false)
     }, [])
     //动态生成一级面包屑
     useEffect(() => {
-        let flag=0
+        let flag = 0
         MenuItems.forEach((el) => {
             if (el.key === location.pathname) {
-                flag=1
+                flag = 1
                 if (location.pathname === '/charts') {
                     setBreadItem([
                         {
@@ -48,7 +53,7 @@ export default function Home() {
                     }])
                 }
             } else if (el.children && el.children.find(element => element.key === location.pathname)) {
-                flag=1
+                flag = 1
                 let menuItems: MenuItems[] = []
                 el.children.forEach(el2 => {
                     menuItems.push({
@@ -72,9 +77,9 @@ export default function Home() {
                         title: el.children.find(element => element.key === location.pathname)?.label + '',
                     }
                 ])
-            } 
+            }
         })
-        if(!flag)setBreadItem([])
+        if (!flag) setBreadItem([])
         setSelectedKeys([location.pathname])
     }, [location.pathname])
     const logout = async () => {

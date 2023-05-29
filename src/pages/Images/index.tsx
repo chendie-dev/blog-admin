@@ -4,7 +4,7 @@ import type { ColumnsType } from 'antd/es/table';
 import ImgCrop from 'antd-img-crop';
 import { PlusOutlined, DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import './index.scss'
-import { addImageReq, getImageListReq, deleteImagesReq, updateImageReq, recoverImageReq } from '../../requests/api'
+import { addImageReq, getImageListReq, deleteImagesReq, updateImageReq } from '../../requests/api'
 import { TableRowSelection } from 'antd/es/table/interface';
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { UploadProps, RcFile } from 'antd/es/upload';
@@ -91,14 +91,14 @@ export default function Images() {
   //回收站恢复
   const recoverImage = async (row?: imageItemType) => {
     let res;
-    row ? res = await recoverImageReq([row.imageId]) : res = await recoverImageReq(selectedRowKeys)
-    if (res.code !== 200){
-      message.error(res.msg)
-      return
-    } 
-    setSelectedRows([])
-    setSelectedRowKeys([])
-    getImageList()
+    // row ? res = await recoverImageReq([row.imageId]) : res = await recoverImageReq(selectedRowKeys)
+    // if (res.code !== 200){
+    //   message.error(res.msg)
+    //   return
+    // } 
+    // setSelectedRows([])
+    // setSelectedRowKeys([])
+    // getImageList()
   }
   //删除图片
   const deleteImageRows = async (row?: imageItemType) => {

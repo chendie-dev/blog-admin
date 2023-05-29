@@ -104,4 +104,5 @@ interface validateValType{
   value: string;
   validateStatus?: ValidateStatus;
   errorMsg?: string | null;
+  flag?:boolean
 }

@@ -27,8 +27,8 @@ function BeforeRouterEnter() {
   const outlet = useRoutes(router)
   const location = useLocation()
   const token = localStorage.getItem('token')
-  if (token && location.pathname === '/login') return <ToHome />
-  if (!token && location.pathname !== '/login') return <ToLogin />
+  // if (token && location.pathname === '/login') return <ToHome />
+  // if (!token && location.pathname !== '/login') return <ToLogin />
   return outlet
 }
 function App() {

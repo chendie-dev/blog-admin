@@ -27,7 +27,7 @@ export const deleteImagesReq = (params: React.Key[]): Promise<idsRes> => request
 //查询图片
 export const getImageListReq = (params: getImageListParams): Promise<imageListRes> => request.instance.post('/file/admin/image/queryByPage', params)
 //恢复图片
-export const recoverImageReq = (params: React.Key[]): Promise<idsRes> => request.instance1.post('/file/admin/image/recover', params)
+// export const recoverImageReq = (params: React.Key[]): Promise<idsRes> => request.instance1.post('/file/admin/image/recover', params)
 //更新图片
 export const updateImageReq = (params: { imageId: number, imageName: string }): Promise<idRes> => request.instance.post('/file/admin/image/update', params)
 //上传图片
@@ -94,3 +94,13 @@ export const updateRoleReq=(params:React.Key):Promise<idsRes>=>request.instance.
 export const recoverRoleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/auth/admin/role/recover',params)
 //查询角色
 export const getRoleListReq=(params:getRoleListParams):Promise<roleListRes>=>request.instance.post('/auth/admin/role/queryByPage',params)
+//添加菜单
+export const addMenuReq=(params:addMenuParams):Promise<idRes>=>request.instance.post('/auth/admin/menu/add',params)
+//删除菜单
+export const deleteMenuReq=(params:React.Key[]):Promise<idsRes>=>request.instance.delete('/auth/admin/menu/delete',{data:params})
+//查询菜单
+export const getMenuListReq=(params:getmenuListParams):Promise<menuListRes>=>request.instance.post('/auth/admin/menu/queryByPage',params)
+//恢复菜单
+export const recoverMenuReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/auth/admin/menu/recover',params)
+//修改菜单
+export const updateMenuReq=(params:updateMenuParams):Promise<idRes>=>request.instance.post('/auth/admin/menu/update',params)

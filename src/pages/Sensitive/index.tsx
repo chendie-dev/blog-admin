@@ -6,7 +6,7 @@ import { TableRowSelection } from 'antd/es/table/interface';
 import './index.scss'
 import { addSensitiveReq, deleteSensitiveReq, updateSensitveReq, recoverSensitiveReq, getSensitiveListReq } from '../../requests/api'
 import { validatevalue } from '../../hooks/validate';
-import { FormatData } from '../../hooks/formatData';
+import { utilFunc } from '../../hooks/utilFunc';
 import globalConstant from '../../utils/globalConstant';
 
 export default function Sensitive() {
@@ -45,7 +45,7 @@ export default function Sensitive() {
       return
     } 
     res.data.data.map(el => {
-      el.createTime = FormatData(el.createTime)
+      el.createTime = utilFunc.FormatData(el.createTime)
       return el
     })
     // console.log(res.data)

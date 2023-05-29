@@ -62,11 +62,12 @@ export default function Articles() {
         name: 'a',
         status: "done",
         response: { data: res.articleCoverUrl },
+        url:res.articleCoverUrl
       }])
     }
-    let newTagIds: string[] = res!.tagIds.map(el => el.split(',')[0])
+    let newTagIds: string[] = res!.tagIds.map(el => el)
     setTagIds(newTagIds)
-    setCategoryId(res!.categoryId.split(',')[0])
+    setCategoryId(res!.categoryId)
   }, [])
   useEffect(() => {
     window.onbeforeunload = e => {

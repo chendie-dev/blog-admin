@@ -27,7 +27,6 @@ const MenuItemsProvider: React.FC<propsType> = ({ children }) => {
     ]),
     getItem('权限管理', '5', <MyIcon type="icon-quanxian" />, [
       getItem('角色管理', '/roles'),
-      getItem('接口管理', '/resources'),
       getItem('菜单管理', '/menus'),
 
     ]),

@@ -2,28 +2,32 @@ import React, { useEffect, useState } from 'react'
 import { Input } from 'antd';
 import './index.scss'
 import { getTagListReq } from '../../requests/api';
+import { utilFunc } from '../../hooks/utilFunc';
 interface propsType{
   getTagId:(tagId:string[]|null)=>void
 }
 const TagInput:React.FC<propsType>=({getTagId})=> {
   const [tagList,setTagList]=useState<tagItemType[]>([])
-  const getTagList=async (search:string)=>{
-    if(search===''){
-      setTagList([])
-      getTagId(null)
-      return
-    }
+  const [searchVal,setSearchVal]=useState({value:'',flag:true})
+  const getTagList=utilFunc.useThrottle(async ()=>{
     let res=await getTagListReq({
       orderByFields: {createTime:false},
         pageNum: 1,
         pageSize: 5,
         queryParam: {
           isDelete:false,
-          tagName: search
+          tagName: searchVal.value
         }
     })
     setTagList(res.data.data)
-  }
+  },500)
+  useEffect(()=>{
+    if(!searchVal.flag||searchVal.value===''){
+      getTagId(null)
+      return
+    }
+    getTagList()
+  },[searchVal])
   const submit=(tagId:string)=>{
     getTagId([tagId])
     setTagList([])
@@ -31,7 +35,9 @@ const TagInput:React.FC<propsType>=({getTagId})=> {
   return (
     <div className='select-input'>
       <Input type='text'
-        onChange={(e) => getTagList(e.target.value)}
+        onChange={(e) => setSearchVal((last)=>({...last,value:e.target.value}))}
+        onCompositionEnd={()=>setSearchVal((last)=>({...last,flag:true}))}
+        onCompositionStart={()=>setSearchVal((last)=>({...last,flag:false}))}
         placeholder='请输入标签名'
         allowClear
          />

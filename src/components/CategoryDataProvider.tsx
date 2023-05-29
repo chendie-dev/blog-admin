@@ -1,6 +1,6 @@
 import React, { useContext, createContext, useReducer, Dispatch } from 'react'
 import { getCategoryListReq } from '../requests/api';
-import { FormatData } from '../hooks/formatData';
+import { utilFunc } from '../hooks/utilFunc';
 interface actionType {
     type: string,
     payload: getCategoryListParams
@@ -57,7 +57,7 @@ function dispatchMiddleware(next: Dispatch<dataActionType>) {
                     }
                 })
                 res.data.data = res.data.data.map(el => {
-                    el.createTime = FormatData(el.createTime)
+                    el.createTime = utilFunc.FormatData(el.createTime)
                     return el
                 })
                 next({

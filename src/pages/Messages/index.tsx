@@ -5,7 +5,7 @@ import { DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, Plu
 import { TableRowSelection } from 'antd/es/table/interface';
 import './index.scss'
 import { updateMessageReq, getMessageReq } from '../../requests/api'
-import { FormatData } from '../../hooks/formatData';
+import { utilFunc } from '../../hooks/utilFunc';
 import globalConstant from '../../utils/globalConstant';
 
 export default function Messages() {
@@ -39,7 +39,7 @@ export default function Messages() {
       return
     } 
     res.data.data.map(el => {
-      el.createTime = FormatData(el.createTime)
+      el.createTime = utilFunc.FormatData(el.createTime)
       return el
     })
     setMessageList(res.data.data)

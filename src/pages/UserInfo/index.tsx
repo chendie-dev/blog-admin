@@ -38,10 +38,10 @@ export default function User() {
     value.userId = userData.userId
     console.log(value);
     let res = await updateUserInfoReq(value)
-     if (res.code !== 200){
+    if (res.code !== 200) {
       message.error(res.msg)
       return
-    } 
+    }
     message.success('保存成功')
     userDispatch('getuser')
   }
@@ -97,22 +97,22 @@ export default function User() {
           <div className="content">
             <div className="detail-info">
               <ImgCrop aspect={1 / 1}>
-                <Upload
-                  name='image'
-                  accept='image/*'
-                  action="/api/file/admin/image/upload"
-                  listType='picture-circle'
-                  onChange={handleChange}
-                  fileList={fileList}
-                  className='avatar'
-                >
-                  {
-                    fileList.length > 0 ? '' :
-                      <div>
-                        <PlusOutlined /><div style={{ marginTop: 8 }}>头像</div>
-                      </div>
-                  }
-                </Upload>
+                  <Upload
+                    name='image'
+                    accept='image/*'
+                    action="/api/file/admin/image/upload"
+                    listType='picture-circle'
+                    onChange={handleChange}
+                    fileList={fileList}
+                    className='avatar'
+                  >
+                    {
+                      fileList.length > 0 ? '' :
+                        <div>
+                          <PlusOutlined /><div style={{ marginTop: 8 }}>头像</div>
+                        </div>
+                    }
+                  </Upload>
               </ImgCrop>
               <Form
                 labelCol={{ span: 4 }}
@@ -124,7 +124,7 @@ export default function User() {
                   name='nickname'
                   initialValue={userData.nickname}
                   label='真实姓名'
-                  rules={[{min:2,max:20,message:'姓名长度2-20个字'}]}
+                  rules={[{ min: 2, max: 20, message: '姓名长度2-20个字' }]}
                 >
                   <Input allowClear />
                 </Form.Item>
@@ -132,10 +132,10 @@ export default function User() {
                   name='username'
                   initialValue={userData.username}
                   label='用户名'
-                  rules={[{min:6,max:20,message:'姓名长度6-20个字'},()=>({
-                    async validator(_,value){
-                      let res=await checkUsernameReq(value)
-                      if(res.data) return Promise.resolve()
+                  rules={[{ min: 6, max: 20, message: '姓名长度6-20个字' }, () => ({
+                    async validator(_, value) {
+                      let res = await checkUsernameReq(value)
+                      if (res.data) return Promise.resolve()
                       return Promise.reject(new Error('用户名已存在'))
                     }
                   })]}
@@ -146,7 +146,7 @@ export default function User() {
                   label='手机号'
                   name={'phoneNumber'}
                   initialValue={userData.phoneNumber}
-                  rules={[{len:11,message:'手机号长度11位'}]}
+                  rules={[{ len: 11, message: '手机号长度11位' }]}
                 >
                   <Input allowClear />
                 </Form.Item>

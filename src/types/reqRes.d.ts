@@ -63,6 +63,15 @@ interface roleItemType {
     roleId: string,
     roleName: string
 }
+interface menuItemType {
+    component: string,
+    createTime: string,
+    menuDesc: string,
+    menuId: string,
+    menuName: string,
+    path: string,
+    perms: string
+}
 type idRes = defaultResType<{ id: string }>
 type idsRes = defaultResType<{ ids: string[] }>
 type tagListRes = defaultResType<{ data: tagItemType[], totalPage: number }>
@@ -77,3 +86,4 @@ type userRes = defaultResType<userItemType>
 type booleanRes = defaultResType<boolean>
 type userListRes = defaultResType<{ data: userItemType[], totalPage: number }>
 type roleListRes = defaultResType<{ data: roleItemType[], totalPage: number }>
+type menuListRes = defaultResType<{ data: menuItemType[], totalPage: number }>

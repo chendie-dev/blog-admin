@@ -29,11 +29,6 @@
         display: inline-block;
         width: 40%;
         height: 100%;
-
-        h3 {
-            text-align: center;
-        }
-
     }
 
     .pass {
@@ -44,18 +39,14 @@
         margin-left: 5%;
     }
 
-    .avatar {
-        text-align: center;
-    }
-
-    .detail-info,button {
+    .detail-info,.ant-btn-primary {
         display: inline-block;
         width: 40%;
         height: 100%;
 
-        .avatar,button {
+        .avatar,.ant-btn-primary{
             margin-left: 50%;
-            transform:translate(-50%);;
+            transform:translate(-50%);
         }
     }
 

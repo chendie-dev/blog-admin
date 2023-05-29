@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { Button, Input, Switch, Table, Image, Tag, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
@@ -266,8 +266,8 @@ export default function ArticleList() {
 
         <Button type='primary' style={{ float: 'right', marginLeft: '10px' }} onClick={() => getarticleList()} ><SearchOutlined />搜索</Button>
         <Input type="text" style={{ float: 'right' }} placeholder='请输入关键字' allowClear prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getarticleList() : ''} />
-        <TageInput getTagId={(tagId)=>setTagIds(tagId)} />
-        <CategoryInput getCategoryId={(CategoryId)=>setCategoryId(CategoryId)}/>
+        <TageInput getTagId={useCallback((tagId)=>setTagIds(tagId),[])} />
+        <CategoryInput getCategoryId={useCallback((CategoryId)=>setCategoryId(CategoryId),[])}/>
       </div>
       <Table columns={columns} dataSource={articleList} rowKey="articleId"
         loading={loading}

@@ -5,7 +5,7 @@ import { DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, Plu
 import { TableRowSelection } from 'antd/es/table/interface';
 import './index.scss'
 import { deleteUserReq, getUserListReq, recoverUserReq } from '../../requests/api'
-import { FormatData } from '../../hooks/formatData';
+import { utilFunc } from '../../hooks/utilFunc';
 import globalConstant from '../../utils/globalConstant';
 
 export default function User() {
@@ -38,7 +38,7 @@ export default function User() {
       return
     } 
     res.data.data.map(el => {
-      el.createTime = FormatData(el.createTime)
+      el.createTime = utilFunc.FormatData(el.createTime)
       return el
     })
     setuserList(res.data.data)

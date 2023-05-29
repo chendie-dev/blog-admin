@@ -5,24 +5,23 @@ import { loginReq } from '../../requests/api'
 import { useNavigate } from 'react-router'
 import { useUserDataDispatch } from '../../components/UserDataProvider'
 export default function Login() {
-  const navigateTo=useNavigate()
-  const userDispatch=useUserDataDispatch()
-  const onFinish=async (value:{ username: string; password: string; })=>{
-      console.log(value)
-      let res=await loginReq(value)
-      console.log(res)
-      if(res.code!==200){
-        message.error('密码或用户名错误错误！')
-        return
-      }
-      localStorage.setItem('token',res.data)
-      navigateTo('/charts')
-      console.log(localStorage.getItem('token'))
-      userDispatch('getuser')
+  const navigateTo = useNavigate()
+  const userDispatch = useUserDataDispatch()
+  const onFinish = async (value: { username: string; password: string; }) => {
+    console.log(value)
+    let res = await loginReq(value)
+    console.log(res)
+    if (res.code !== 200) {
+      message.error('密码或用户名错误！')
+      return
+    }
+    localStorage.setItem('admin-token', res.data)
+    navigateTo('/charts')
+    userDispatch('getuser')
   }
   return (
     <div className='login'>
-      <h1  className='login_title'>博客管理系统</h1>
+      <h1 className='login_title'>博客管理系统</h1>
       <Card className='login_card' bordered={false}>
         <Form
           name="basic"
@@ -46,7 +45,7 @@ export default function Login() {
             <Input.Password placeholder="请输入登陆密码" />
           </Form.Item>
           <Form.Item className='loginItem'>
-            <Button type="primary" htmlType="submit" style={{width:'100%'}}>
+            <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
               登陆
             </Button>
           </Form.Item>

@@ -6,6 +6,7 @@ import { TweenOneGroup } from 'rc-tween-one';
 import { InfiniteScroll } from 'antd-mobile';
 import './index.scss'
 import { validatevalue } from '../../hooks/validate';
+import { utilFunc } from '../../hooks/utilFunc';
 interface propsType {
   tagData: (items: tagItemType[]) => void,
   tagIds: string[]
@@ -13,12 +14,11 @@ interface propsType {
 
 const TagSelect: React.FC<propsType> = memo(({ tagData, tagIds }) => {
   const [open, setOpen] = useState(false);
-  const [isShowSearch, setIsShowSearch] = useState(false)//是否显示搜索内容
   const [selectedItems, setSelectedItems] = useState<tagItemType[]>([]);//已选择标签
   const [currentItemPage, setCurrentItemPage] = useState(0)//无限刷新第几页
   const [ItemData, setItemData] = useState<tagItemType[]>([])//无限刷新查询标签数据
   const [hasMore, setHasMore] = useState(true)//无限刷新是否还有更多
-  const [search, setSearch] = useState<validateValType>({ value: '' })//搜索标签值
+  const [search, setSearch] = useState<validateValType>({ value: '', flag: true })//搜索标签值
   const [searchList, setSearchList] = useState<tagItemType[]>([]);//搜索内容
   const [isShowErr, setIsShowErr] = useState(false)//1长度，2个数
   // console.log('ta改变');
@@ -26,7 +26,7 @@ const TagSelect: React.FC<propsType> = memo(({ tagData, tagIds }) => {
     initSelectedItems()
   }, [tagIds])
   const initSelectedItems = async () => {
-    if(!tagIds)return;
+    if (!tagIds) return;
     const res = await Promise.all(
       tagIds.map((tagId) => {
         return getItemList(1, 1, tagId)
@@ -75,26 +75,30 @@ const TagSelect: React.FC<propsType> = memo(({ tagData, tagIds }) => {
     setHasMore(res.data.data.length > 0)
   }
   useEffect(() => {
-    searchItemMore()
-  }, [search.value])
+    if (search.flag && search.value.replace(/\s*/g, "") !== ''&&search.value.replace(/\s*/g, "").length<=5) {
+      searchItemMore()
+    } else {
+      setSearchList([])
+    }
+  }, [search])
   //搜索标签
-  const searchItemMore = async () => {
+  const searchItemMore = utilFunc.useThrottle(async () => {
     let res = await getItemList(1, 5)
     setSearchList(res.data.data)
-  }
+  }, 500)
   //添加标签
   const addItem = async () => {
     if (search.value.replace(/\s*/g, '') === '' || search.value.replace(/\s*/g, '').length > 5) return
     await addTagReq({ tagName: search.value })
     let res1 = await getItemList(1, 1)
     setSelectedItems(val => [...val, res1.data.data[0]])
-    setSearch({ value: '' })
+    setSearch({ value: '', flag: true })
   }
   useEffect(() => {
     tagData(selectedItems)
   }, [selectedItems])
   const onOpenChange = (open: boolean) => {
-    if (!open) setSearch({ value: '' })
+    if (!open) setSearch({ value: '', flag: true })
     setOpen(open)
   }
   const content = (
@@ -107,14 +111,14 @@ const TagSelect: React.FC<propsType> = memo(({ tagData, tagIds }) => {
             help={search.errorMsg}
           >
             <Input type='text' value={search.value}
-              onChange={(e) => setSearch({ value: e.target.value, ...validatevalue(e.target.value, 5) })}
-              onFocus={() => setIsShowSearch(true)}
-              onBlur={() => { setTimeout(() => { setIsShowSearch(false) }, 250); }}
+              onChange={(e) => setSearch((last) => ({ ...last, value: e.target.value, ...validatevalue(e.target.value, 5) }))}
+              onCompositionEnd={() => setSearch((last) => ({ ...last, flag: true }))}
+              onCompositionStart={() => setSearch((last) => ({ ...last, flag: false }))}
               placeholder='请输入文字搜索，按Enter键添加标签'
               onKeyUp={(e) => e.keyCode === 13 ? addItem() : ''} />
           </Form.Item>
         </Form>
-        <div className="search-box" style={{ display: isShowSearch ? 'block' : 'none' }}>
+        <div className="search-box" style={{ display: searchList.length > 0 ? 'block' : 'none' }}>
           <div className="search-box__arrow"></div>
           <ul>
             {
