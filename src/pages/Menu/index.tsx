@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Button, Form, Input, Modal, Table, message } from 'antd'
+import React, { useEffect, useRef, useState } from 'react'
+import { Button, Form, FormInstance, Input, Modal, Table, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { TableRowSelection } from 'antd/es/table/interface';
@@ -7,6 +7,14 @@ import './index.scss'
 import { addMenuReq, deleteMenuReq, updateMenuReq, recoverMenuReq, getMenuListReq } from '../../requests/api'
 import globalConstant from '../../utils/globalConstant';
 import { utilFunc } from '../../hooks/utilFunc';
+import MyIcon from '../../components/MyIcon';
+let handleId = (data: menuItemType[], ids: React.Key[]) => {
+  data.forEach(el => {
+    ids.push(el.menuId)
+    if (el.children?.length > 0) handleId(el.children, ids)
+  })
+  return
+}
 
 export default function Menu() {
   useEffect(() => {
@@ -23,14 +31,15 @@ export default function Menu() {
   const [searchVal, setSearchVal] = useState('')
   const [loading, setLoading] = useState(true)
   const [MenuList, setMenuList] = useState<menuItemType[]>([])
-  const [totalPage, setTotalPage] = useState(0)
+  const formRef = useRef<FormInstance>(null);
+
   //获取菜单列表
   const getMenuList = async () => {
     setLoading(true)
     let res = await getMenuListReq({
       orderByFields: { createTime: isDescend },
       pageNum: currentPage,
-      pageSize: 5,
+      pageSize: 10,
       queryParam: {
         menuName: searchVal === '' ? null : searchVal,
         isDelete: isAll === 2
@@ -40,10 +49,14 @@ export default function Menu() {
       message.error(res.msg)
       return
     }
-    res.data.data.map(el=>{
-      el.createTime=utilFunc.FormatData(el.createTime)
-    })
-    setTotalPage(res.data.totalPage)
+    const handleTime = (data: menuItemType[]) => {
+      data.forEach(el => {
+        el.createTime = utilFunc.FormatData(el.createTime)
+        if (el.children?.length > 0) handleTime(el.children)
+      })
+      return
+    }
+    handleTime(res.data.data)
     setMenuList(res.data.data)
     setLoading(false)
   }
@@ -52,6 +65,7 @@ export default function Menu() {
   }, [currentPage, isDescend, isAll])
   //添加菜单
   const addMenu = async (value: addMenuParams) => {
+    if(editRow.menuId)value.parentId=editRow.menuId
     let res = await addMenuReq(value)
     if (res.code !== 200) {
       message.error(res.msg)
@@ -61,11 +75,14 @@ export default function Menu() {
     setMenu({ value: '' })
     setIsShow(0)
     getMenuList()
+    setEditRow({} as menuItemType)
+    formRef.current?.resetFields();
   }
   //回收站恢复
   const recoverMenu = async (row?: menuItemType) => {
-    let res;
-    row ? res = await recoverMenuReq([row.menuId]) : res = await recoverMenuReq(selectedRowKeys)
+    let ids: React.Key[] = []
+    row ? handleId([row], ids) : ids = [...selectedRowKeys]
+    let res = await recoverMenuReq(ids)
     if (res.code !== 200) {
       message.error(res.msg)
       return
@@ -76,8 +93,9 @@ export default function Menu() {
   }
   //删除菜单
   const deleteMenuRows = async (row?: menuItemType) => {
-    let res;
-    row ? res = await deleteMenuReq([row.menuId]) : res = await deleteMenuReq(selectedRowKeys)
+    let ids: React.Key[] = []
+    row ? handleId([row], ids) : ids = [...selectedRowKeys]
+    let res = await deleteMenuReq(ids)
     if (res.code !== 200) {
       message.error(res.msg)
       return
@@ -88,14 +106,24 @@ export default function Menu() {
 
   }
   const columns: ColumnsType<menuItemType> = [
-    {
-      title: '菜单ID',
-      dataIndex: 'menuId',
-    },
+    // {
+    //   title: '菜单ID',
+    //   dataIndex: 'menuId',
+    // },
     {
       title: '菜单名',
       dataIndex: 'menuName',
-      width: '15%'
+      width: '16%'
+    },
+    {
+      title: '图标',
+      dataIndex: 'icon',
+      width: '6%',
+      render: (_, record) => (
+        <>
+          <MyIcon type={record.icon} />
+        </>
+      )
     },
     {
       title: '路由地址',
@@ -115,12 +143,7 @@ export default function Menu() {
       width: '10%'
 
     },
-    {
-      title: '权限标识',
-      dataIndex: 'perms',
-      width: '10%'
 
-    },
     {
       title: () => {
         return <>
@@ -141,7 +164,8 @@ export default function Menu() {
       render: (_, record) => (
         <>
           <div style={{ display: isAll === 1 ? 'block' : 'none' }}>
-            <a style={{ color: globalConstant().color }} onClick={() => { setIsShow(2); setEditRow(record) }}>编辑</a>
+            <a style={{ color: globalConstant().color }} onClick={() => { setIsShow(1); setEditRow(record) }}><PlusOutlined />添加</a>
+            <a style={{ color: globalConstant().color, marginLeft: 10 }} onClick={() => { setIsShow(2); setEditRow(record);} }>编辑</a>
             <a style={{ color: 'red', marginLeft: 10 }} onClick={() => { deleteMenuRows(record) }}>删除</a>
           </div>
           <div style={{ display: isAll === 2 ? 'block' : 'none' }}>
@@ -149,7 +173,7 @@ export default function Menu() {
           </div>
         </>
       ),
-      width: '20%',
+      width: '35%',
     },
   ];
   //选取菜单行
@@ -180,6 +204,7 @@ export default function Menu() {
     message.success('修改成功！')
     setIsShow(0)
     getMenuList()
+    setEditRow({} as menuItemType)
   }
   return (
     <div className='menu'>
@@ -207,13 +232,7 @@ export default function Menu() {
       </div>
       <Table columns={columns} dataSource={MenuList} rowKey='menuId'
         loading={loading}
-        pagination={{
-          current: currentPage,
-          defaultPageSize: 5,
-          total: totalPage * 5,//todo
-          onChange: (page) => setCurrentPage(page),
-        }}
-        rowSelection={{ ...rowSelection }}
+        rowSelection={{ ...rowSelection, checkStrictly: false }}
       />
       {/* 添加菜单模态框 */}
       <Modal title="添加菜单" footer={[]}
@@ -225,6 +244,7 @@ export default function Menu() {
           labelAlign='left'
           layout='vertical'
           onFinish={addMenu}
+          ref={formRef}
         >
           <Form.Item
             name='menuName'
@@ -234,11 +254,10 @@ export default function Menu() {
             <Input placeholder='请输入菜单名' allowClear />
           </Form.Item>
           <Form.Item
-            name={'perms'}
-            label='权限标识'
-            rules={[{ required: true, message: '不能为空' }, { min: 1, max: 128, message: '长度1-128个字' },]}
+            name={'icon'}
+            label='图标'
           >
-            <Input placeholder='请输入权限标识' allowClear />
+            <Input placeholder='请输入图标' allowClear />
           </Form.Item>
           <Form.Item
             name='path'
@@ -270,12 +289,12 @@ export default function Menu() {
       {/* 编辑模态框 */}
       <Modal
         title="编辑菜单"
-        okText='确定'
-        cancelText='取消'
         open={isShow === 2}
         footer={[]}
-        onCancel={() => { setIsShow(0); setMenu({ value: '' }) }}>
-        <Form
+        destroyOnClose={true}
+        onCancel={() => { setIsShow(0); setMenu({ value: '' }); }}>
+        
+       <Form
           labelCol={{ span: 4 }}
           labelAlign='left'
           layout='vertical'
@@ -290,12 +309,11 @@ export default function Menu() {
             <Input placeholder='请输入菜单名' allowClear />
           </Form.Item>
           <Form.Item
-            name={'perms'}
-            label='权限标识'
-            initialValue={editRow.perms}
-            rules={[{ required: true, message: '不能为空' }, { min: 1, max: 128, message: '长度1-128个字' },]}
+            name={'icon'}
+            label='图标'
+            initialValue={editRow.icon}
           >
-            <Input placeholder='请输入权限标识' allowClear />
+            <Input placeholder='请输入图标' allowClear />
           </Form.Item>
           <Form.Item
             name='path'

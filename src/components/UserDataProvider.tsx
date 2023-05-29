@@ -14,7 +14,7 @@ const UserDataProvider: React.FC<propsType> = ({ children }) => {
         email: "",
         nickname: "",
         phoneNumber: "",
-        roleName: "",
+        roleId: "",
         sexEnum: "",
         userId: "",
         username: ""

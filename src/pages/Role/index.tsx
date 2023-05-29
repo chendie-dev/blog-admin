@@ -1,29 +1,69 @@
-import { useEffect, useState } from 'react'
-import { Button, Form, Input, Modal, Table, message } from 'antd'
+import React, { useEffect, useRef, useState } from 'react'
+import { Button, Form, FormInstance, Input, Modal, Table, Tree, TreeProps, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
-import { TableRowSelection } from 'antd/es/table/interface';
+import { Key, TableRowSelection } from 'antd/es/table/interface';
 import './index.scss'
 import { addRoleReq, deleteRoleReq, updateRoleReq, recoverRoleReq, getRoleListReq } from '../../requests/api'
 import { validatevalue } from '../../hooks/validate';
 import globalConstant from '../../utils/globalConstant';
+import { useMenuItems, useMenuItemsDispatch } from '../../components/MenuItemsProvider';
+import { DataNode } from 'antd/es/tree';
+import { utilFunc } from '../../hooks/utilFunc';
 
+function handleMenuData(data: menuItemType[]): DataNode[] {
+    let menuItem: DataNode[] = []
+    data.forEach(el => {
+        let menuItem1 = {
+            title: el.menuName,
+            key: el.menuId,
+            children: [] as DataNode[]
+        }
+        if (el.children?.length > 0) menuItem1.children = [...handleMenuData(el.children)]
+        menuItem.push(menuItem1)
+    })
+    return menuItem
+}
 export default function Role() {
     useEffect(() => {
         document.title = '角色-管理系统'
+
     }, [])
     const [isShow, setIsShow] = useState(0);//1添加
     const [isDescend, setIsDescend] = useState(true);//创建时间升降序
     const [isAll, setIsAll] = useState(1)//1全部，2回收站
     const [role, setRole] = useState<validateValType>({ value: '' });//添加/编辑角色名（校验）
-    const [editRowId, setEditRowId] = useState('')
+    const [editRow, setEditRow] = useState<roleItemType>({} as roleItemType)
     const [currentPage, setCurrentPage] = useState(1)//当前页
     const [selectedRows, setSelectedRows] = useState<roleItemType[]>([])//选取行
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id
     const [searchVal, setSearchVal] = useState('')
     const [loading, setLoading] = useState(true)
-    const [roleList,setRoleList]=useState<roleItemType[]>([])
-    const [totalPage,setTotalPage]=useState(0)
+    const [roleList, setRoleList] = useState<roleItemType[]>([])
+    const [totalPage, setTotalPage] = useState(0)
+    const [newMenuData, setNewMenuData] = useState<DataNode[]>([])
+    const [selectedKeys, setSelectedKeys] = useState<Key[] | { checked: Key[]; halfChecked: Key[]; }>([])
+    const formRef = useRef<FormInstance>(null);
+    const menuData = useMenuItems()
+    const menuDispatch = useMenuItemsDispatch()
+    useEffect(() => {
+        menuDispatch({
+            type: 'getmenu',
+            payload: {
+                orderByFields: {},
+                pageNum: 1,
+                pageSize: 10,
+                queryParam: {
+                    isDelete: false
+                }
+            }
+        })
+    }, [])
+    useEffect(() => {
+        if (menuData.length > 0) {
+            setNewMenuData(handleMenuData(menuData).reverse())
+        }
+    }, [menuData])
     //获取角色列表
     const getRoleList = async () => {
         setLoading(true)
@@ -32,14 +72,15 @@ export default function Role() {
             pageNum: currentPage,
             pageSize: 5,
             queryParam: {
-                roleName: searchVal===''?null:searchVal,
+                roleName: searchVal === '' ? null : searchVal,
                 isDelete: isAll === 2
             }
         })
-        if(res.code!==200){
+        if (res.code !== 200) {
             message.error(res.msg)
             return
         }
+        res.data.data.forEach(el=>el.createTime=utilFunc.FormatData(el.createTime))
         setTotalPage(res.data.totalPage)
         setRoleList(res.data.data)
         setLoading(false)
@@ -48,28 +89,26 @@ export default function Role() {
         getRoleList()
     }, [currentPage, isDescend, isAll])
     //添加角色
-      const addRole = async () => {
-        if (role.value.replace(/\s*/g, "") === '') {
-          message.error('请输入角色名称')
-          return
-        } else if (role.value.replace(/\s*/g, "").length > 10) return
-        // let res = await addRoleReq({ roleName: role.value.replace(/\s*/g, "") })
-        // console.log(res);
-
-        // if (res.code !== 200) return
+    const addRole = async (value:addRoleParams) => {
+        value.menuIds=selectedKeys as string[]
+        console.log(value)
+        let res = await addRoleReq(value)
+        console.log(res);
+        if (res.code !== 200) return
         message.success('添加成功！')
-        setRole({ value: '' })
         setIsShow(0)
         getRoleList()
-      }
+        setSelectedKeys([])
+        formRef.current?.resetFields()
+    }
     //回收站恢复
     const recoverRole = async (row?: roleItemType) => {
         let res;
         row ? res = await recoverRoleReq([row.roleId]) : res = await recoverRoleReq(selectedRowKeys)
-        if (res.code !== 200){
+        if (res.code !== 200) {
             message.error(res.msg)
             return
-          } 
+        }
         setSelectedRows([])
         setSelectedRowKeys([])
         getRoleList()
@@ -78,10 +117,10 @@ export default function Role() {
     const deleteRoleRows = async (row?: roleItemType) => {
         let res;
         row ? res = await deleteRoleReq([row.roleId]) : res = await deleteRoleReq(selectedRowKeys)
-        if (res.code !== 200){
+        if (res.code !== 200) {
             message.error(res.msg)
             return
-          } 
+        }
         getRoleList()
         setSelectedRows([])
         setSelectedRowKeys([])
@@ -98,19 +137,19 @@ export default function Role() {
             title: '角色名',
             dataIndex: 'roleName',
         },
-        {
-            title: '权限',
-            dataIndex: 'menuIds',
-            render: (_, record) => (
-                <>
-                    {
-                        record.menuIds.map((el, index) => {
-                            return <span key={index}>{el}</span>
-                        })
-                    }
-                </>
-            )
-        },
+        // {
+        //     title: '权限',
+        //     dataIndex: 'menuIds',
+        //     render: (_, record) => (
+        //         <>
+        //             {
+        //                 record.menuIds.map((el, index) => {
+        //                     return <span style={{display:'block'}} key={index}>{el}</span>
+        //                 })
+        //             }
+        //         </>
+        //     )
+        // },
         {
             title: '描述',
             dataIndex: 'roleDesc',
@@ -135,7 +174,7 @@ export default function Role() {
             render: (_, record) => (
                 <>
                     <div style={{ display: isAll === 1 ? 'block' : 'none' }}>
-                        <a style={{ color: globalConstant().color }} onClick={() => { setIsShow(2); setRole({ value: record.roleName }); setEditRowId(record.roleId) }}>编辑</a>
+                        <a style={{ color: globalConstant().color }} onClick={() => { setIsShow(2);setEditRow(record) }}>编辑</a>
                         <a style={{ color: 'red', marginLeft: 10 }} onClick={() => { deleteRoleRows(record) }}>删除</a>
                     </div>
                     <div style={{ display: isAll === 2 ? 'block' : 'none' }}>
@@ -163,21 +202,21 @@ export default function Role() {
         },
     };
 
-    //修改角色名
-      const updateRoleName = async () => {
-        if (role.value.replace(/\s*/g, '') === '') {
-          message.error("请输入角色名称！");
-          return;
-        } else if (role.value.replace(/\s*/g, '').length > 10) return
-        // let res = await updateRoleReq({
-        //   roleId: editRowId,
-        //   roleName: role.value.replace(/\s*/g, ''),
-        // })
-        // if (res.code !== 200) return
+    //修改角色
+    const updateRole= async (value:updateRoleParams) => {
+        value.menuIds=selectedKeys as string[]
+        value.roleId=editRow.roleId
+        // console.log(value)
+        let res = await updateRoleReq(value)
+        if (res.code !== 200){
+            message.error(res.msg)
+            return
+        }
         message.success('修改成功！')
         setIsShow(0)
         getRoleList()
-      }
+        setSelectedKeys([])
+    }
     return (
         <div className='role'>
             <p className="role__title">角色管理</p>
@@ -213,44 +252,93 @@ export default function Role() {
                 rowSelection={{ ...rowSelection }}
             />
             {/* 添加角色模态框 */}
-            <Modal title="添加角色" okText='确定' cancelText='取消'
-                open={isShow === 1} onOk={addRole}
-                onCancel={() => { setIsShow(0); setRole({ value: '' }) }}>
-                <Form>
+            <Modal title="添加角色"
+                open={isShow === 1}
+                onCancel={() => { setIsShow(0); }}
+                footer={[]}
+            >
+                <Form
+                    labelCol={{ span: 4 }}
+                    labelAlign='left'
+                    layout='vertical'
+                    onFinish={addRole}
+                    ref={formRef}
+                >
                     <Form.Item
-                        validateStatus={role.validateStatus}
-                        help={role.errorMsg}
+                        label='角色名称'
+                        rules={[{ required: true, message: '不能为空' }]}
+                        name={'roleName'}
                     >
-                        <Input placeholder="请输入角色名称" allowClear style={{ margin: '20px 0' }}
-                            value={role.value}
-                            onKeyUp={(e) => e.keyCode === 13 ? addRole() : ''}
-                            onChange={(e) => setRole({ value: e.target.value, ...validatevalue(e.target.value, 10) })} />
+                        <Input placeholder="请输入角色名称" allowClear />
+                    </Form.Item>
+                    <Form.Item
+                        label='角色描述'
+                        name={'roleDesc'}
+                    >
+                        <Input placeholder="请输入角色描述" allowClear />
+                    </Form.Item>
+                    <Form.Item
+                        label='权限菜单'
+                    >
+                        <Tree
+                            checkable
+                            onCheck={(checkedKeys)=>setSelectedKeys(checkedKeys)}
+                            treeData={newMenuData}
+                        />
+                    </Form.Item>
+                    <Form.Item >
+                        <Button type="primary" htmlType="submit" style={{ float: 'right', width: '20%' }} >
+                            添加
+                        </Button>
                     </Form.Item>
                 </Form>
 
             </Modal>
             {/* 编辑模态框 */}
-            <Modal
-                title="编辑角色"
-                okText='确定'
-                cancelText='取消'
+            <Modal title="编辑角色"
                 open={isShow === 2}
-                onOk={updateRoleName}
-                onCancel={() => { setIsShow(0); setRole({ value: '' }) }}>
-                <Form>
+                onCancel={() => { setIsShow(0); }}
+                footer={[]}
+            >
+                <Form
+                    labelCol={{ span: 4 }}
+                    labelAlign='left'
+                    layout='vertical'
+                    onFinish={updateRole}
+                >
                     <Form.Item
-                        validateStatus={role.validateStatus}
-                        help={role.errorMsg}
+                        label='角色名称'
+                        rules={[{ required: true, message: '不能为空' }]}
+                        name={'roleName'}
+                        initialValue={editRow.roleName}
                     >
-                        <Input
-                            allowClear
-                            placeholder="请输入角色名称"
-                            style={{ margin: '20px 0' }}
-                            value={role.value}
-                            onKeyUp={(e) => e.keyCode === 13 ? updateRoleName() : ''}
-                            onChange={(e) => setRole({ value: e.target.value, ...validatevalue(e.target.value, 10) })} />
+                        <Input placeholder="请输入角色名称" allowClear />
+                    </Form.Item>
+                    <Form.Item
+                        label='角色描述'
+                        name={'roleDesc'}
+                        initialValue={editRow.roleDesc}
+                    >
+                        <Input placeholder="请输入角色描述" allowClear />
+                    </Form.Item>
+                    <Form.Item
+                        label='权限菜单'
+                    >
+                        <Tree
+                            checkable
+                            defaultExpandedKeys={editRow.menuIds}
+                            defaultCheckedKeys={editRow.menuIds}
+                            onCheck={(checkedKeys)=>setSelectedKeys(checkedKeys)}
+                            treeData={newMenuData}
+                        />
+                    </Form.Item>
+                    <Form.Item >
+                        <Button type="primary" htmlType="submit" style={{ float: 'right', width: '20%' }} >
+                            确定
+                        </Button>
                     </Form.Item>
                 </Form>
+
             </Modal>
         </div>
     )

@@ -81,15 +81,17 @@ export const checkUsernameReq=(username:string):Promise<booleanRes>=>request.ins
 //获取用户列表信息
 export const getUserListReq=(params:getUserListParams):Promise<userListRes>=>request.instance.post('/auth/admin/getUserInfoList',params)
 //删除用户
-export const deleteUserReq=(params: React.Key[]):Promise<idsRes>=>request.instance.delete('/auth/deleteUser',{data:params})
+export const deleteUserReq=(params: React.Key[]):Promise<idsRes>=>request.instance.delete('/auth/admin/deleteUser',{data:params})
 //恢复用户
-export const recoverUserReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/auth/recoverUser',params)
+export const recoverUserReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/auth/admin/recoverUser',params)
+//更新用户角色
+export const updateUserRoleReq=(params:{roleId:string,userId: string}):Promise<idRes>=>request.instance.post('/auth/admin/updateUserRole',params)
 //添加角色
 export const addRoleReq=(params:addRoleParams):Promise<idRes>=>request.instance.post('/auth/admin/role/add',params)
 //删除角色
 export const deleteRoleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.delete('/auth/admin/role/delete',{data:params})
 //修改角色
-export const updateRoleReq=(params:React.Key):Promise<idsRes>=>request.instance.post('/auth/admin/role/update',params)
+export const updateRoleReq=(params:updateRoleParams):Promise<idsRes>=>request.instance.post('/auth/admin/role/update',params)
 //恢复角色
 export const recoverRoleReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/auth/admin/role/recover',params)
 //查询角色

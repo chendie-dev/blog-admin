@@ -51,14 +51,24 @@ interface addRoleParams {
 }
 interface addMenuParams {
     component: string,
+    icon: string,
     menuDesc: string,
     menuName: string,
-    path: string,
-    perms: string
+    parentId?: string,
+    path: string
 }
-interface updateMenuParams extends addMenuParams {
+interface updateRoleParams extends addRoleParams{
+    roleId:string
+}
+interface updateMenuParams {
     menuId: string,
+    component: string,
+    icon: string,
+    menuDesc: string,
+    menuName: string,
+    path: string
 }
+
 type getTagListParams = defaultListType<
     {
         createTime?: boolean
@@ -140,11 +150,11 @@ type getRoleListParams = defaultListType<
 type getmenuListParams = defaultListType<
     { createTime?: boolean },
     {
-        component?: string|null,
+        component?: string | null,
         isDelete: boolean,
-        menuId?: string|null,
-        menuName?:string|null ,
-        path?: string|null,
-        perms?:string |null
+        menuId?: string | null,
+        menuName?: string | null,
+        path?: string | null,
+        icon?: string | null
     }
 >

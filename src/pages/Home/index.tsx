@@ -3,11 +3,22 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Layout, Menu, theme, Divider, Breadcrumb, Popover, Avatar } from 'antd';
 import MyIcon from '../../components/MyIcon';
 import './index.scss'
-import { useMenuItems, useMenuItemsDispatch } from '../../components/MenuItemsProvider';
 import { logoutReq } from '../../requests/api';
 import { useUserData, useUserDataDispatch } from '../../components/UserDataProvider';
 const { Header, Sider } = Layout;
-
+function getItem(
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[],
+  ): MenuItem {
+    return {
+      key,
+      icon,
+      children,
+      label,
+    } as MenuItem;
+  }
 export default function Home() {
     const [collapsed, setCollapsed] = useState(false)
     const { token: { colorBgContainer }, } = theme.useToken();
@@ -16,7 +27,40 @@ export default function Home() {
     const [openKey, setOpenKey] = useState([''])
     const [firstBreadItem, setBreadItem] = useState<Array<BreadcrumbItem>>([])
     const [selectedKeys, setSelectedKeys] = useState([location.pathname])
-    const MenuItems = useMenuItems()
+    const MenuItems = [
+        getItem('首页', '/charts', <MyIcon type={'icon-shouye-tianchong'} />),
+        getItem('文章管理', '2', <MyIcon type="icon-16" />, [
+          getItem('发布文章', '/articles'),
+          getItem('文章列表', '/article-list'),
+          getItem('分类管理', '/categories'),
+          getItem('标签管理', '/tags'),
+        ]),
+        getItem('消息管理', '3', <MyIcon type="icon-xinfengtianchong" />, [
+          getItem('评论管理', '/comments'),
+          getItem('留言管理', '/messages'),
+          getItem('敏感词管理', '/sensitive'),
+        ]),
+        getItem('用户管理', '4', <MyIcon type="icon-yonghu" />, [
+          getItem('用户列表', '/users'),
+          getItem('在线用户', '/online/users'),
+        ]),
+        getItem('权限管理', '5', <MyIcon type="icon-quanxian" />, [
+          getItem('角色管理', '/roles'),
+          getItem('菜单管理', '/menus'),
+          getItem('接口管理', '/resources'),
+    
+        ]),
+        getItem('系统管理', '6', <MyIcon type="icon-xitong" />, [
+          getItem('网站管理', '/website'),
+          getItem('页面管理', '/pages'),
+          getItem('关于我', '/about'),
+        ]),
+        getItem('图片管理', '/images', <MyIcon type="icon-xiangce" />),
+        getItem('日志管理', '9', <MyIcon type="icon-rizhi" />, [
+          getItem('操作日志', '/operation/log')
+        ]),
+        getItem('看板界面', '10', <MyIcon type="icon-icon-person-renwu" />),
+      ]
     const userData = useUserData()
     const userDispatch = useUserDataDispatch()
     //展开关闭控制

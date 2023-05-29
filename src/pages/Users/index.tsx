@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Input, Table, message } from 'antd'
+import { Button, Form, Input, Modal, Select, Table, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { TableRowSelection } from 'antd/es/table/interface';
 import './index.scss'
-import { deleteUserReq, getUserListReq, recoverUserReq } from '../../requests/api'
+import { deleteUserReq, getRoleListReq, getUserListReq, recoverUserReq, updateRoleReq, updateUserRoleReq } from '../../requests/api'
 import { utilFunc } from '../../hooks/utilFunc';
 import globalConstant from '../../utils/globalConstant';
 
@@ -21,6 +21,12 @@ export default function User() {
   const [userList, setuserList] = useState<userItemType[]>([])
   const [totalPage, setTotalPage] = useState(0)
   const [isDelete, setIsDelete] = useState(false)
+  const [isShow, setIsShow] = useState(false)
+  const [editRow, setEditRow] = useState<userItemType>({} as userItemType)
+  const [roleList, setRoleList] = useState<{value:string,label:string}[]>([])
+  useEffect(() => {
+    getRoleList()
+  }, [])
   //获取用户列表
   const getUserList = async () => {
     setLoading(true)
@@ -33,10 +39,10 @@ export default function User() {
         username: searchVal ? searchVal : null
       }
     })
-     if (res.code !== 200){
+    if (res.code !== 200) {
       message.error(res.msg)
       return
-    } 
+    }
     res.data.data.map(el => {
       el.createTime = utilFunc.FormatData(el.createTime)
       return el
@@ -45,23 +51,46 @@ export default function User() {
     setTotalPage(res.data.totalPage)
     setLoading(false)
   }
+  //获取角色列表
+  const getRoleList = async () => {
+    setLoading(true)
+    let res = await getRoleListReq({
+      orderByFields: { createTime: isDescend },
+      pageNum: 1,
+      pageSize: 10,
+      queryParam: {
+        isDelete: false
+      }
+    })
+    if (res.code !== 200) {
+      message.error(res.msg)
+      return
+    }
+    let a=res.data.data.map(el =>{
+      return {
+        value:el.roleId,
+        label:el.roleName
+      }
+    })
+    setRoleList(a)
+  }
   useEffect(() => {
     getUserList()
   }, [currentPage, isDescend, isDelete])
-  //修改用户
-  // const updateuser = async (row: userItemType) => {
-  //   let res = await updateuserReq({
-  //     auditType: row.auditType === 1 ? 2 : 1,
-  //     userId: row.userId
-  //   })
-  //    if (res.code !== 200){
-      // message.error(res.msg)
-      // return
-    // } 
-  //   setSelectedRows([])
-  //   setSelectedRowKeys([])
-  //   getuserList()
-  // }
+  // 修改用户
+  const updateUser = async (value: { roleId: string, userId: string }) => {
+    value.userId = editRow.userId
+    let res = await updateUserRoleReq(value)
+    if (res.code !== 200) {
+      message.error(res.msg)
+      return
+    }
+    message.success('修改成功')
+    setSelectedRows([])
+    setSelectedRowKeys([])
+    getUserList()
+    setIsShow(false)
+  }
   const deleteUser = async (ids: React.Key[]) => {
     let res = await deleteUserReq(ids)
     if (res.code !== 200) {
@@ -84,11 +113,11 @@ export default function User() {
 
   }
   const columns: ColumnsType<userItemType> = [
-    {
-      title: '用户ID',
-      dataIndex: 'userId',
+    // {
+    //   title: '用户ID',
+    //   dataIndex: 'userId',
 
-    },
+    // },
     {
       title: '用户名',
       dataIndex: 'username',
@@ -101,8 +130,17 @@ export default function User() {
     },
     {
       title: '角色名',
-      dataIndex: 'roleName',
-      width: '9%'
+      dataIndex: 'roleId',
+      width: '9%',
+      render:(_,record)=>(
+        <>
+        {
+          roleList.map(el=>{
+            if(el.value===record.roleId)return <span>{el.label}</span>
+          })
+        }
+        </>
+      )
     },
     {
       title: '性别',
@@ -144,10 +182,10 @@ export default function User() {
         <>
           {
             isDelete ?
-              <a style={{ display:'block',color: 'red' }} onClick={() => recoverUser([record.userId])} >恢复</a> :
+              <a style={{ display: 'block', color: 'red' }} onClick={() => recoverUser([record.userId])} >恢复</a> :
               <>
-                <a style={{ display:'block',color: 'red' }} onClick={() => deleteUser([record.userId])} >删除</a>
-                <a style={{ color: 'red' }} >更换角色</a>
+                <a style={{ color: globalConstant().color }} onClick={() => { setIsShow(true); setEditRow(record) }} >更换角色</a>
+                <a style={{ display: 'block', color: 'red' }} onClick={() => deleteUser([record.userId])} >删除</a>
               </>
           }
         </>
@@ -202,6 +240,36 @@ export default function User() {
         }}
         rowSelection={{ ...rowSelection }}
       />
+      {/* 编辑模态框 */}
+      <Modal
+        title="编辑菜单"
+        open={isShow}
+        footer={[]}
+        destroyOnClose={true}
+        onCancel={() => { setIsShow(false); }}>
+
+        <Form
+          labelCol={{ span: 4 }}
+          labelAlign='left'
+          layout='vertical'
+          onFinish={updateUser}
+        >
+          <Form.Item
+            name='roleId'
+            label='角色名'
+            initialValue={editRow.roleId}
+          >
+            <Select
+              options={roleList}
+            />
+          </Form.Item>
+          <Form.Item >
+            <Button type="primary" htmlType="submit" style={{ float: 'right', width: '20%' }} >
+              确定
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   )
 }

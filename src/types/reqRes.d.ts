@@ -51,7 +51,7 @@ interface userItemType {
     email: string,
     nickname: string,
     phoneNumber: string,
-    roleName: string,
+    roleId: string,
     sexEnum: string,
     userId: string,
     username: string
@@ -66,11 +66,12 @@ interface roleItemType {
 interface menuItemType {
     component: string,
     createTime: string,
+    icon: string,
     menuDesc: string,
     menuId: string,
     menuName: string,
     path: string,
-    perms: string
+    children: menuItemType[],
 }
 type idRes = defaultResType<{ id: string }>
 type idsRes = defaultResType<{ ids: string[] }>
