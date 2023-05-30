@@ -136,7 +136,7 @@ export default function User() {
         <>
         {
           roleList.map(el=>{
-            if(el.value===record.roleId)return <span>{el.label}</span>
+            if(el.value===record.roleId)return <span key={el.label}>{el.label}</span>
           })
         }
         </>

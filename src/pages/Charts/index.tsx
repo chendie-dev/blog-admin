@@ -9,7 +9,7 @@ export default function Charts() {
 const editorRef = useRef<ExposeParam>();
   return (
     <div style={{height:'600px'}}>
-      <iframe src='http://8.130.107.218:28087/' style={{height:'100%',width:'1050px'}}></iframe>
+      {/* <iframe src='http://8.130.107.218:28087/' style={{height:'100%',width:'1050px'}}></iframe> */}
     </div>
   )
 }

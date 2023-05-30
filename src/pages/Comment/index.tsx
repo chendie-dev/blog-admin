@@ -4,34 +4,34 @@ import type { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { TableRowSelection } from 'antd/es/table/interface';
 import './index.scss'
-import { updateMessageReq, getMessageReq } from '../../requests/api'
+import { auditCommentReq, getCommentListReq } from '../../requests/api'
 import { utilFunc } from '../../hooks/utilFunc';
 import globalConstant from '../../utils/globalConstant';
 
-export default function Messages() {
+export default function Comment() {
   useEffect(() => {
-    document.title = '留言-管理系统'
+    document.title = '评论-管理系统'
   }, [])
   const [isDescend, setIsDescend] = useState(true);//创建时间升降序
   const [currentPage, setCurrentPage] = useState(1)//当前页
-  const [selectedRows, setSelectedRows] = useState<messageItemType[]>([])//选取行
+  const [selectedRows, setSelectedRows] = useState<commentItemType[]>([])//选取行
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);//选中id
   const [searchVal, setSearchVal] = useState('')
   const [loading, setLoading] = useState(true)
   const [auditType, setAuditType] = useState(1)
   const [isAll, setIsAll] = useState(1)//1全部，2回收站
-  const [messageList, setMessageList] = useState<messageItemType[]>([])
+  const [commentList, setCommentList] = useState<commentItemType[]>([])
   const [totalPage, setTotalPage] = useState(0)
-  //获取留言列表
-  const getMessageList = async () => {
+  //获取评论列表
+  const getcommentList = async () => {
     setLoading(true)
-    let res = await getMessageReq({
+    let res = await getCommentListReq({
       orderByFields: { createTime: isDescend },
       pageNum: currentPage,
       pageSize: 5,
       queryParam: {
         auditType: auditType,
-        messageContent: searchVal === '' ? null : searchVal,
+        commentContent: searchVal === '' ? null : searchVal,
       }
     })
     if (res.code !== 200){
@@ -42,18 +42,18 @@ export default function Messages() {
       el.createTime = utilFunc.FormatData(el.createTime)
       return el
     })
-    setMessageList(res.data.data)
+    setCommentList(res.data.data)
     setTotalPage(res.data.totalPage)
     setLoading(false)
   }
   useEffect(() => {
-    getMessageList()
+    getcommentList()
   }, [currentPage, isDescend, isAll])
-  //修改留言
-  const updateMessage = async (row: messageItemType) => {
-    let res = await updateMessageReq({
-      auditType: row.auditType === 1 ? 2 : 1,
-      messageId: row.messageId
+  //修改评论
+  const auditComment = async (row: commentItemType) => {
+    let res = await auditCommentReq({
+      auditType: row.auditType === 0 ? 1 : 0,
+      commentId: row.commentId
     })
     if (res.code !== 200){
       message.error(res.msg)
@@ -61,18 +61,18 @@ export default function Messages() {
     } 
     setSelectedRows([])
     setSelectedRowKeys([])
-    getMessageList()
+    getcommentList()
   }
-  const columns: ColumnsType<messageItemType> = [
+  const columns: ColumnsType<commentItemType> = [
     {
-      title: '留言ID',
-      dataIndex: 'messageId',
+      title: '评论ID',
+      dataIndex: 'commentId',
       width: '20%',
 
     },
     {
       title: '内容',
-      dataIndex: 'messageContent',
+      dataIndex: 'commentContent',
     },
     {
       title: () => {
@@ -93,32 +93,32 @@ export default function Messages() {
       key: 'action',
       render: (_, record) => (
         <>
-          <a style={{ color: 'red' }} onClick={() => updateMessage(record)}>{isAll === 2 ? '取消通过' : '通过'}</a>
+          <a style={{ color: 'red' }} onClick={() => auditComment(record)}>{isAll === 2 ? '取消通过' : '通过'}</a>
         </>
       ),
       width: '20%',
     },
   ];
-  //选取留言行
-  const rowSelection: TableRowSelection<messageItemType> = {
+  //选取评论行
+  const rowSelection: TableRowSelection<commentItemType> = {
     selectedRowKeys,
     onSelect: (record, selected, selectedRows) => {
       let arr: React.Key[] = []
-      selectedRows.forEach(el => { arr.push(el.messageId) })
+      selectedRows.forEach(el => { arr.push(el.commentId) })
       setSelectedRowKeys(arr)
       setSelectedRows(selectedRows);
     },
     onSelectAll: (_, selectedRows) => {
       let arr: React.Key[] = []
-      selectedRows.forEach(el => { arr.push(el.messageId) })
+      selectedRows.forEach(el => { arr.push(el.commentId) })
       setSelectedRowKeys(arr)
       setSelectedRows(selectedRows);
     },
   };
   return (
-    <div className='message'>
-      <p className="message__title">留言管理</p>
-      <div className='message__status'><button>状态</button>
+    <div className='comment'>
+      <p className="comment__title">评论管理</p>
+      <div className='comment__status'><button>状态</button>
         <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setIsAll(1); setCurrentPage(1); setAuditType(1) }}
@@ -128,17 +128,17 @@ export default function Messages() {
           onClick={() => { setIsAll(2); setCurrentPage(1); setAuditType(2) }}
           disabled={selectedRows.length > 0}>已审核</button>
       </div>
-      <div className="message__operation-form">
-        {/* <Button type='primary' danger style={{display: isAll === 1 ? 'inline-block' : 'none' }} disabled={selectedRows.length === 0} onClick={() => updateMessage()}><DeleteOutlined />批量通过</Button>
+      <div className="comment__operation-form">
+        {/* <Button type='primary' danger style={{display: isAll === 1 ? 'inline-block' : 'none' }} disabled={selectedRows.length === 0} onClick={() => updatecomment()}><DeleteOutlined />批量通过</Button>
         <Button type='primary' danger
           style={{ display: isAll === 2 ? 'inline-block' : 'none' }}
           disabled={selectedRows.length === 0}
-          onClick={() => updateMessage()}
+          onClick={() => updatecomment()}
         ><PlusCircleOutlined />批量取消通过</Button> */}
-        <Button type='primary' style={{ float: 'right', marginLeft: '10px' }} onClick={getMessageList} ><SearchOutlined />搜索</Button>
-        <Input type="text" style={{ float: 'right' }} placeholder='请输入留言名称' allowClear prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getMessageList() : ''} />
+        <Button type='primary' style={{ float: 'right', marginLeft: '10px' }} onClick={getcommentList} ><SearchOutlined />搜索</Button>
+        <Input type="text" style={{ float: 'right' }} placeholder='请输入评论名称' allowClear prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getcommentList() : ''} />
       </div>
-      <Table columns={columns} dataSource={messageList} rowKey='messageId'
+      <Table columns={columns} dataSource={commentList} rowKey='commentId'
         loading={loading}
         pagination={{
           current: currentPage,

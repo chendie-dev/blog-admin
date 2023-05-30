@@ -45,9 +45,9 @@ interface passwordInfoParams {
     userId: string
 }
 interface addRoleParams {
-    menuIds?: React.Key[]|null,
-    resourceIds?: string[]|null,
-    roleDesc?: string|null,
+    menuIds?: React.Key[] | null,
+    resourceIds?: string[] | null,
+    roleDesc?: string | null,
     roleName: string,
 }
 interface addMenuParams {
@@ -163,7 +163,7 @@ type getmenuListParams = defaultListType<
         component?: string | null,
         isDelete: boolean,
         menuId?: string | null,
-        menuIds?:string[]|null,
+        menuIds?: string[] | null,
         menuName?: string | null,
         path?: string | null,
         icon?: string | null
@@ -173,8 +173,18 @@ type resourceListParams = defaultListType<
     { createTime?: boolean },
     {
         isDelete: boolean,
-        resourceId?: string|null,
-        resourceName?: string|null,
-        uri?: string|null
+        resourceId?: string | null,
+        resourceName?: string | null,
+        uri?: string | null
+    }
+>
+type getCommentListParams = defaultListType<
+    { createTime?: boolean },
+    {
+        articleId?:string ,
+        auditType:number ,
+        commentContent?:string|null ,
+        commentId?:string ,
+        userId?:string 
     }
 >

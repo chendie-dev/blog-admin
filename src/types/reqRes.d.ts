@@ -81,6 +81,13 @@ interface resourceItemType {
     resourceName: string,
     uri: string
 }
+interface commentItemType {
+    auditType: number,
+    commentContent: string,
+    commentId: string,
+    createTime: string,
+    userId: string
+}
 type idRes = defaultResType<{ id: string }>
 type idsRes = defaultResType<{ ids: string[] }>
 type tagListRes = defaultResType<{ data: tagItemType[], totalPage: number }>
@@ -97,3 +104,4 @@ type userListRes = defaultResType<{ data: userItemType[], totalPage: number }>
 type roleListRes = defaultResType<{ data: roleItemType[], totalPage: number }>
 type menuListRes = defaultResType<{ data: menuItemType[], totalPage: number }>
 type resourceListRes = defaultResType<{ data: resourceItemType[], totalPage: number }>
+type getCommentListRes = defaultResType<{ data: commentItemType[], totalPage: number }>

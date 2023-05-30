@@ -116,3 +116,7 @@ export const getResourceListReq=(params:resourceListParams):Promise<resourceList
 export const recoverResourceReq=(params:React.Key[]):Promise<idsRes>=>request.instance.post('/auth/admin/resource/recover',params)
 //资源更新
 export const updateResourceReq=(params:updateResourceParams):Promise<idRes>=>request.instance.post('/auth/admin/resource/update',params)
+//审核评论
+export const auditCommentReq=(params:{auditType:number ,commentId:string }):Promise<idRes>=>request.instance.post('/sms/admin/comment/audit',params)
+//查询评论
+export const getCommentListReq=(params:getCommentListParams):Promise<getCommentListRes>=>request.instance.post('/sms/admin/comment/queryByPage',params)

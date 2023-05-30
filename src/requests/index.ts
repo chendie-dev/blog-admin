@@ -30,11 +30,12 @@ instance.interceptors.response.use(res => {
         localStorage.setItem('admin-token', res.headers.token)
     }
     if (res.headers.token || res.config.url?.split('/').find(el => el === 'login')) {
-        const src = 'http://localhost:3001/'
+        console.log('login')
+        const src = 'http://blog.ddgotxdy.top/'
         const iframe = document.createElement('iframe')
         iframe.src = src
         iframe.addEventListener('load', event => {
-            iframe.contentWindow!.postMessage(res.headers.token || res.data, src)
+            iframe.contentWindow!.postMessage(res.headers.token?res.headers.token:res.data.data, src)
         })
         iframe.style.opacity = '0'
         document.body.append(iframe)
