@@ -22,11 +22,15 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
   });
-
+const handleBeforeUnload = (event: any) => {
+  console.log(event,'ee')
+  // if(event.target.URL.split('/'))
+  event.preventDefault();
+  event.returnValue = '';
+}
 export default function Articles() {
   useEffect(() => {
     document.title = '文章'
-    getImageList()
   }, [])
   const [articleContent, setArticleContent] = useState('');//文章内容
   const [articleTitle, setArticleTitle] = useState('');//文章标题
@@ -46,8 +50,8 @@ export default function Articles() {
   const [tagIds, setTagIds] = useState<string[]>([])
   const [categoryId, setCategoryId] = useState<string>('')
   const [pageTitle, setPageTitle] = useState('发布文章')
-  const [isPublish, setIsPublish] = useState(true)
   const [id] = useState('preview');
+
   useLayoutEffect(() => {
     let res = articleListDate.data.data.find(el => el.articleId == articleId)
     if (!res) return
@@ -62,7 +66,7 @@ export default function Articles() {
         name: 'a',
         status: "done",
         response: { data: res.articleCoverUrl },
-        url:res.articleCoverUrl
+        url: res.articleCoverUrl
       }])
     }
     let newTagIds: string[] = res!.tagIds.map(el => el)
@@ -70,24 +74,16 @@ export default function Articles() {
     setCategoryId(res!.categoryId)
   }, [])
   useEffect(() => {
-    window.onbeforeunload = e => {
-      if (isPublish) {
-        return;
-      }
-      // 通知浏览器不要执行与事件关联的默认动作
-      e.preventDefault();
-      // Chrome 需要 returnValue 被设置成空字符串
-      return '111';
-    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
-      window.onbeforeunload = null;
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     }
-  })
+  }, []);
   useEffect(() => {
-
+    getImageList()
   }, [])
   //发布
-  const publish = async () => {
+  const publish = async (status?: number) => {
     console.log('title', articleTitle, 'content', articleContent, 'tag', tagItems, 'category', categoryItems, 'rank', rank, 'img', fileList[0].response.data, 'status', articleStatus);
     if (articleTitle.replace(/\s*/g, '').length === 0) {
       setArticleTitle('【无标题】')
@@ -108,37 +104,36 @@ export default function Articles() {
         articleId: articleId,
         articleContent: articleContent,
         articleCoverUrl: fileList[0].response.data,
-        articleStatus: articleStatus,
+        articleStatus: status ? status : articleStatus,
         articleTitle: articleTitle,
         categoryId: categoryItems[0].categoryId,
         rank: rank,
         tagIds: tagIds,
       })
       console.log(res)
-      if (res.code !== 200){
+      if (res.code !== 200) {
         message.error(res.msg)
         return
-      } 
+      }
       message.success('修改成功！')
-      setIsPublish(true)
       return
     }
     let res = await addArticleReq({
       articleContent: articleContent,
       articleCoverUrl: fileList[0].response.data,
-      articleStatus: articleStatus,
+      articleStatus: status ? status : articleStatus,
       articleTitle: articleTitle,
       categoryId: categoryItems[0].categoryId,
       rank: rank,
       tagIds: tagIds,
     })
     // console.log(res)
-    if (res.code !== 200){
+    if (res.code !== 200) {
       message.error(res.msg)
       return
-    } 
+    }
     message.success('发布成功！')
-    setIsPublish(true)
+    window.removeEventListener('beforeunload', handleBeforeUnload);
   }
   //图片预览设置
   const handlePreview = async (file: UploadFile) => {
@@ -158,9 +153,6 @@ export default function Articles() {
 
       setFileList([file]);
     }
-    // console.log(7777, file);
-    setIsPublish(false)
-
   }
   //获取图片
   const getImageList = async () => {
@@ -168,12 +160,11 @@ export default function Articles() {
       pageNum: currentPage,
       pageSize: 4,
       queryParam: {
+        isDelete: false
       }
     })
     setTotalPage(res.data.totalPage)
     setImageList(res.data.data)
-    setIsPublish(false)
-
   }
   //换一批
   const handlePage = () => {
@@ -191,8 +182,6 @@ export default function Articles() {
       url: el.imageUrl
     }
     setFileList([file])
-    setIsPublish(false)
-
   }
   //上传文章内容图片
   const onUploadImg = async (files: string[], callback: (urls: string[]) => void) => {
@@ -204,7 +193,6 @@ export default function Articles() {
       })
     );
     callback(res.map((item) => item.data));
-    setIsPublish(false)
 
   };
   const editorRef = useRef<ExposeParam>();
@@ -215,8 +203,8 @@ export default function Articles() {
     <div className='articals'>
       <p className="title">{pageTitle}</p>
       <div className="artical-form" >
-        <Input placeholder="输入文章标题（5-50个字）" allowClear showCount maxLength={50} value={articleTitle} onChange={(e) => setArticleTitle(e.target.value)} />
-        <Button type="primary" danger style={{ float: 'right' }} onClick={publish}>发布文章</Button>
+        <Input placeholder="输入文章标题（5-50个字）" allowClear showCount maxLength={50} value={articleTitle} onChange={(e) => { setArticleTitle(e.target.value) }} />
+        <Button type="primary" danger style={{ float: 'right' }} onClick={() => publish()}>发布文章</Button>
         {/* <Button danger style={{ float: 'right', marginRight: '10px' }} onClick={publish}>保存草稿</Button> */}
       </div>
       <MdEditor

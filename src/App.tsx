@@ -24,11 +24,15 @@ function ToLogin() {
   )
 }
 function BeforeRouterEnter() {
+  useEffect(()=>{
+    
+  },[])
   const outlet = useRoutes(router)
   const location = useLocation()
-  const token = localStorage.getItem('token')
-  // if (token && location.pathname === '/login') return <ToHome />
-  // if (!token && location.pathname !== '/login') return <ToLogin />
+  const token = localStorage.getItem('admin-token')
+  if (token && location.pathname === '/login') return <ToHome />
+  if (!token && location.pathname !== '/login') return <ToLogin />
+  
   return outlet
 }
 function App() {

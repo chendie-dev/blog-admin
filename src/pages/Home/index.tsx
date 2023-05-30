@@ -27,49 +27,31 @@ export default function Home() {
     const [openKey, setOpenKey] = useState([''])
     const [firstBreadItem, setBreadItem] = useState<Array<BreadcrumbItem>>([])
     const [selectedKeys, setSelectedKeys] = useState([location.pathname])
-    const MenuItems = [
-        getItem('首页', '/charts', <MyIcon type={'icon-shouye-tianchong'} />),
-        getItem('文章管理', '2', <MyIcon type="icon-16" />, [
-          getItem('发布文章', '/articles'),
-          getItem('文章列表', '/article-list'),
-          getItem('分类管理', '/categories'),
-          getItem('标签管理', '/tags'),
-        ]),
-        getItem('消息管理', '3', <MyIcon type="icon-xinfengtianchong" />, [
-          getItem('评论管理', '/comments'),
-          getItem('留言管理', '/messages'),
-          getItem('敏感词管理', '/sensitive'),
-        ]),
-        getItem('用户管理', '4', <MyIcon type="icon-yonghu" />, [
-          getItem('用户列表', '/users'),
-          getItem('在线用户', '/online/users'),
-        ]),
-        getItem('权限管理', '5', <MyIcon type="icon-quanxian" />, [
-          getItem('角色管理', '/roles'),
-          getItem('菜单管理', '/menus'),
-          getItem('接口管理', '/resources'),
-    
-        ]),
-        getItem('系统管理', '6', <MyIcon type="icon-xitong" />, [
-          getItem('网站管理', '/website'),
-          getItem('页面管理', '/pages'),
-          getItem('关于我', '/about'),
-        ]),
-        getItem('图片管理', '/images', <MyIcon type="icon-xiangce" />),
-        getItem('日志管理', '9', <MyIcon type="icon-rizhi" />, [
-          getItem('操作日志', '/operation/log')
-        ]),
-        getItem('看板界面', '10', <MyIcon type="icon-icon-person-renwu" />),
-      ]
+    const [menuItems,setmenuItems] = useState<MenuItem[]>([])
+
     const userData = useUserData()
     const userDispatch = useUserDataDispatch()
+    console.log(userData,'user')
+    useEffect(()=>{
+        if(userData.menus.length){
+            setmenuItems(initMenus(userData.menus).reverse())
+        }
+    },[userData])
+    const initMenus=(menus:menuItemType[])=>{
+        let newMenu:MenuItem[]=[]
+        menus.forEach(el=>{
+            let item=el.children?getItem(el.menuName,el.path,<MyIcon type={el.icon}/>,initMenus(el.children)):getItem(el.menuName,el.path,<MyIcon type={el.icon}/>)
+            newMenu.push(item)
+        })
+        return newMenu
+    }
     //展开关闭控制
     useEffect(() => {
         
         userDispatch('getuser')
-        for (let i = 0; i < MenuItems.length; i++) {
-            if (MenuItems[i].children && MenuItems[i].children!.find((el: { key: React.Key }) => el.key === location.pathname)) {
-                setOpenKey([MenuItems[i].key as string])
+        for (let i = 0; i < menuItems.length; i++) {
+            if (menuItems[i].children && menuItems[i].children!.find((el: { key: React.Key }) => el.key === location.pathname)) {
+                setOpenKey([menuItems[i].key as string])
             }
         }
         window.addEventListener('message', ({ data, origin }) => {
@@ -80,7 +62,7 @@ export default function Home() {
     //动态生成一级面包屑
     useEffect(() => {
         let flag = 0
-        MenuItems.forEach((el) => {
+        menuItems.forEach((el) => {
             if (el.key === location.pathname) {
                 flag = 1
                 if (location.pathname === '/charts') {
@@ -127,7 +109,7 @@ export default function Home() {
         setSelectedKeys([location.pathname])
     }, [location.pathname])
     const logout = async () => {
-        localStorage.removeItem('token')
+        localStorage.removeItem('admin-token')
         await logoutReq()
         navigateTo('/login')
     }
@@ -138,7 +120,7 @@ export default function Home() {
                     theme="dark"
                     mode="inline"
                     selectedKeys={selectedKeys}
-                    items={MenuItems}
+                    items={menuItems}
                     onClick={(e) => navigateTo(e.key)}
                     onOpenChange={(openKeys: string[]) => {
                         setOpenKey([openKeys[openKeys.length - 1]])

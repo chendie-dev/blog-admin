@@ -8,8 +8,8 @@ export default function Charts() {
 }, []);
 const editorRef = useRef<ExposeParam>();
   return (
-    <div>
-      <a href="">11233</a>
+    <div style={{height:'600px'}}>
+      <iframe src='http://8.130.107.218:28087/' style={{height:'100%',width:'1050px'}}></iframe>
     </div>
   )
 }

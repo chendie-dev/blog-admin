@@ -58,7 +58,8 @@ interface userItemType {
 }
 interface roleItemType {
     createTime: string,
-    menuIds: React.Key[],
+    menuIds: string[],
+    resourceIds: string[],
     roleDesc: string,
     roleId: string,
     roleName: string
@@ -72,6 +73,13 @@ interface menuItemType {
     menuName: string,
     path: string,
     children: menuItemType[],
+}
+interface resourceItemType {
+    createTime: string,
+    resourceDesc: string,
+    resourceId: string,
+    resourceName: string,
+    uri: string
 }
 type idRes = defaultResType<{ id: string }>
 type idsRes = defaultResType<{ ids: string[] }>
@@ -88,3 +96,4 @@ type booleanRes = defaultResType<boolean>
 type userListRes = defaultResType<{ data: userItemType[], totalPage: number }>
 type roleListRes = defaultResType<{ data: roleItemType[], totalPage: number }>
 type menuListRes = defaultResType<{ data: menuItemType[], totalPage: number }>
+type resourceListRes = defaultResType<{ data: resourceItemType[], totalPage: number }>

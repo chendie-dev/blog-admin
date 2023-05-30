@@ -194,6 +194,7 @@ export default function Images() {
       pageSize: 5,
       queryParam: {
         imageName: searchVal,
+        isDelete:isAll?false:true
       }
     })
     setLoading(false)

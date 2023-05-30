@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
@@ -9,7 +8,9 @@ import CategoryDataProvider from './components/CategoryDataProvider';
 import MenuItemsProvider from './components/MenuItemsProvider';
 import ArticleListDataProvider from './components/ArticleListDateProvider';
 import { ConfigProvider } from 'antd';
+import zhCN from 'antd/locale/zh_CN';
 import UserDataProvider from './components/UserDataProvider';
+import ResourceDateProvider from './components/ResourceDateProvider';
 if (process.env.NODE_ENV === 'development') {
   require('./mock')
 }
@@ -19,14 +20,16 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <ConfigProvider
-    theme={{ token: { colorPrimary: '#27a7ca', borderRadius: 15 } }}>
+    theme={{ token: { colorPrimary: '#27a7ca', borderRadius: 15 } }} locale={zhCN}>
     <Provider store={store}>
       <BrowserRouter>
         <CategoryDataProvider>
           <MenuItemsProvider>
             <ArticleListDataProvider>
               <UserDataProvider>
-                <App />
+                <ResourceDateProvider>
+                  <App />
+                </ResourceDateProvider>
               </UserDataProvider>
             </ArticleListDataProvider>
           </MenuItemsProvider>

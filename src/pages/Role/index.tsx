@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Form, FormInstance, Input, Modal, Table, Tree, TreeProps, message } from 'antd'
+import { Button, Form, FormInstance, Input, Modal, Table, Transfer, Tree, TreeProps, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, DeleteOutlined, SearchOutlined, CaretUpOutlined, CaretDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { Key, TableRowSelection } from 'antd/es/table/interface';
@@ -10,6 +10,8 @@ import globalConstant from '../../utils/globalConstant';
 import { useMenuItems, useMenuItemsDispatch } from '../../components/MenuItemsProvider';
 import { DataNode } from 'antd/es/tree';
 import { utilFunc } from '../../hooks/utilFunc';
+import { TransferDirection } from 'antd/es/transfer';
+import { useResource, useResourceDispatch } from '../../components/ResourceDateProvider';
 
 function handleMenuData(data: menuItemType[]): DataNode[] {
     let menuItem: DataNode[] = []
@@ -42,10 +44,13 @@ export default function Role() {
     const [roleList, setRoleList] = useState<roleItemType[]>([])
     const [totalPage, setTotalPage] = useState(0)
     const [newMenuData, setNewMenuData] = useState<DataNode[]>([])
-    const [selectedKeys, setSelectedKeys] = useState<Key[] | { checked: Key[]; halfChecked: Key[]; }>([])
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+    const [resourceIds, setResourceIds] = useState<string[]>([]);
     const formRef = useRef<FormInstance>(null);
     const menuData = useMenuItems()
     const menuDispatch = useMenuItemsDispatch()
+    const resourceData = useResource()
+    const resourceDispatch = useResourceDispatch()
     useEffect(() => {
         menuDispatch({
             type: 'getmenu',
@@ -53,6 +58,17 @@ export default function Role() {
                 orderByFields: {},
                 pageNum: 1,
                 pageSize: 10,
+                queryParam: {
+                    isDelete: false
+                }
+            }
+        })
+        resourceDispatch({
+            type: 'getresourcedata',
+            payload: {
+                orderByFields: {},
+                pageNum: 1,
+                pageSize: 100,
                 queryParam: {
                     isDelete: false
                 }
@@ -80,7 +96,7 @@ export default function Role() {
             message.error(res.msg)
             return
         }
-        res.data.data.forEach(el=>el.createTime=utilFunc.FormatData(el.createTime))
+        res.data.data.forEach(el => el.createTime = utilFunc.FormatData(el.createTime))
         setTotalPage(res.data.totalPage)
         setRoleList(res.data.data)
         setLoading(false)
@@ -89,9 +105,9 @@ export default function Role() {
         getRoleList()
     }, [currentPage, isDescend, isAll])
     //添加角色
-    const addRole = async (value:addRoleParams) => {
-        value.menuIds=selectedKeys as string[]
+    const addRole = async (value: addRoleParams) => {
         console.log(value)
+        value.menuIds = selectedKeys as string[]
         let res = await addRoleReq(value)
         console.log(res);
         if (res.code !== 200) return
@@ -137,19 +153,6 @@ export default function Role() {
             title: '角色名',
             dataIndex: 'roleName',
         },
-        // {
-        //     title: '权限',
-        //     dataIndex: 'menuIds',
-        //     render: (_, record) => (
-        //         <>
-        //             {
-        //                 record.menuIds.map((el, index) => {
-        //                     return <span style={{display:'block'}} key={index}>{el}</span>
-        //                 })
-        //             }
-        //         </>
-        //     )
-        // },
         {
             title: '描述',
             dataIndex: 'roleDesc',
@@ -174,7 +177,8 @@ export default function Role() {
             render: (_, record) => (
                 <>
                     <div style={{ display: isAll === 1 ? 'block' : 'none' }}>
-                        <a style={{ color: globalConstant().color }} onClick={() => { setIsShow(2);setEditRow(record) }}>编辑</a>
+                        <a style={{ color: globalConstant().color }} onClick={() => { setIsShow(2); setEditRow(record) }}>菜单权限</a>
+                        <a style={{ color: globalConstant().color, marginLeft: 10 }} onClick={() => { setIsShow(3); setEditRow(record);setResourceIds(record.resourceIds) }}>资源权限</a>
                         <a style={{ color: 'red', marginLeft: 10 }} onClick={() => { deleteRoleRows(record) }}>删除</a>
                     </div>
                     <div style={{ display: isAll === 2 ? 'block' : 'none' }}>
@@ -203,12 +207,12 @@ export default function Role() {
     };
 
     //修改角色
-    const updateRole= async (value:updateRoleParams) => {
-        value.menuIds=selectedKeys as string[]
-        value.roleId=editRow.roleId
-        // console.log(value)
+    const updateRole = async (value: updateRoleParams) => {
+        value.menuIds = selectedKeys.length>0?selectedKeys:null
+        value.resourceIds=resourceIds.length>0?resourceIds:null
+        value.roleId = editRow.roleId
         let res = await updateRoleReq(value)
-        if (res.code !== 200){
+        if (res.code !== 200) {
             message.error(res.msg)
             return
         }
@@ -216,7 +220,9 @@ export default function Role() {
         setIsShow(0)
         getRoleList()
         setSelectedKeys([])
+        setEditRow({} as roleItemType)
     }
+
     return (
         <div className='role'>
             <p className="role__title">角色管理</p>
@@ -256,6 +262,7 @@ export default function Role() {
                 open={isShow === 1}
                 onCancel={() => { setIsShow(0); }}
                 footer={[]}
+                destroyOnClose={true}
             >
                 <Form
                     labelCol={{ span: 4 }}
@@ -263,6 +270,7 @@ export default function Role() {
                     layout='vertical'
                     onFinish={addRole}
                     ref={formRef}
+
                 >
                     <Form.Item
                         label='角色名称'
@@ -282,8 +290,11 @@ export default function Role() {
                     >
                         <Tree
                             checkable
-                            onCheck={(checkedKeys)=>setSelectedKeys(checkedKeys)}
                             treeData={newMenuData}
+                            onCheck={(checkedKeys, e) => { setSelectedKeys([...e.halfCheckedKeys as string[], ...checkedKeys as string[]]); }}
+
+                        // checkStrictly={true}
+                        // multiple={true}
                         />
                     </Form.Item>
                     <Form.Item >
@@ -294,11 +305,12 @@ export default function Role() {
                 </Form>
 
             </Modal>
-            {/* 编辑模态框 */}
+            {/* 权限模态框 */}
             <Modal title="编辑角色"
                 open={isShow === 2}
-                onCancel={() => { setIsShow(0); }}
+                onCancel={() => { setIsShow(0); setEditRow({} as roleItemType) }}
                 footer={[]}
+                destroyOnClose={true}
             >
                 <Form
                     labelCol={{ span: 4 }}
@@ -328,8 +340,59 @@ export default function Role() {
                             checkable
                             defaultExpandedKeys={editRow.menuIds}
                             defaultCheckedKeys={editRow.menuIds}
-                            onCheck={(checkedKeys)=>setSelectedKeys(checkedKeys)}
+                            onCheck={(checkedKeys, e) => { setSelectedKeys([...e.halfCheckedKeys as string[], ...checkedKeys as string[]]); }}
                             treeData={newMenuData}
+                        />
+                    </Form.Item>
+                    <Form.Item >
+                        <Button type="primary" htmlType="submit" style={{ float: 'right', width: '20%' }} >
+                            确定
+                        </Button>
+                    </Form.Item>
+                </Form>
+
+            </Modal>
+            {/* 资源模态框 */}
+            <Modal title="编辑资源"
+                open={isShow === 3}
+                onCancel={() => { setIsShow(0); setEditRow({} as roleItemType);setResourceIds([]) }}
+                footer={[]}
+                destroyOnClose={true}
+            >
+                <Form
+                    labelCol={{ span: 4 }}
+                    labelAlign='left'
+                    layout='vertical'
+                    onFinish={updateRole}
+                >
+                    <Form.Item
+                        label='角色名称'
+                        rules={[{ required: true, message: '不能为空' }]}
+                        name={'roleName'}
+                        initialValue={editRow.roleName}
+                    >
+                        <Input placeholder="请输入角色名称" allowClear />
+                    </Form.Item>
+                    <Form.Item
+                        label='角色描述'
+                        name={'roleDesc'}
+                        initialValue={editRow.roleDesc}
+                    >
+                        <Input placeholder="请输入角色描述" allowClear />
+                    </Form.Item>
+                    <Form.Item
+                        label='资源权限'
+                    >
+                        <Transfer
+                            dataSource={resourceData.data.data}
+                            rowKey={(record) => record.resourceId}
+                            titles={['禁用资源', '已获资源']}
+                            showSearch
+                            filterOption={(inputValue: string, option: resourceItemType) =>option.resourceName.indexOf(inputValue) > -1}
+                            targetKeys={resourceIds}
+                            onChange={(newTargetKeys: string[]) => {setResourceIds(newTargetKeys)}}
+                            render={(item) => item.resourceName}
+                            listStyle={{ width: '100%' }}
                         />
                     </Form.Item>
                     <Form.Item >

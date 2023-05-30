@@ -6,9 +6,9 @@ import { utilFunc } from '../../hooks/utilFunc';
 interface propsType {
   getCategoryId: (CategoryId: string | null) => void
 }
-const CategoryInput: React.FC<propsType> = ({ getCategoryId }) => {
+const CategoryInput: React.FC<propsType> = React.memo(({ getCategoryId }) => {
   const [CategoryList, setCategoryList] = useState<categoryItemType[]>([])
-  const [searchVal,setSearchval]=useState({value:'',flag:true})
+  const [searchVal, setSearchval] = useState({ value: '', flag: true })
   const getCategoryList = utilFunc.useThrottle(async () => {
     let res = await getCategoryListReq({
       orderByFields: { createTime: false },
@@ -21,13 +21,13 @@ const CategoryInput: React.FC<propsType> = ({ getCategoryId }) => {
     })
     setCategoryList(res.data.data)
   }, 1500)
-  useEffect(()=>{
-   if(!searchVal.flag||searchVal.value===''){
-    getCategoryId(null)
-    return
-   }
+  useEffect(() => {
+    if (!searchVal.flag || searchVal.value === '') {
+      getCategoryId(null)
+      return
+    }
     getCategoryList()
-  },[searchVal])
+  }, [searchVal])
   const submit = (CategoryId: string) => {
     getCategoryId(CategoryId)
     setCategoryList([])
@@ -35,9 +35,9 @@ const CategoryInput: React.FC<propsType> = ({ getCategoryId }) => {
   return (
     <div className='select-input'>
       <Input type='text'
-        onChange={(e) => setSearchval((last)=>({...last,value:e.target.value}))}
-        onCompositionEnd={()=>setSearchval((last)=>({...last,flag:true}))}
-        onCompositionStart={()=>setSearchval((last)=>({...last,flag:false}))}
+        onChange={(e) => setSearchval((last) => ({ ...last, value: e.target.value }))}
+        onCompositionEnd={() => setSearchval((last) => ({ ...last, flag: true }))}
+        onCompositionStart={() => setSearchval((last) => ({ ...last, flag: false }))}
         placeholder='请输入分类名'
         allowClear
       />
@@ -57,5 +57,6 @@ const CategoryInput: React.FC<propsType> = ({ getCategoryId }) => {
 
   )
 }
+)
 export default CategoryInput
 
