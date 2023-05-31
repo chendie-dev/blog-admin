@@ -12,7 +12,6 @@ const instance = axios.create({
 //请求拦截器
 instance.interceptors.request.use(config => {
     config.headers.token = localStorage.getItem('admin-token')
-    // console.log(config.url?.split('/').find(el=>el==='login'),'url')
     NProgress.start()
     return config
 }, err => {

@@ -31,7 +31,6 @@ export default function Home() {
 
     const userData = useUserData()
     const userDispatch = useUserDataDispatch()
-    // console.log(userData,'user')
     useEffect(()=>{
         if(userData.menus.length){
             setmenuItems(initMenus(userData.menus).reverse())
@@ -55,7 +54,7 @@ export default function Home() {
             }
         }
         window.addEventListener('message', ({ data, origin }) => {
-            console.log('blog',typeof(data),origin)
+            console.log('admin',typeof(data),origin)
             if(origin==='http://blog.ddgotxdy.top')localStorage.setItem('admin-token', data)
           },false)
     }, [])
