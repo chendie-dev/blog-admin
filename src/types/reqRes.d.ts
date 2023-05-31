@@ -88,6 +88,17 @@ interface commentItemType {
     createTime: string,
     userId: string
 }
+interface pageType {
+    authorUrl: string,
+    authorName: string,
+    briefIntroduction: string,
+    githubUrl: string,
+    qqUrl: string,
+    homePageUrl: string,
+    messagePageUrl: string,
+    categoryPageUrl: string,
+    tagPageUrl: string,
+}
 type idRes = defaultResType<{ id: string }>
 type idsRes = defaultResType<{ ids: string[] }>
 type tagListRes = defaultResType<{ data: tagItemType[], totalPage: number }>
@@ -105,3 +116,4 @@ type roleListRes = defaultResType<{ data: roleItemType[], totalPage: number }>
 type menuListRes = defaultResType<{ data: menuItemType[], totalPage: number }>
 type resourceListRes = defaultResType<{ data: resourceItemType[], totalPage: number }>
 type getCommentListRes = defaultResType<{ data: commentItemType[], totalPage: number }>
+type getPageRes = defaultResType<pageType>

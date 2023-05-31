@@ -120,3 +120,11 @@ export const updateResourceReq=(params:updateResourceParams):Promise<idRes>=>req
 export const auditCommentReq=(params:{auditType:number ,commentId:string }):Promise<idRes>=>request.instance.post('/sms/admin/comment/audit',params)
 //查询评论
 export const getCommentListReq=(params:getCommentListParams):Promise<getCommentListRes>=>request.instance.post('/sms/admin/comment/queryByPage',params)
+//关于我
+export const addAboutReq=(params:{aboutMe:string}):Promise<idRes>=>request.instance.post('/website/admin/aboutMe/add',params)
+//获取关于我
+export const getAboutMeReq=():Promise<loginRes>=>request.instance.post('/website/admin/aboutMe/query')
+//获取页面
+export const getPagesReq=():Promise<getPageRes>=>request.instance.post('/website/admin/page/query')
+//更新页面
+export const addPagesReq=(params:pageType):Promise<idsRes>=>request.instance.post('/website/admin/page/add',params)

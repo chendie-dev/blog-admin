@@ -1,9 +1,9 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { MdEditor } from 'md-editor-rt'
 import 'md-editor-rt/lib/style.css';
-import { uploadImageReq } from '../../requests/api';
+import { addAboutReq, getAboutMeReq, uploadImageReq } from '../../requests/api';
 import './index.scss'
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import EmojiExtension from '../../components/EmojiExtension';
 import { ExposeParam, InsertContentGenerator } from 'md-editor-rt/lib/types/MdEditor/type';
 import ReadExtension from '../../components/ReadExtension';
@@ -21,11 +21,29 @@ export default function About() {
         );
         callback(res.map((item) => item.data));
     };
+    useEffect(()=>{
+        getContent()
+    },[])
+    const getContent=async ()=>{
+        let res=await getAboutMeReq()
+        if(res.code!==200){
+            message.error(res.msg)
+            return
+        }
+        setContent(res.data)
+    }
     const editorRef = useRef<ExposeParam>();
     const onInsert = useCallback((generator: InsertContentGenerator) => {
         editorRef.current?.insert(generator);
     }, []);
-
+    const submit=async ()=>{
+        let res=await addAboutReq({aboutMe:content})
+        if(res.code!==200){
+            message.error(res.msg)
+            return
+        }
+        message.success('提交成功')
+    }
     return (
         <div className='about'>
             <p className="title">关于我</p>
@@ -84,7 +102,7 @@ export default function About() {
                     'github'
                 ]}
             />
-            <Button type='primary' style={{ float: 'right' }}>提交</Button>
+            <Button type='primary' style={{ float: 'right' }} onClick={submit}>提交</Button>
 
         </div>
     )

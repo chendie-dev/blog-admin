@@ -42,6 +42,7 @@ export default function Comment() {
       el.createTime = utilFunc.FormatData(el.createTime)
       return el
     })
+    console.log(res.data.data)
     setCommentList(res.data.data)
     setTotalPage(res.data.totalPage)
     setLoading(false)
@@ -52,7 +53,7 @@ export default function Comment() {
   //修改评论
   const auditComment = async (row: commentItemType) => {
     let res = await auditCommentReq({
-      auditType: row.auditType === 0 ? 1 : 0,
+      auditType: row.auditType === 2 ? 1 : 2,
       commentId: row.commentId
     })
     if (res.code !== 200){
