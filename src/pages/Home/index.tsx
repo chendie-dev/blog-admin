@@ -53,10 +53,7 @@ export default function Home() {
                 setOpenKey([menuItems[i].key as string])
             }
         }
-        window.addEventListener('message', ({ data, origin }) => {
-            console.log('admin',typeof(data),origin)
-            if(origin==='http://blog.ddgotxdy.top')localStorage.setItem('admin-token', data)
-          },false)
+       
     }, [])
     //动态生成一级面包屑
     useEffect(() => {
