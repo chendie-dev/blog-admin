@@ -23,7 +23,7 @@ export default function Login() {
       return
     }
     localStorage.setItem('admin-token', res.data)
-    navigateTo('/charts')
+    navigateTo('/home')
     userDispatch('getuser')
   }
   return (

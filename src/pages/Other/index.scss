@@ -1,0 +1,29 @@
+.other {
+    &__title {
+        position: relative;
+        font-size: 16px;
+        font-weight: bolder;
+    }
+
+    &__title::before {
+        content: '';
+        position: absolute;
+        width: 3px;
+        height: 24px;
+        left: -24px;
+        top: 1px;
+        background-color: #27a7ca;
+    }
+
+    .images {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+
+        img {
+            margin: 20px;
+        }
+    }
+
+}

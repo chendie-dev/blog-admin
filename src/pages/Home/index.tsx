@@ -5,20 +5,21 @@ import MyIcon from '../../components/MyIcon';
 import './index.scss'
 import { logoutReq } from '../../requests/api';
 import { useUserData, useUserDataDispatch } from '../../components/UserDataProvider';
+import { Footer } from 'antd/es/layout/layout';
 const { Header, Sider } = Layout;
 function getItem(
     label: React.ReactNode,
     key: React.Key,
     icon?: React.ReactNode,
     children?: MenuItem[],
-  ): MenuItem {
+): MenuItem {
     return {
-      key,
-      icon,
-      children,
-      label,
+        key,
+        icon,
+        children,
+        label,
     } as MenuItem;
-  }
+}
 export default function Home() {
     const [collapsed, setCollapsed] = useState(false)
     const { token: { colorBgContainer }, } = theme.useToken();
@@ -27,33 +28,38 @@ export default function Home() {
     const [openKey, setOpenKey] = useState([''])
     const [firstBreadItem, setBreadItem] = useState<Array<BreadcrumbItem>>([])
     const [selectedKeys, setSelectedKeys] = useState([location.pathname])
-    const [menuItems,setmenuItems] = useState<MenuItem[]>([])
-
+    const [menuItems, setmenuItems] = useState<MenuItem[]>([])
     const userData = useUserData()
     const userDispatch = useUserDataDispatch()
-    useEffect(()=>{
-        if(userData.menus.length){
+    // var winHeight = window.innerHeight,scroHeight=document.querySelector('.hei')
+    // console.log(winHeight,scroHeight)
+    // const [height, setHeight] = useState(document.body.scrollHeight)
+    // useEffect(() => {
+    //     setHeight(document.body.scrollHeight)
+    // }, [document.body.scrollHeight])
+    useEffect(() => {
+        if (userData.menus.length) {
             setmenuItems(initMenus(userData.menus).reverse())
         }
-    },[userData])
-    const initMenus=(menus:menuItemType[])=>{
-        let newMenu:MenuItem[]=[]
-        menus.forEach(el=>{
-            let item=el.children?getItem(el.menuName,el.path,<MyIcon type={el.icon}/>,initMenus(el.children)):getItem(el.menuName,el.path,<MyIcon type={el.icon}/>)
+    }, [userData])
+    const initMenus = (menus: menuItemType[]) => {
+        let newMenu: MenuItem[] = []
+        menus.forEach(el => {
+            let item = el.children ? getItem(el.menuName, el.path, <MyIcon type={el.icon} />, initMenus(el.children)) : getItem(el.menuName, el.path, <MyIcon type={el.icon} />)
             newMenu.push(item)
         })
         return newMenu
     }
     //展开关闭控制
     useEffect(() => {
-        
+
         userDispatch('getuser')
         for (let i = 0; i < menuItems.length; i++) {
             if (menuItems[i].children && menuItems[i].children!.find((el: { key: React.Key }) => el.key === location.pathname)) {
                 setOpenKey([menuItems[i].key as string])
             }
         }
-       
+
     }, [])
     //动态生成一级面包屑
     useEffect(() => {
@@ -61,14 +67,14 @@ export default function Home() {
         menuItems.forEach((el) => {
             if (el.key === location.pathname) {
                 flag = 1
-                if (location.pathname === '/charts') {
+                if (location.pathname === '/home') {
                     setBreadItem([
                         {
                             title: <a onClick={() => navigateTo("" + el.key)}>{el.label}</a>,
                         }])
                 } else {
                     setBreadItem([{
-                        title: <a onClick={() => navigateTo("/charts")}>首页</a>,
+                        title: <a onClick={() => navigateTo("/home")}>首页</a>,
                     },
                     {
                         title: <a onClick={() => navigateTo("" + el.key)}>{el.label}</a>,
@@ -89,7 +95,7 @@ export default function Home() {
                 })
                 setBreadItem([
                     {
-                        title: <a onClick={() => navigateTo("/charts")}>首页</a>,
+                        title: <a onClick={() => navigateTo("/home")}>首页</a>,
                     },
                     {
                         title: el.label + '',
@@ -109,6 +115,7 @@ export default function Home() {
         await logoutReq()
         navigateTo('/login')
     }
+    // console.log(winHeight-height)
     return (
         <Layout className='home' >
             <Sider trigger={null} collapsible collapsed={collapsed} style={{ height: '100vh', overflowY: 'auto', paddingTop: '10px', boxShadow: '0 0 5px' }}>
@@ -150,16 +157,22 @@ export default function Home() {
 
                 </Header>
                 <div
+                    className='hei'
                     style={{
                         margin: ' 24px 16px',
                         padding: 24,
-                        // minHeight:'40%',
+                        // minHeight:'100%',
                         background: colorBgContainer,
                     }}
                 >
                     <Outlet />
                 </div>
+                <Footer style={{ textAlign: 'center', color: '#aaaaaa' }} >
+                    <p>©2023</p>
+                    <span style={{ marginLeft: 10 }}>蜀ICP备2022012342号-1</span>
+                </Footer>
             </Layout>
+
         </Layout>
 
     )

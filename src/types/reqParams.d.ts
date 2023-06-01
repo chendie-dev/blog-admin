@@ -181,10 +181,19 @@ type resourceListParams = defaultListType<
 type getCommentListParams = defaultListType<
     { createTime?: boolean },
     {
-        articleId?:string ,
-        auditType:number ,
-        commentContent?:string|null ,
-        commentId?:string ,
-        userId?:string 
+        articleId?: string,
+        auditType: number,
+        commentContent?: string | null,
+        commentId?: string,
+        userId?: string
+    }
+>
+type oplogListParams = defaultListType<
+    { createTime?: boolean },
+    {
+        operatorId?:string|null ,
+        operatorStage?:string|null ,
+        operatorType?:string|null ,
+        userId?: string|null
     }
 >

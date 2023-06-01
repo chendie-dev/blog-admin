@@ -1,18 +1,45 @@
-import React, { useCallback, useRef } from 'react'
-import EmojiExtension from '../../components/EmojiExtension'
-import { ExposeParam, InsertContentGenerator } from 'md-editor-rt/lib/types/MdEditor/type';
-import { TextArea } from 'antd-mobile';
-
+import { Card } from 'antd';
+import { useEffect } from 'react';
+import echarts from '../../utils/echarts';
+import ReactEcharts from 'echarts-for-react'
+import './index.scss'
 export default function Charts() {
-  const onInsert = useCallback((generator: InsertContentGenerator) => {
-    editorRef.current?.insert(generator);
-  }, []);
-  const editorRef = useRef<ExposeParam>();
+  var option = {
+    title: {
+      text: 'ECharts 入门示例'
+    },
+    tooltip: {},
+    legend: {
+      data: ['销量']
+    },
+    xAxis: {
+      data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+    },
+    yAxis: {},
+    series: [
+      {
+        name: '销量',
+        type: 'bar',
+        data: [5, 20, 36, 10, 10, 20]
+      }
+    ]
+  };
+  useEffect(() => {
+    
+  }, [])
   return (
-    <div style={{ height: '600px' }}>
-      {/* <iframe src='http://8.130.107.218:28087/' style={{height:'100%',width:'1050px'}}></iframe> */}
-      <TextArea placeholder="123" autoSize style={{ display: 'inline-block', width: '80%' }} />
+    <div className='charts'>
+      {/* <Card > */}
+        {/* <ReactEcharts
+          style={{ height: 200 }}
+          echarts={echarts}
+          option={option}
+          notMerge={true}
+          lazyUpdate={true}
 
+        /> */}
+        <h1>ddgo博客管理系统</h1>
+      {/* </Card> */}
     </div>
   )
 }

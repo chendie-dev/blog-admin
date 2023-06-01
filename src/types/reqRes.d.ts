@@ -98,6 +98,21 @@ interface pageType {
     messagePageUrl: string,
     categoryPageUrl: string,
     tagPageUrl: string,
+    aboutMePageUrl: string
+}
+interface oplogItemType {
+    createTime: string,
+    operatorContent:string ,
+    operatorId:string ,
+    operatorStage:string ,
+    operatorType: string,
+    userId: string,
+    username:string
+}
+interface userInfoByIdType {
+    avatarUrl: string,
+    userId: string,
+    username: string
 }
 type idRes = defaultResType<{ id: string }>
 type idsRes = defaultResType<{ ids: string[] }>
@@ -117,3 +132,6 @@ type menuListRes = defaultResType<{ data: menuItemType[], totalPage: number }>
 type resourceListRes = defaultResType<{ data: resourceItemType[], totalPage: number }>
 type getCommentListRes = defaultResType<{ data: commentItemType[], totalPage: number }>
 type getPageRes = defaultResType<pageType>
+type oplogListRes = defaultResType<{ data: oplogItemType[], totalPage: number }>
+type userInfoByIdRes = defaultResType<userInfoByIdType>
+

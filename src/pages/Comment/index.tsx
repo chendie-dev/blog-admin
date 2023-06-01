@@ -51,9 +51,9 @@ export default function Comment() {
     getcommentList()
   }, [currentPage, isDescend, isAll])
   //修改评论
-  const auditComment = async (row: commentItemType) => {
+  const auditComment = async (row: commentItemType,auditType:number) => {
     let res = await auditCommentReq({
-      auditType: row.auditType === 2 ? 1 : 2,
+      auditType: auditType,
       commentId: row.commentId
     })
     if (res.code !== 200){
@@ -94,7 +94,9 @@ export default function Comment() {
       key: 'action',
       render: (_, record) => (
         <>
-          <a style={{ color: 'red' }} onClick={() => auditComment(record)}>{isAll === 2 ? '取消通过' : '通过'}</a>
+          <a style={{ color: 'red',marginRight:10,display:isAll===2?'inline-block':'none' }} onClick={() => {auditComment(record,3)}}>取消通过</a>
+          <a style={{ color: 'red',marginRight:10,display:isAll===2?'none':'inline-block' }} onClick={() => {auditComment(record,2)}}>通过</a>
+          <a style={{ color: 'red',display:isAll===1?'inline-block':'none' }} onClick={() => {auditComment(record,3)}}>不通过</a>
         </>
       ),
       width: '20%',
@@ -120,14 +122,18 @@ export default function Comment() {
     <div className='comment'>
       <p className="comment__title">评论管理</p>
       <div className='comment__status'><button>状态</button>
-        <button
+      <button
           style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setIsAll(1); setCurrentPage(1); setAuditType(1) }}
           disabled={selectedRows.length > 0}>未审核</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : globalConstant().color }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 2 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setIsAll(2); setCurrentPage(1); setAuditType(2) }}
-          disabled={selectedRows.length > 0}>已审核</button>
+          disabled={selectedRows.length > 0}>已通过</button>
+        <button
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 3 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)'}}
+          onClick={() => { setIsAll(3); setCurrentPage(1); setAuditType(3) }}
+          disabled={selectedRows.length > 0}>未通过</button>
       </div>
       <div className="comment__operation-form">
         {/* <Button type='primary' danger style={{display: isAll === 1 ? 'inline-block' : 'none' }} disabled={selectedRows.length === 0} onClick={() => updatecomment()}><DeleteOutlined />批量通过</Button>

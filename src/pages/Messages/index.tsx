@@ -19,7 +19,7 @@ export default function Messages() {
   const [searchVal, setSearchVal] = useState('')
   const [loading, setLoading] = useState(true)
   const [auditType, setAuditType] = useState(1)
-  const [isAll, setIsAll] = useState(1)//1全部，2回收站
+  const [isAll, setIsAll] = useState(1)//1未审核 2已通过 3未通过
   const [messageList, setMessageList] = useState<messageItemType[]>([])
   const [totalPage, setTotalPage] = useState(0)
   //获取留言列表
@@ -50,9 +50,9 @@ export default function Messages() {
     getMessageList()
   }, [currentPage, isDescend, isAll])
   //修改留言
-  const updateMessage = async (row: messageItemType) => {
+  const updateMessage = async (row: messageItemType,auditType:number) => {
     let res = await updateMessageReq({
-      auditType: row.auditType === 1 ? 2 : 1,
+      auditType: auditType,
       messageId: row.messageId
     })
     if (res.code !== 200){
@@ -93,7 +93,9 @@ export default function Messages() {
       key: 'action',
       render: (_, record) => (
         <>
-          <a style={{ color: 'red' }} onClick={() => updateMessage(record)}>{isAll === 2 ? '取消通过' : '通过'}</a>
+          <a style={{ color: 'red',marginRight:10,display:isAll===2?'inline-block':'none' }} onClick={() => {updateMessage(record,3)}}>取消通过</a>
+          <a style={{ color: 'red',marginRight:10,display:isAll===2?'none':'inline-block' }} onClick={() => {updateMessage(record,2)}}>通过</a>
+          <a style={{ color: 'red',display:isAll===1?'inline-block':'none' }} onClick={() => {updateMessage(record,3)}}>不通过</a>
         </>
       ),
       width: '20%',
@@ -124,17 +126,15 @@ export default function Messages() {
           onClick={() => { setIsAll(1); setCurrentPage(1); setAuditType(1) }}
           disabled={selectedRows.length > 0}>未审核</button>
         <button
-          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 1 ? 'rgba(0, 0, 0, 0.45)' : globalConstant().color }}
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 2 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)' }}
           onClick={() => { setIsAll(2); setCurrentPage(1); setAuditType(2) }}
-          disabled={selectedRows.length > 0}>已审核</button>
+          disabled={selectedRows.length > 0}>已通过</button>
+        <button
+          style={{ cursor: selectedRows.length > 0 ? 'no-drop' : 'pointer', color: isAll === 3 ? globalConstant().color : 'rgba(0, 0, 0, 0.45)'}}
+          onClick={() => { setIsAll(3); setCurrentPage(1); setAuditType(3) }}
+          disabled={selectedRows.length > 0}>未通过</button>
       </div>
       <div className="message__operation-form">
-        {/* <Button type='primary' danger style={{display: isAll === 1 ? 'inline-block' : 'none' }} disabled={selectedRows.length === 0} onClick={() => updateMessage()}><DeleteOutlined />批量通过</Button>
-        <Button type='primary' danger
-          style={{ display: isAll === 2 ? 'inline-block' : 'none' }}
-          disabled={selectedRows.length === 0}
-          onClick={() => updateMessage()}
-        ><PlusCircleOutlined />批量取消通过</Button> */}
         <Button type='primary' style={{ float: 'right', marginLeft: '10px' }} onClick={getMessageList} ><SearchOutlined />搜索</Button>
         <Input type="text" style={{ float: 'right' }} placeholder='请输入留言名称' allowClear prefix={<SearchOutlined style={{ color: '#aaa' }} />} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? getMessageList() : ''} />
       </div>

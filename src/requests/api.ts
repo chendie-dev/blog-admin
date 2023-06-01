@@ -128,3 +128,7 @@ export const getAboutMeReq=():Promise<loginRes>=>request.instance.post('/website
 export const getPagesReq=():Promise<getPageRes>=>request.instance.post('/website/admin/page/query')
 //更新页面
 export const addPagesReq=(params:pageType):Promise<idsRes>=>request.instance.post('/website/admin/page/add',params)
+//查询操作日志
+export const getOplogListReq=(params:oplogListParams):Promise<oplogListRes>=>request.instance.post('/website/admin/oplog/queryByPage',params)
+export const getUserInfoByIdReq=(userId:string):Promise<userInfoByIdRes>=>request.instance.get(`/auth/user/getUserInfo/${userId}`)
+

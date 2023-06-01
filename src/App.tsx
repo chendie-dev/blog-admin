@@ -6,8 +6,8 @@ import { message } from 'antd';
 function ToHome() {
   const navigateTo = useNavigate()
   useEffect(() => {
-    message.error('你已登陆')
-    navigateTo('/charts')
+    // message.error('你已登陆')
+    navigateTo('/home')
   }, [])
   return (
     <></>
@@ -17,7 +17,7 @@ function ToLogin() {
   const navigateTo = useNavigate()
   useEffect(() => {
     message.error('你还没有登陆')
-    navigateTo('/login')
+    // navigateTo('/login')
   }, [])
   return (
     <></>
