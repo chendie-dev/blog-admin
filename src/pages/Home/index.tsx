@@ -167,10 +167,13 @@ export default function Home() {
                 >
                     <Outlet />
                 </div>
-                <Footer style={{ textAlign: 'center', color: '#aaaaaa' }} >
-                    <p>©2023</p>
-                    <span style={{ marginLeft: 10 }}>蜀ICP备2022012342号-1</span>
-                </Footer>
+                {
+                    location.pathname === '/home' ?
+                        <Footer style={{ textAlign: 'center', color: '#aaaaaa' }} >
+                            <p>©2023</p>
+                            <span style={{ marginLeft: 10 }}>蜀ICP备2022012342号-1</span>
+                        </Footer> : ''
+                }
             </Layout>
 
         </Layout>

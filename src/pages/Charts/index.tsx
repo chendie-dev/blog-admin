@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import echarts from '../../utils/echarts';
 import ReactEcharts from 'echarts-for-react'
 import './index.scss'
+import { Footer } from 'antd/es/layout/layout';
 export default function Charts() {
   var option = {
     title: {
@@ -25,11 +26,12 @@ export default function Charts() {
     ]
   };
   useEffect(() => {
-    
+
   }, [])
   return (
-    <div className='charts'>
-      {/* <Card > */}
+    <>
+      <div className='charts'>
+        {/* <Card > */}
         {/* <ReactEcharts
           style={{ height: 200 }}
           echarts={echarts}
@@ -39,7 +41,10 @@ export default function Charts() {
 
         /> */}
         <h1>ddgo博客管理系统</h1>
-      {/* </Card> */}
-    </div>
+        {/* </Card> */}
+
+      </div>
+      
+    </>
   )
 }
