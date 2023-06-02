@@ -30,10 +30,10 @@ const withLoading = (com: JSX.Element, name: string) => (
 
 )
 const routers = [
-    // {
-    //     path: '/',
-    //     element: <Navigate to="/login" />
-    // },
+    {
+        path: '/',
+        element: <Navigate to="/login" />
+    },
     {
         path: '/',
         element: <Home />,
