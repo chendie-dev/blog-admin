@@ -2,7 +2,6 @@ import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 import { AliveScope } from 'react-activation';
 import router from './router';
 import { useEffect } from 'react';
-import { message } from 'antd';
 function ToHome() {
   const navigateTo = useNavigate()
   useEffect(() => {
@@ -16,8 +15,8 @@ function ToHome() {
 function ToLogin() {
   const navigateTo = useNavigate()
   useEffect(() => {
-    message.error('你还没有登陆')
-    // navigateTo('/login')
+    // message.error('你还没有登陆')
+    navigateTo('/login')
   }, [])
   return (
     <></>
