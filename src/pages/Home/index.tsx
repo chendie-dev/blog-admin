@@ -52,29 +52,30 @@ export default function Home() {
     }
     //展开关闭控制
     useEffect(() => {
-
         userDispatch('getuser')
+    }, [])
+    useEffect(()=>{
         for (let i = 0; i < menuItems.length; i++) {
             if (menuItems[i].children && menuItems[i].children!.find((el: { key: React.Key }) => el.key === location.pathname)) {
                 setOpenKey([menuItems[i].key as string])
+                console.log(menuItems[i].key as string,123)
             }
         }
-
-    }, [])
+    },[menuItems.length>0])
     //动态生成一级面包屑
     useEffect(() => {
         let flag = 0
         menuItems.forEach((el) => {
             if (el.key === location.pathname) {
                 flag = 1
-                if (location.pathname === '/home') {
+                if (location.pathname === '/charts') {
                     setBreadItem([
                         {
                             title: <a onClick={() => navigateTo("" + el.key)}>{el.label}</a>,
                         }])
                 } else {
                     setBreadItem([{
-                        title: <a onClick={() => navigateTo("/home")}>首页</a>,
+                        title: <a onClick={() => navigateTo("/charts")}>首页</a>,
                     },
                     {
                         title: <a onClick={() => navigateTo("" + el.key)}>{el.label}</a>,
@@ -95,7 +96,7 @@ export default function Home() {
                 })
                 setBreadItem([
                     {
-                        title: <a onClick={() => navigateTo("/home")}>首页</a>,
+                        title: <a onClick={() => navigateTo("/charts")}>首页</a>,
                     },
                     {
                         title: el.label + '',
@@ -109,7 +110,7 @@ export default function Home() {
         })
         if (!flag) setBreadItem([])
         setSelectedKeys([location.pathname])
-    }, [location.pathname])
+    }, [location.pathname,menuItems.length>0])
     const logout = async () => {
         localStorage.removeItem('admin-token')
         await logoutReq()
@@ -168,7 +169,7 @@ export default function Home() {
                     <Outlet />
                 </div>
                 {
-                    location.pathname === '/home' ?
+                    location.pathname === '/charts' ?
                         <Footer style={{ textAlign: 'center', color: '#aaaaaa' }} >
                             <p>©2023</p>
                             <span style={{ marginLeft: 10 }}>蜀ICP备2022012342号-1</span>

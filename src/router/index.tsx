@@ -35,11 +35,11 @@ const routers = [
         element: <Navigate to="/login" />
     },
     {
-        // path: '/',
-        // element: <Home />,
+        path: '/',
+        element: <Home />,
         children: [
             {
-                path: '/home',
+                path: '/charts',
                 element: withLoading(<Charts />, 'charts')
             },
             {

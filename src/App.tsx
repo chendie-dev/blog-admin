@@ -6,7 +6,7 @@ function ToHome() {
   const navigateTo = useNavigate()
   useEffect(() => {
     // message.error('你已登陆')
-    navigateTo('/home')
+    navigateTo('/charts')
   }, [])
   return (
     <></>
