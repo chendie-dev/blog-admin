@@ -24,6 +24,7 @@ const TagInput: React.FC<propsType> = React.memo(({ getTagId }) => {
   useEffect(() => {
     if (!searchVal.flag || searchVal.value === '') {
       getTagId(null)
+      setTagList([])
       return
     }
     getTagList()

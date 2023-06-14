@@ -24,6 +24,7 @@ const CategoryInput: React.FC<propsType> = React.memo(({ getCategoryId }) => {
   useEffect(() => {
     if (!searchVal.flag || searchVal.value === '') {
       getCategoryId(null)
+      setCategoryList([])
       return
     }
     getCategoryList()
